@@ -1,10 +1,9 @@
-/* =====================================================
-   base.css
-   DekoKraft Website (V2)
-   Root / Reset / Global rules
-   ===================================================== */
+/* ===============================
+   DekoKraft – Base CSS
+   ملف الجذور (أساس المشروع)
+   =============================== */
 
-/* 1) CSS RESET (خفيف وآمن) */
+/* 1) Reset بسيط لإزالة الفروقات بين المتصفحات */
 *,
 *::before,
 *::after {
@@ -13,80 +12,74 @@
   padding: 0;
 }
 
-/* 2) ROOT VARIABLES */
+/* 2) إعدادات الجذر (ألوان – خطوط – قياسات) */
 :root {
-  /* Colors */
-  --color-bg-main: #0b1030;
-  --color-bg-secondary: #10184a;
+  /* الألوان الأساسية */
+  --color-bg-main: #0b1026;
+  --color-bg-card: rgba(255, 255, 255, 0.08);
   --color-text-main: #ffffff;
   --color-text-muted: #cfd3ff;
   --color-accent: #6c7cff;
 
-  /* Fonts */
+  /* الخطوط */
   --font-main: system-ui, -apple-system, BlinkMacSystemFont,
                "Segoe UI", Roboto, Arial, sans-serif;
 
-  /* Layout */
-  --container-width: 1100px;
-  --radius-main: 18px;
+  /* المسافات */
+  --radius-lg: 20px;
+  --radius-md: 14px;
+  --radius-sm: 8px;
+
+  /* السرعة */
+  --transition-fast: 0.2s ease;
+  --transition-normal: 0.3s ease;
 }
 
-/* 3) HTML / BODY BASE */
-html {
-  font-size: 16px;
-  scroll-behavior: smooth;
+/* 3) إعدادات الصفحة العامة */
+html, body {
+  width: 100%;
+  min-height: 100%;
 }
 
 body {
-  min-height: 100vh;
   font-family: var(--font-main);
-  background: linear-gradient(
-    180deg,
-    var(--color-bg-secondary),
-    var(--color-bg-main)
-  );
+  background: linear-gradient(135deg, #0b1026, #111a3a);
   color: var(--color-text-main);
-  direction: rtl;
-  overflow-x: hidden;
+  line-height: 1.6;
+  -webkit-font-smoothing: antialiased;
 }
 
-/* 4) GLOBAL ELEMENTS */
+/* 4) الصور */
 img {
   max-width: 100%;
   height: auto;
   display: block;
 }
 
+/* 5) الروابط */
 a {
-  color: inherit;
+  color: var(--color-accent);
   text-decoration: none;
+  transition: color var(--transition-fast);
 }
 
-ul,
-ol {
-  list-style: none;
+a:hover {
+  color: #ffffff;
 }
 
+/* 6) أزرار عامة (سنستعملها لاحقًا) */
 button {
   font-family: inherit;
-  cursor: pointer;
   border: none;
   background: none;
+  color: inherit;
+  cursor: pointer;
 }
 
-/* 5) CONTAINER HELPER */
+/* 7) حاوية عامة (Container) */
 .container {
-  max-width: var(--container-width);
-  margin: 0 auto;
-  padding: 0 16px;
+  width: 100%;
+  max-width: 1200px;
+  margin-inline: auto;
+  padding-inline: 16px;
 }
-
-/* 6) ACCESSIBILITY */
-:focus-visible {
-  outline: 2px solid var(--color-accent);
-  outline-offset: 3px;
-}
-
-/* =====================================================
-   END OF base.css
-   ===================================================== */
