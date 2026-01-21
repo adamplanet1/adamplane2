@@ -1,0 +1,92 @@
+/* =====================================================
+   base.css
+   DekoKraft Website (V2)
+   Root / Reset / Global rules
+   ===================================================== */
+
+/* 1) CSS RESET (خفيف وآمن) */
+*,
+*::before,
+*::after {
+  box-sizing: border-box;
+  margin: 0;
+  padding: 0;
+}
+
+/* 2) ROOT VARIABLES */
+:root {
+  /* Colors */
+  --color-bg-main: #0b1030;
+  --color-bg-secondary: #10184a;
+  --color-text-main: #ffffff;
+  --color-text-muted: #cfd3ff;
+  --color-accent: #6c7cff;
+
+  /* Fonts */
+  --font-main: system-ui, -apple-system, BlinkMacSystemFont,
+               "Segoe UI", Roboto, Arial, sans-serif;
+
+  /* Layout */
+  --container-width: 1100px;
+  --radius-main: 18px;
+}
+
+/* 3) HTML / BODY BASE */
+html {
+  font-size: 16px;
+  scroll-behavior: smooth;
+}
+
+body {
+  min-height: 100vh;
+  font-family: var(--font-main);
+  background: linear-gradient(
+    180deg,
+    var(--color-bg-secondary),
+    var(--color-bg-main)
+  );
+  color: var(--color-text-main);
+  direction: rtl;
+  overflow-x: hidden;
+}
+
+/* 4) GLOBAL ELEMENTS */
+img {
+  max-width: 100%;
+  height: auto;
+  display: block;
+}
+
+a {
+  color: inherit;
+  text-decoration: none;
+}
+
+ul,
+ol {
+  list-style: none;
+}
+
+button {
+  font-family: inherit;
+  cursor: pointer;
+  border: none;
+  background: none;
+}
+
+/* 5) CONTAINER HELPER */
+.container {
+  max-width: var(--container-width);
+  margin: 0 auto;
+  padding: 0 16px;
+}
+
+/* 6) ACCESSIBILITY */
+:focus-visible {
+  outline: 2px solid var(--color-accent);
+  outline-offset: 3px;
+}
+
+/* =====================================================
+   END OF base.css
+   ===================================================== */
