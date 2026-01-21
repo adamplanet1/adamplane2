@@ -1,0 +1,15 @@
+PROJECT: DekoKraft (Version 2)
+
+CURRENT STATE:
+- Repository created: adamplanet2
+- README.md exists
+- No HTML/CSS/JS files yet
+
+REFERENCE PURPOSE:
+This file tracks:
+- Working versions of code
+- Known good states
+- Comparisons after changes
+
+LAST UPDATE:
+Project initialized.
