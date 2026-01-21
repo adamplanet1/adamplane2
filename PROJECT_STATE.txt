@@ -1,15 +1,93 @@
-PROJECT: DekoKraft (Version 2)
+PROJECT_STATE — DekoKraft Website (V2) / adamplanet2
+Last updated: (ضع التاريخ/الوقت عندك)
 
-CURRENT STATE:
-- Repository created: adamplanet2
-- README.md exists
-- No HTML/CSS/JS files yet
+========================
+1) REPO / PAGES STATUS
+========================
+- GitHub user/org: adamplanet1
+- Repo: adamplanet2
+- الهدف: نشر الموقع عبر GitHub Pages (Static)
 
-REFERENCE PURPOSE:
-This file tracks:
-- Working versions of code
-- Known good states
-- Comparisons after changes
+ملاحظة:
+سيتم تفعيل Pages من:
+Settings → Pages → Deploy from a branch → Branch: main / root
 
-LAST UPDATE:
-Project initialized.
+========================
+2) PROJECT STRUCTURE (ORGANIGRAMM)
+========================
+اعتماد شجرة مرنة وواضحة:
+
+adamplanet2/
+│
+├─ index.html
+├─ pages/
+│   ├─ gifts.html
+│   ├─ decoration.html
+│   ├─ kids.html
+│   └─ service.html
+│
+├─ assets/
+│   ├─ css/
+│   │   ├─ base.css        (الجذري: reset + variables + general rules)
+│   │   └─ main.css        (تصميم الصفحات: layout + components)
+│   │
+│   ├─ js/
+│   │   └─ main.js         (menu toggle + small interactions)
+│   │
+│   └─ images/
+│       ├─ logo/
+│       │   └─ logo-dekokraft.png
+│       └─ (rest of images later…)
+│
+├─ PROJECT_PROMPT.txt
+└─ PROJECT_STATE.txt
+
+ملاحظة مهمة:
+- نعم: يمكن وضع CSS الجذري + CSS الرئيسي داخل نفس المجلد assets/css
+- نستخدم ملفين لتجنب الفوضى:
+  base.css = قواعد عامة ثابتة
+  main.css = تصميم الصفحات والمكونات
+
+========================
+3) LINKING RULES (CACHE BUSTING)
+========================
+في index.html وأي صفحة أخرى:
+داخل <head>:
+- <link rel="stylesheet" href="assets/css/base.css?v=VNUM">
+- <link rel="stylesheet" href="assets/css/main.css?v=VNUM">
+
+قبل </body>:
+- <script src="assets/js/main.js?v=VNUM"></script>
+
+VNUM يتم تغييره عند أي تعديل (مثلاً 5001 ثم 5002 ...)
+
+========================
+4) CURRENT STEP
+========================
+[✓] تم إنشاء repo: adamplanet2
+[✓] تم إنشاء PROJECT_PROMPT.txt
+[✓] تم إنشاء PROJECT_STATE.txt
+
+[التالي]
+- إنشاء الملفات والمجلدات حسب الشجرة:
+  index.html
+  pages/ (فارغ الآن أو ننشئ صفحات لاحقاً)
+  assets/css/base.css
+  assets/css/main.css
+  assets/js/main.js
+  assets/images/logo/logo-dekokraft.png (رفع الشعار)
+
+========================
+5) KNOWN ISSUES / HISTORY
+========================
+- في مشروع سابق حدثت مشاكل Responsive + Menu على الهاتف + اختلاف العرض بين الهاتف والكمبيوتر.
+- في V2 سنحل هذا من البداية عبر:
+  Mobile-first + Menu toggle JS واضح + منع overflow.
+
+========================
+6) ACCEPTANCE CHECKLIST
+========================
+- الصفحة الرئيسية تظهر بشكل صحيح على الهاتف والكمبيوتر.
+- زر Menu على الهاتف يفتح قائمة عمودية (Overlay أو Dropdown).
+- لا يوجد خروج عناصر خارج الشاشة.
+- الصور تتكيف تلقائياً.
