@@ -138,4 +138,28 @@
 
 /* ===============================
    MOBILE
-   =================
+   =============================== */
+
+@media (max-width: 768px) {
+  .menu-toggle {
+    display: inline-flex;
+    align-items: center;
+    gap: 6px;
+  }
+
+  .nav-links {
+    position: absolute;
+    top: 100%;
+    right: 0;
+    left: 0;
+    flex-direction: column;
+    background: rgba(11, 16, 38, 0.98);
+    padding: 16px;
+    gap: 10px;
+    display: none;
+  }
+
+  .nav-links.open {
+    display: flex;
+  }
+}
