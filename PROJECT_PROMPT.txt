@@ -1,0 +1,14 @@
+PROJECT: DekoKraft (Version 2)
+
+PURPOSE:
+This file stores the main prompts, rules, and instructions
+used to communicate with the AI during the project.
+
+RULES:
+- Always print full files (HTML, CSS, JS) when a change is made.
+- No partial code snippets.
+- Changes must be explicit and reproducible.
+- Keep structure simple and clear.
+
+STATUS:
+Initialized.
