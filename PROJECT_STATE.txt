@@ -91,3 +91,11 @@ VNUM يتم تغييره عند أي تعديل (مثلاً 5001 ثم 5002 ...)
 - زر Menu على الهاتف يفتح قائمة عمودية (Overlay أو Dropdown).
 - لا يوجد خروج عناصر خارج الشاشة.
 - الصور تتكيف تلقائياً.
+DECISION:
+- Using Option B for base stylesheet.
+
+FILES:
+- assets/css/base.css = Base + Tokens (do not mix with another base/reset)
+- assets/css/main.css = UI components/layout (navbar, hero, cards, responsive)
+- assets/js/main.js = menu toggle + small interactions
+- index.html links base.css then main.css, and loads main.js at end of body
