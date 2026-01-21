@@ -1,14 +1,45 @@
-PROJECT: DekoKraft (Version 2)
+PROJECT: DekoKraft Website (V2) — adamplanet2
 
-PURPOSE:
-This file stores the main prompts, rules, and instructions
-used to communicate with the AI during the project.
+GOAL
+إنشاء موقع ثابت (Static Website) أنيق وحديث لمشروع DekoKraft باستخدام:
+HTML + CSS + JavaScript فقط (Vanilla)
+ويمكن نشره على GitHub Pages بدون أي أدوات بناء (No build tools).
 
-RULES:
-- Always print full files (HTML, CSS, JS) when a change is made.
-- No partial code snippets.
-- Changes must be explicit and reproducible.
-- Keep structure simple and clear.
+SCOPE (الصفحات)
+- index.html (الصفحة الرئيسية)
+- pages/ (صفحات الأقسام لاحقاً: gifts, decoration, kids, service …)
 
-STATUS:
-Initialized.
+DESIGN STYLE
+- Dark / Blue gradient background
+- Cards شفافة/مظللة مع حواف دائرية
+- مظهر نظيف Minimal
+- دعم عربي + ألماني (RTL/LTR عند الحاجة)
+- Responsive (Mobile-first)
+
+TECH RULES
+1) لا Frameworks ولا مكتبات خارجية (إلا إذا طلب المستخدم).
+2) فصل الملفات:
+   - CSS في assets/css
+   - JS في assets/js
+   - الصور في assets/images
+3) Cache Busting أثناء التطوير عبر ?v=XXXX في روابط CSS/JS.
+
+WORKFLOW RULES (قواعد العمل)
+1) خطوة بخطوة فقط.
+2) لا ننتقل للخطوة التالية قبل موافقة المستخدم.
+3) عند أي تعديل في كود (حتى لو سطر واحد):
+   - أطبع الملف كامل (HTML أو CSS أو JS) وليس جزءًا منه.
+4) كل خطوة “تنجح فعلياً” تُسجّل في PROJECT_STATE.txt كمرجع ثابت.
+5) أي مشكلة: نحلها بتشخيص واضح + تعديل واحد مباشر + اختبار.
+
+QUALITY CHECKLIST
+- الصفحة تعمل على الهاتف والكمبيوتر
+- لا عناصر خارج الشاشة (no overflow bugs)
+- القائمة (Menu) تعمل على الهاتف (فتح/إغلاق)
+- الصور Responsive (max-width:100%, height:auto)
+- اتجاه الصفحة RTL للعربي عند الحاجة
+- كود نظيف ومقروء ومُعلّق عند الضرورة
+
+CURRENT STATUS
+- Repository: adamplanet2 موجود
+- سيتم إنشاء شجرة المشروع + الملفات الأساسية ثم البدء بالكود
