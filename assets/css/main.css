@@ -1,51 +1,64 @@
 /* =====================================================
    main.css
-   Layout + Components (Navbar / Hero / Cards / Responsive)
+   Layout + Components + Responsive
    ===================================================== */
 
 .site-header {
   position: sticky;
   top: 0;
   z-index: 50;
-  background: rgba(11, 16, 38, 0.65);
+  padding: 14px 0;
   backdrop-filter: blur(10px);
-  border-bottom: 1px solid rgba(255, 255, 255, 0.10);
+  background: rgba(5, 10, 30, 0.55);
+  border-bottom: 1px solid rgba(255,255,255,0.08);
 }
 
 .nav-wrap {
-  min-height: 68px;
   display: flex;
   align-items: center;
-  justify-content: space-between;
   gap: 12px;
 }
 
-/* Brand */
 .brand {
   display: inline-flex;
   align-items: center;
   gap: 10px;
-  min-width: 0;
+  min-width: 160px;
 }
 
 .brand__logo {
-  width: 44px;
-  height: 44px;
   border-radius: 12px;
-  background: rgba(255, 255, 255, 0.06);
-  border: 1px solid rgba(255, 255, 255, 0.10);
-  object-fit: cover;
 }
 
 .brand__name {
-  font-weight: 800;
+  font-weight: 700;
   letter-spacing: 0.2px;
-  font-size: 1.05rem;
-  white-space: nowrap;
 }
 
-/* Desktop nav */
+.lang-switch {
+  display: inline-flex;
+  gap: 8px;
+  padding: 6px;
+  border-radius: 999px;
+  background: rgba(255,255,255,0.08);
+  border: 1px solid rgba(255,255,255,0.10);
+}
+
+.lang-btn {
+  padding: 6px 10px;
+  border-radius: 999px;
+  font-weight: 700;
+  opacity: 0.85;
+  transition: opacity var(--transition-fast), background var(--transition-fast);
+}
+
+.lang-btn[aria-pressed="true"] {
+  background: rgba(108, 124, 255, 0.25);
+  opacity: 1;
+}
+
 .nav-desktop {
+  margin-inline-start: auto;
   display: none;
   gap: 10px;
   align-items: center;
@@ -57,105 +70,132 @@
   justify-content: center;
   padding: 10px 14px;
   border-radius: 999px;
-  background: rgba(255, 255, 255, 0.06);
-  border: 1px solid rgba(255, 255, 255, 0.10);
-  transition: transform var(--transition-fast), background var(--transition-fast), border-color var(--transition-fast);
+  background: rgba(255,255,255,0.06);
+  border: 1px solid rgba(255,255,255,0.08);
+  color: #fff;
+  transition: transform var(--transition-fast), background var(--transition-fast);
   white-space: nowrap;
 }
 
 .nav-link:hover {
-  background: rgba(255, 255, 255, 0.10);
-  border-color: rgba(255, 255, 255, 0.16);
   transform: translateY(-1px);
+  background: rgba(255,255,255,0.10);
 }
 
-/* Mobile menu button */
 .menu-btn {
+  margin-inline-start: auto;
   display: inline-flex;
   align-items: center;
-  gap: 8px;
+  gap: 10px;
   padding: 10px 14px;
   border-radius: 999px;
-  background: rgba(255, 255, 255, 0.08);
-  border: 1px solid rgba(255, 255, 255, 0.12);
-  box-shadow: var(--shadow-soft);
+  background: rgba(255,255,255,0.10);
+  border: 1px solid rgba(255,255,255,0.12);
 }
 
 .menu-btn__icon {
-  font-size: 1.1rem;
+  font-size: 18px;
   line-height: 1;
 }
 
-.menu-btn__text {
-  font-weight: 700;
-}
+/* ===============================
+   ✅ MOBILE MENU (FIXED)
+   - overlay always exists
+   - controlled by .is-open
+   - pointer-events + z-index guaranteed
+   =============================== */
 
-/* Mobile overlay */
 .menu-overlay {
   position: fixed;
   inset: 0;
-  z-index: 100;
-  background: rgba(0, 0, 0, 0.45);
+  z-index: 9999;              /* ✅ فوق كل شيء */
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  padding: 18px;
+
+  background: rgba(0, 0, 0, 0.35);
   backdrop-filter: blur(6px);
-  display: grid;
-  place-items: start center;
-  padding: 90px 16px 16px;
+
+  opacity: 0;
+  visibility: hidden;
+  pointer-events: none;        /* ✅ يمنع “التعليق” */
+  transition: opacity var(--transition-normal), visibility var(--transition-normal);
+}
+
+.menu-overlay.is-open {
+  opacity: 1;
+  visibility: visible;
+  pointer-events: auto;        /* ✅ النقرات تشتغل */
 }
 
 .menu-panel {
-  width: min(520px, 100%);
+  width: min(520px, 92vw);
   border-radius: var(--radius-lg);
-  background: rgba(17, 26, 58, 0.85);
-  border: 1px solid rgba(255, 255, 255, 0.14);
-  box-shadow: var(--shadow-soft);
-  overflow: hidden;
+  background: rgba(16, 24, 74, 0.65);
+  border: 1px solid rgba(255,255,255,0.12);
+  box-shadow: 0 20px 60px rgba(0,0,0,0.35);
+  padding: 16px;
+
+  transform: translateY(8px);
+  transition: transform var(--transition-normal);
+}
+
+.menu-overlay.is-open .menu-panel {
+  transform: translateY(0);
 }
 
 .menu-panel__top {
   display: flex;
   align-items: center;
   justify-content: space-between;
-  padding: 14px 16px;
-  border-bottom: 1px solid rgba(255, 255, 255, 0.10);
+  gap: 12px;
+  margin-bottom: 12px;
 }
 
 .menu-title {
+  font-size: 18px;
   font-weight: 800;
 }
 
 .menu-close {
-  width: 38px;
-  height: 38px;
+  width: 44px;
+  height: 44px;
   border-radius: 12px;
-  background: rgba(255, 255, 255, 0.08);
-  border: 1px solid rgba(255, 255, 255, 0.12);
+  background: rgba(255,255,255,0.08);
+  border: 1px solid rgba(255,255,255,0.12);
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  font-size: 18px;
 }
 
 .nav-mobile {
   display: grid;
-  gap: 10px;
-  padding: 16px;
+  gap: 12px;
 }
 
-.nav-mobile .nav-link {
-  justify-content: flex-start;
-  padding: 12px 14px;
+/* عند فتح المينو: امنع سكرول الصفحة */
+body.menu-open {
+  overflow: hidden;
 }
 
-/* Main */
+/* ===============================
+   HERO + CARDS
+   =============================== */
+
 .site-main {
-  padding: 28px 0 44px;
+  padding: 18px 0 42px;
 }
 
 .hero {
-  padding: 28px 0 18px;
-  text-align: center;
+  padding: 18px 0 12px;
 }
 
 .hero__title {
-  font-size: clamp(1.7rem, 4vw, 2.6rem);
+  font-size: clamp(26px, 4vw, 44px);
   font-weight: 900;
-  line-height: 1.2;
+  margin-bottom: 10px;
 }
 
 .hero__brand {
@@ -163,45 +203,36 @@
 }
 
 .hero__subtitle {
-  margin-top: 10px;
   color: var(--color-text-muted);
   max-width: 720px;
-  margin-inline: auto;
 }
 
-/* Cards grid */
 .sections {
-  margin-top: 26px;
+  padding: 18px 0 8px;
   display: grid;
-  grid-template-columns: 1fr;
-  gap: 14px;
+  gap: 16px;
 }
 
 .card {
   background: var(--color-bg-card);
-  border: 1px solid var(--color-border);
+  border: 1px solid rgba(255,255,255,0.10);
   border-radius: var(--radius-lg);
-  box-shadow: var(--shadow-soft);
   padding: 18px;
+  box-shadow: 0 10px 30px rgba(0,0,0,0.25);
 }
 
 .card__title {
-  display: flex;
-  align-items: center;
-  justify-content: space-between;
-  gap: 10px;
-  font-size: 1.35rem;
+  font-size: 22px;
   font-weight: 900;
+  margin-bottom: 8px;
 }
 
 .card__text {
-  margin-top: 10px;
   color: var(--color-text-muted);
+  margin-bottom: 14px;
 }
 
-/* Button */
 .btn {
-  margin-top: 14px;
   display: inline-flex;
   align-items: center;
   justify-content: center;
@@ -209,33 +240,38 @@
   border-radius: 999px;
   background: rgba(108, 124, 255, 0.22);
   border: 1px solid rgba(108, 124, 255, 0.35);
-  transition: transform var(--transition-fast), background var(--transition-fast), border-color var(--transition-fast);
+  color: #fff;
+  transition: transform var(--transition-fast), background var(--transition-fast);
 }
 
 .btn:hover {
   transform: translateY(-1px);
-  background: rgba(108, 124, 255, 0.28);
-  border-color: rgba(108, 124, 255, 0.45);
+  background: rgba(108, 124, 255, 0.30);
 }
 
-/* Footer */
+/* ===============================
+   FOOTER
+   =============================== */
+
 .site-footer {
-  padding: 18px 0 26px;
-  border-top: 1px solid rgba(255, 255, 255, 0.10);
-  background: rgba(11, 16, 38, 0.35);
+  padding: 18px 0 28px;
+  border-top: 1px solid rgba(255,255,255,0.08);
+  background: rgba(5, 10, 30, 0.35);
 }
 
 .footer-wrap {
   display: flex;
-  align-items: center;
   justify-content: center;
 }
 
 .footer-text {
-  color: var(--color-text-muted);
+  color: rgba(255,255,255,0.75);
 }
 
-/* Desktop breakpoint */
+/* ===============================
+   RESPONSIVE
+   =============================== */
+
 @media (min-width: 900px) {
   .nav-desktop {
     display: inline-flex;
@@ -246,16 +282,6 @@
   }
 
   .sections {
-    grid-template-columns: repeat(2, minmax(0, 1fr));
-    gap: 18px;
+    grid-template-columns: repeat(2, 1fr);
   }
-
-  .card {
-    padding: 22px;
-  }
-}
-
-/* When menu open: lock scroll */
-body.menu-open {
-  overflow: hidden;
 }
