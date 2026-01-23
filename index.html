@@ -1,84 +1,116 @@
-
 <!doctype html>
-<html lang="ar">
+<html lang="ar" dir="rtl">
 <head>
-  <meta charset="utf-8">
+  <meta charset="utf-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1" />
+  <meta name="description" content="DekoKraft - هدايا وديكور وخدمات متنوعة" />
   <title>DekoKraft</title>
-  <meta name="viewport" content="width=device-width, initial-scale=1">
 
-  <!-- Base & Main CSS -->
-  <link rel="stylesheet" href="assets/css/base.css">
-  <link rel="stylesheet" href="assets/css/main.css">
+  <!-- Base then Main (cache busting) -->
+  <link rel="stylesheet" href="assets/css/base.css?v=5001" />
+  <link rel="stylesheet" href="assets/css/main.css?v=5001" />
 </head>
 
 <body>
+  <!-- Header / Navbar -->
+  <header class="site-header">
+    <div class="container nav-wrap">
+      <a class="brand" href="index.html" aria-label="DekoKraft Home">
+        <img
+          class="brand__logo"
+          src="assets/images/logo/logo-dekokraft.png"
+          alt="DekoKraft Logo"
+          loading="eager"
+        />
+        <span class="brand__name">DekoKraft</span>
+      </a>
 
-  <!-- HEADER -->
-  <header class="header">
-    <div class="container navbar">
-
-      <div class="logo">
-        <img src="assets/images/logo/logo-dekokraft.png" alt="DekoKraft Logo">
-        <span>DekoKraft</span>
-      </div>
-
-      <button class="menu-toggle">☰ Menu</button>
-
-      <nav class="nav-links">
-        <a href="#">الرئيسية</a>
-        <a href="#">Geschenke</a>
-        <a href="#">Dekoration</a>
-        <a href="#">Kinder-Geschenke</a>
-        <a href="#">Service</a>
+      <!-- Desktop Nav -->
+      <nav class="nav-desktop" aria-label="Main navigation">
+        <a class="nav-link" href="index.html">الرئيسية</a>
+        <a class="nav-link" href="pages/gifts.html">Geschenke</a>
+        <a class="nav-link" href="pages/decoration.html">Dekoration</a>
+        <a class="nav-link" href="pages/kids.html">Kinder-Geschenke</a>
+        <a class="nav-link" href="pages/service.html">Service</a>
       </nav>
 
+      <!-- Mobile Menu Button -->
+      <button
+        class="menu-btn"
+        type="button"
+        aria-label="Open menu"
+        aria-controls="mobileMenu"
+        aria-expanded="false"
+      >
+        <span class="menu-btn__icon" aria-hidden="true">☰</span>
+        <span class="menu-btn__text">Menu</span>
+      </button>
+    </div>
+
+    <!-- Mobile Menu Overlay -->
+    <div class="menu-overlay" id="mobileMenu" hidden>
+      <div class="menu-panel" role="dialog" aria-modal="true" aria-label="Mobile menu">
+        <div class="menu-panel__top">
+          <span class="menu-title">Menu</span>
+          <button class="menu-close" type="button" aria-label="Close menu">✕</button>
+        </div>
+
+        <nav class="nav-mobile" aria-label="Mobile navigation">
+          <a class="nav-link" href="index.html">الرئيسية</a>
+          <a class="nav-link" href="pages/gifts.html">Geschenke</a>
+          <a class="nav-link" href="pages/decoration.html">Dekoration</a>
+          <a class="nav-link" href="pages/kids.html">Kinder-Geschenke</a>
+          <a class="nav-link" href="pages/service.html">Service</a>
+        </nav>
+      </div>
     </div>
   </header>
 
-  <!-- HERO -->
-  <section class="hero container">
-    <h1>مرحبًا بكم في DekoKraft</h1>
-    <p>
-      هنا تجدون هدايا مصنوعة بعناية، ديكور مميز للأطفال،
-      وخدمات متنوعة.
-    </p>
-  </section>
+  <!-- Main -->
+  <main class="site-main">
+    <section class="hero container">
+      <h1 class="hero__title">
+        مرحبًا بكم في <span class="hero__brand">DekoKraft</span>
+      </h1>
+      <p class="hero__subtitle">
+        هنا تجدون هدايا مصنوعة بعناية، ديكور مميز للأطفال، وخدمات متنوعة.
+      </p>
+    </section>
 
-  <!-- SECTIONS -->
-  <section class="sections container">
+    <section class="sections container" aria-label="Sections">
+      <article class="card">
+        <h2 class="card__title">Geschenke <span aria-hidden="true">🎁</span></h2>
+        <p class="card__text">أفكار هدايا مميزة لكل المناسبات.</p>
+        <a class="btn" href="pages/gifts.html">عرض القسم →</a>
+      </article>
 
-    <div class="card">
-      <h2>🎁 Geschenke</h2>
-      <p>أفكار هدايا مميزة لكل المناسبات.</p>
-      <a href="#">عرض القسم →</a>
+      <article class="card">
+        <h2 class="card__title">Dekoration <span aria-hidden="true">🏠</span></h2>
+        <p class="card__text">لمسات ديكور تضيف جمالًا للمكان.</p>
+        <a class="btn" href="pages/decoration.html">عرض القسم →</a>
+      </article>
+
+      <article class="card">
+        <h2 class="card__title">Kinder-Geschenke <span aria-hidden="true">🧸</span></h2>
+        <p class="card__text">هدايا مصنوعة بحب وآمنة للأطفال.</p>
+        <a class="btn" href="pages/kids.html">عرض القسم →</a>
+      </article>
+
+      <article class="card">
+        <h2 class="card__title">Service <span aria-hidden="true">🛠️</span></h2>
+        <p class="card__text">خدمات مخصصة حسب الطلب.</p>
+        <a class="btn" href="pages/service.html">عرض القسم →</a>
+      </article>
+    </section>
+  </main>
+
+  <footer class="site-footer">
+    <div class="container footer-wrap">
+      <p class="footer-text">©️ <span id="year"></span> DekoKraft</p>
     </div>
-
-    <div class="card">
-      <h2>🏠 Dekoration</h2>
-      <p>لمسات ديكور تضيف جمالًا للمكان.</p>
-      <a href="#">عرض القسم →</a>
-    </div>
-
-    <div class="card">
-      <h2>🧸 Kinder-Geschenke</h2>
-      <p>هدايا مصنوعة بحب وآمنة للأطفال.</p>
-      <a href="#">عرض القسم →</a>
-    </div>
-
-    <div class="card">
-      <h2>🛠 Service</h2>
-      <p>خدمات مخصصة حسب الطلب.</p>
-      <a href="#">عرض القسم →</a>
-    </div>
-
-  </section>
-
-  <!-- FOOTER -->
-  <footer class="footer">
-    ©️ 2026 DekoKraft – All rights reserved
   </footer>
 
-  <!-- JS -->
-  <script src="assets/js/main.js"></script>
+  <!-- JS (cache busting) -->
+  <script src="assets/js/main.js?v=5001"></script>
 </body>
 </html>
