@@ -1,45 +1,11 @@
-PROJECT: DekoKraft Website (V2) — adamplanet2
+الخطوة التالية (عملية جدًا)
+بدل ما نعيد تصميم:
+افتح الموقع
+افتح Console وشوف هل يظهر: main.js loaded
+إذا ما ظهر → المشكلة تحميل JS أو نشر Pages وليس “المنيو”.
+إذا تحب، أكتب لك قائمة تحقق سريعة بالصور: أين تضغط في Chrome/Safari على الهاتف لعرض أخطاء الـConsole (حسب جهازك).
 
-GOAL
-إنشاء موقع ثابت (Static Website) أنيق وحديث لمشروع DekoKraft باستخدام:
-HTML + CSS + JavaScript فقط (Vanilla)
-ويمكن نشره على GitHub Pages بدون أي أدوات بناء (No build tools).
-
-SCOPE (الصفحات)
-- index.html (الصفحة الرئيسية)
-- pages/ (صفحات الأقسام لاحقاً: gifts, decoration, kids, service …)
-
-DESIGN STYLE
-- Dark / Blue gradient background
-- Cards شفافة/مظللة مع حواف دائرية
-- مظهر نظيف Minimal
-- دعم عربي + ألماني (RTL/LTR عند الحاجة)
-- Responsive (Mobile-first)
-
-TECH RULES
-1) لا Frameworks ولا مكتبات خارجية (إلا إذا طلب المستخدم).
-2) فصل الملفات:
-   - CSS في assets/css
-   - JS في assets/js
-   - الصور في assets/images
-3) Cache Busting أثناء التطوير عبر ?v=XXXX في روابط CSS/JS.
-
-WORKFLOW RULES (قواعد العمل)
-1) خطوة بخطوة فقط.
-2) لا ننتقل للخطوة التالية قبل موافقة المستخدم.
-3) عند أي تعديل في كود (حتى لو سطر واحد):
-   - أطبع الملف كامل (HTML أو CSS أو JS) وليس جزءًا منه.
-4) كل خطوة “تنجح فعلياً” تُسجّل في PROJECT_STATE.txt كمرجع ثابت.
-5) أي مشكلة: نحلها بتشخيص واضح + تعديل واحد مباشر + اختبار.
-
-QUALITY CHECKLIST
-- الصفحة تعمل على الهاتف والكمبيوتر
-- لا عناصر خارج الشاشة (no overflow bugs)
-- القائمة (Menu) تعمل على الهاتف (فتح/إغلاق)
-- الصور Responsive (max-width:100%, height:auto)
-- اتجاه الصفحة RTL للعربي عند الحاجة
-- كود نظيف ومقروء ومُعلّق عند الضرورة
-
-CURRENT STATUS
-- Repository: adamplanet2 موجود
-- سيتم إنشاء شجرة المشروع + الملفات الأساسية ثم البدء بالكود
+ENVIRONMENT NOTE
+- The development machine uses German (DE) system language.
+- When giving debugging or browser instructions, always use German UI terms
+  (e.g. „Untersuchen“, „Konsole“, „Entwickler-Tools“, „Netzwerk“).
