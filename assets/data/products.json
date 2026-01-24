@@ -1,1 +1,76 @@
 
+{
+  "products": [
+    {
+      "id": "gift-001",
+      "category": "gifts",
+      "title": {
+        "ar": "هدية صندوق مفاجأة",
+        "de": "Überraschungs-Geschenkbox"
+      },
+      "description": {
+        "ar": "هدية مميزة مناسبة لجميع المناسبات.",
+        "de": "Ein besonderes Geschenk für alle Anlässe."
+      },
+      "image": "assets/images/products/gifts/gift-001.webp",
+      "images": [
+        "assets/images/products/gifts/gift-001.webp"
+      ],
+      "related": ["gift-002", "gift-003"]
+    },
+
+    {
+      "id": "decor-001",
+      "category": "decor",
+      "title": {
+        "ar": "ديكور منزلي أنيق",
+        "de": "Elegante Wohn-Dekoration"
+      },
+      "description": {
+        "ar": "لمسات ديكور تضيف جمالاً للمكان.",
+        "de": "Dekorationselemente für ein schönes Zuhause."
+      },
+      "image": "assets/images/products/decor/decor-001.webp",
+      "images": [
+        "assets/images/products/decor/decor-001.webp"
+      ],
+      "related": ["decor-002"]
+    },
+
+    {
+      "id": "kids-001",
+      "category": "kids",
+      "title": {
+        "ar": "لعبة أطفال خشبية",
+        "de": "Holzspielzeug für Kinder"
+      },
+      "description": {
+        "ar": "لعبة آمنة وممتعة للأطفال.",
+        "de": "Sicheres und unterhaltsames Spielzeug."
+      },
+      "image": "assets/images/products/kids/kids-001.webp",
+      "images": [
+        "assets/images/products/kids/kids-001.webp"
+      ],
+      "related": ["kids-002"]
+    },
+
+    {
+      "id": "service-001",
+      "category": "services",
+      "title": {
+        "ar": "خدمة حسب الطلب",
+        "de": "Service nach Wunsch"
+      },
+      "description": {
+        "ar": "نقدم خدمات مخصصة حسب طلبك.",
+        "de": "Individuelle Dienstleistungen nach Wunsch."
+      },
+      "image": "assets/images/products/services/service-001.webp",
+      "images": [
+        "assets/images/products/services/service-001.webp"
+      ],
+      "related": []
+    }
+  ]
+}
