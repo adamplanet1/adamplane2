@@ -1,76 +1,147 @@
-
 {
   "products": [
     {
       "id": "gift-001",
       "category": "gifts",
       "title": {
-        "ar": "هدية صندوق مفاجأة",
-        "de": "Überraschungs-Geschenkbox"
+        "ar": "هدايا 🎁",
+        "de": "Geschenke 🎁"
       },
       "description": {
-        "ar": "هدية مميزة مناسبة لجميع المناسبات.",
+        "ar": "أفكار هدايا مميزة لكل المناسبات.",
+        "de": "Besondere Geschenkideen für alle Anlässe."
+      },
+      "image": "assets/images/products/gifts/gift-001-600.webp",
+      "images": [
+        "assets/images/products/gifts/gift-001-600.webp"
+      ],
+      "related": ["gift-002"]
+    },
+
+    {
+      "id": "gift-002",
+      "category": "gifts",
+      "title": {
+        "ar": "هدية صندوق مفاجأة 🎁",
+        "de": "Überraschungs-Geschenkbox 🎁"
+      },
+      "description": {
+        "ar": "هدية جميلة ومناسبة لجميع المناسبات.",
         "de": "Ein besonderes Geschenk für alle Anlässe."
       },
-      "image": "assets/images/products/gifts/gift-001.webp",
+      "image": "assets/images/products/gifts/gift-002-1200.webp",
       "images": [
-        "assets/images/products/gifts/gift-001.webp"
+        "assets/images/products/gifts/gift-002-1200.webp"
       ],
-      "related": ["gift-002", "gift-003"]
+      "related": ["gift-001"]
     },
 
     {
       "id": "decor-001",
       "category": "decor",
       "title": {
-        "ar": "ديكور منزلي أنيق",
-        "de": "Elegante Wohn-Dekoration"
+        "ar": "ديكور 🏡",
+        "de": "Dekoration 🏡"
       },
       "description": {
         "ar": "لمسات ديكور تضيف جمالاً للمكان.",
         "de": "Dekorationselemente für ein schönes Zuhause."
       },
-      "image": "assets/images/products/decor/decor-001.webp",
+      "image": "assets/images/products/decor/decor-001-1200.webp",
       "images": [
-        "assets/images/products/decor/decor-001.webp"
+        "assets/images/products/decor/decor-001-1200.webp"
       ],
       "related": ["decor-002"]
+    },
+
+    {
+      "id": "decor-002",
+      "category": "decor",
+      "title": {
+        "ar": "ديكور أنيق ✨",
+        "de": "Elegante Wohn-Dekoration ✨"
+      },
+      "description": {
+        "ar": "ديكور أنيق بتفاصيل جميلة.",
+        "de": "Elegante Deko mit schönen Details."
+      },
+      "image": "assets/images/products/decor/decor-002-1200.webp",
+      "images": [
+        "assets/images/products/decor/decor-002-1200.webp"
+      ],
+      "related": ["decor-001"]
     },
 
     {
       "id": "kids-001",
       "category": "kids",
       "title": {
-        "ar": "لعبة أطفال خشبية",
-        "de": "Holzspielzeug für Kinder"
+        "ar": "هدايا الأطفال 🧸",
+        "de": "Kinder-Geschenke 🧸"
       },
       "description": {
-        "ar": "لعبة آمنة وممتعة للأطفال.",
-        "de": "Sicheres und unterhaltsames Spielzeug."
+        "ar": "هدايا مصنوعة بحب وآمنة للأطفال.",
+        "de": "Sicheres & liebevolles Geschenk für Kinder."
       },
-      "image": "assets/images/products/kids/kids-001.webp",
+      "image": "assets/images/products/kids/kids-001-1200.webp",
       "images": [
-        "assets/images/products/kids/kids-001.webp"
+        "assets/images/products/kids/kids-001-1200.webp"
       ],
       "related": ["kids-002"]
+    },
+
+    {
+      "id": "kids-002",
+      "category": "kids",
+      "title": {
+        "ar": "لعبة للأطفال 🎈",
+        "de": "Spielzeug für Kinder 🎈"
+      },
+      "description": {
+        "ar": "لعبة ممتعة مناسبة للأطفال.",
+        "de": "Ein sicheres und unterhaltsames Spielzeug."
+      },
+      "image": "assets/images/products/kids/kids-002-1200.webp",
+      "images": [
+        "assets/images/products/kids/kids-002-1200.webp"
+      ],
+      "related": ["kids-001"]
     },
 
     {
       "id": "service-001",
       "category": "services",
       "title": {
-        "ar": "خدمة حسب الطلب",
-        "de": "Service nach Wunsch"
+        "ar": "الخدمات 🛠️",
+        "de": "Services 🛠️"
       },
       "description": {
-        "ar": "نقدم خدمات مخصصة حسب طلبك.",
+        "ar": "خدمات مخصصة حسب الطلب.",
         "de": "Individuelle Dienstleistungen nach Wunsch."
       },
-      "image": "assets/images/products/services/service-001.webp",
+      "image": "assets/images/products/services/service-001-1200.webp",
       "images": [
-        "assets/images/products/services/service-001.webp"
+        "assets/images/products/services/service-001-1200.webp"
       ],
-      "related": []
+      "related": ["service-002"]
+    },
+
+    {
+      "id": "service-002",
+      "category": "services",
+      "title": {
+        "ar": "خدمة إضافية ⭐",
+        "de": "Zusatz-Service ⭐"
+      },
+      "description": {
+        "ar": "تفاصيل خدمة إضافية حسب الطلب.",
+        "de": "Zusätzliche Service-Option nach Wunsch."
+      },
+      "image": "assets/images/products/services/service-002-1200.webp",
+      "images": [
+        "assets/images/products/services/service-002-1200.webp"
+      ],
+      "related": ["service-001"]
     }
   ]
 }
