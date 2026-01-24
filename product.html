@@ -1,1 +1,127 @@
 
+<!doctype html>
+<html lang="ar" dir="rtl">
+<head>
+  <meta charset="utf-8" />
+  <meta name="viewport" content="width=device-width,initial-scale=1" />
+  <title>DekoKraft – Product</title>
+
+  <link rel="stylesheet" href="assets/css/main.css" />
+</head>
+
+<body data-page="product">
+
+<!-- ================= HEADER ================= -->
+<header class="site-header">
+  <div class="container header-inner">
+
+    <button class="menu-btn" type="button" aria-label="Menu">
+      <span data-i18n="menu">Menu</span>
+      <span class="menu-icon" aria-hidden="true">
+        <span></span><span></span><span></span>
+      </span>
+    </button>
+
+    <nav class="nav">
+      <a href="index.html" data-i18n="nav_home">الرئيسية</a>
+      <a href="category.html?cat=gifts" data-i18n="nav_gifts">الهدايا</a>
+      <a href="category.html?cat=decor" data-i18n="nav_decor">الديكور</a>
+      <a href="category.html?cat=kids" data-i18n="nav_kids">هدايا الأطفال</a>
+      <a href="category.html?cat=services" data-i18n="nav_services">الخدمات</a>
+      <a href="#kontakt" data-i18n="nav_contact">التواصل</a>
+    </nav>
+
+    <div class="lang-switch">
+      <button type="button" data-lang="ar">AR</button>
+      <button type="button" data-lang="de">DE</button>
+    </div>
+
+    <a class="logo" href="index.html">
+      <img
+        src="assets/images/logo/logo-dekokraft-600.webp"
+        alt="DekoKraft"
+        width="48"
+        height="48"
+      />
+    </a>
+
+  </div>
+</header>
+
+<!-- ================= MAIN ================= -->
+<main class="container product-page">
+
+  <!-- ===== Product main ===== -->
+  <section class="product-main">
+
+    <div class="product-image">
+      <img id="productImage" src="" alt="" />
+    </div>
+
+    <div class="product-info">
+      <h1 id="productTitle"></h1>
+      <p id="productDescription"></p>
+    </div>
+
+  </section>
+
+  <!-- ===== Related products ===== -->
+  <section class="related-products">
+    <h2 data-i18n="related_products">منتجات مشابهة</h2>
+
+    <div class="grid products-grid" id="relatedGrid">
+      <!-- injected by JS -->
+    </div>
+  </section>
+
+</main>
+
+<!-- ================= KONTAKT ================= -->
+<section id="kontakt" class="kontakt">
+  <div class="container kontakt__grid">
+
+    <div class="kontakt__card">
+      <h3 class="kontakt__title">KONTAKT</h3>
+
+      <p>
+        <strong>WhatsApp</strong><br />
+        <a href="https://wa.me/4917681213098" target="_blank">
+          +49 176 81213098
+        </a>
+      </p>
+
+      <p>
+        <strong>Email</strong><br />
+        <a href="mailto:ra_ahmed@hotmail.de">
+          ra_ahmed@hotmail.de
+        </a>
+      </p>
+    </div>
+
+    <div class="kontakt__card">
+      <h3 class="kontakt__title" data-i18n="kontakt_social">وسائل التواصل</h3>
+
+      <div class="social">
+        <a href="https://www.instagram.com/adamplanet02" target="_blank">
+          <img src="assets/images/icons/instagram.svg" alt="Instagram" />
+          Instagram
+        </a>
+
+        <a href="https://www.facebook.com/AhmedRabah" target="_blank">
+          <img src="assets/images/icons/facebook.svg" alt="Facebook" />
+          Facebook
+        </a>
+      </div>
+    </div>
+
+  </div>
+</section>
+
+<!-- ================= FOOTER ================= -->
+<footer class="site-footer">
+  <p>© <span id="year"></span> DekoKraft</p>
+</footer>
+
+<script src="assets/js/main.js"></script>
+</body>
+</html>
