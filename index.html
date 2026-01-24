@@ -6,179 +6,127 @@
   <meta name="description" content="DekoKraft - Gifts, Decoration, Kids Gifts, Service" />
   <title>DekoKraft</title>
 
-  <link rel="stylesheet" href="assets/css/base.css?v=5007" />
-  <link rel="stylesheet" href="assets/css/main.css?v=5007" />
+  <link rel="stylesheet" href="assets/css/base.css?v=5010" />
+  <link rel="stylesheet" href="assets/css/main.css?v=5010" />
 </head>
 
 <body>
+  <!-- ================= HEADER ================= -->
   <header class="site-header">
     <div class="container nav-wrap">
-      <a class="brand" href="index.html" aria-label="DekoKraft Home">
-        <picture>
-          <source
-            type="image/webp"
-            srcset="
-              assets/images/logo/logo-dekokraft-600.webp 600w,
-              assets/images/logo/logo-dekokraft-1200.webp 1200w
-            "
-            sizes="44px"
-          />
-          <img
-            class="brand__logo"
-            src="assets/images/logo/logo-dekokraft.png"
-            alt="DekoKraft Logo"
-            width="44"
-            height="44"
-            loading="eager"
-          />
-        </picture>
+      <a class="brand" href="index.html">
+        <img class="brand__logo"
+             src="assets/images/logo/logo-dekokraft.png"
+             alt="DekoKraft Logo"
+             width="44" height="44" />
         <span class="brand__name">DekoKraft</span>
       </a>
 
-      <!-- ✅ Language toggle -->
-      <div class="lang-switch" aria-label="Language switch">
-        <button class="lang-btn" type="button" data-lang="ar" aria-pressed="true">AR</button>
-        <button class="lang-btn" type="button" data-lang="de" aria-pressed="false">DE</button>
+      <div class="lang-switch">
+        <button class="lang-btn" data-lang="ar" aria-pressed="true">AR</button>
+        <button class="lang-btn" data-lang="de">DE</button>
       </div>
 
-      <!-- Desktop nav -->
-      <nav class="nav-desktop" aria-label="Main navigation">
-        <a class="nav-link" href="index.html" data-i18n="nav_home">الرئيسية</a>
-        <a class="nav-link" href="pages/gifts.html" data-i18n="nav_gifts">الهدايا</a>
-        <a class="nav-link" href="pages/decoration.html" data-i18n="nav_decoration">الديكور</a>
-        <a class="nav-link" href="pages/kids.html" data-i18n="nav_kids">هدايا الأطفال</a>
-        <a class="nav-link" href="pages/service.html" data-i18n="nav_service">الخدمات</a>
-      </nav>
-
-      <!-- Mobile menu button -->
-      <button
-        class="menu-btn"
-        type="button"
-        aria-label="Open menu"
-        aria-controls="mobileMenu"
-        aria-expanded="false"
-      >
-        <span class="menu-btn__text" data-i18n="menu_btn">Menu</span>
-        <span class="menu-btn__icon" aria-hidden="true">☰</span>
+      <button class="menu-btn" type="button">
+        <span>Menu</span>
+        <span>☰</span>
       </button>
     </div>
 
-    <!-- ✅ Overlay -->
-    <div class="menu-overlay" id="mobileMenu" aria-hidden="true">
-      <div class="menu-panel" role="dialog" aria-modal="true" aria-label="Mobile menu">
+    <div class="menu-overlay" id="mobileMenu">
+      <div class="menu-panel">
         <div class="menu-panel__top">
-          <span class="menu-title" data-i18n="menu_title">Menu</span>
-          <button class="menu-close" type="button" aria-label="Close menu">✕</button>
+          <span data-i18n="menu_title">Menu</span>
+          <button class="menu-close">✕</button>
         </div>
 
-        <nav class="nav-mobile" aria-label="Mobile navigation">
-          <a class="nav-link" href="index.html" data-i18n="nav_home">الرئيسية</a>
-          <a class="nav-link" href="pages/gifts.html" data-i18n="nav_gifts">الهدايا</a>
-          <a class="nav-link" href="pages/decoration.html" data-i18n="nav_decoration">الديكور</a>
-          <a class="nav-link" href="pages/kids.html" data-i18n="nav_kids">هدايا الأطفال</a>
-          <a class="nav-link" href="pages/service.html" data-i18n="nav_service">الخدمات</a>
+        <nav class="nav-mobile">
+          <a href="#home" data-i18n="nav_home">الرئيسية</a>
+          <a href="#gifts" data-i18n="nav_gifts">الهدايا</a>
+          <a href="#decoration" data-i18n="nav_decoration">الديكور</a>
+          <a href="#kids" data-i18n="nav_kids">هدايا الأطفال</a>
+          <a href="#kontakt" data-i18n="contact_title">التواصل</a>
         </nav>
       </div>
     </div>
   </header>
 
-  <main class="site-main">
-    <section class="hero container hero--center">
-      <h1 class="hero__title hero__title--center">
+  <!-- ================= MAIN ================= -->
+  <main class="site-main" id="home">
+    <section class="hero container">
+      <h1 class="hero__title">
         <span data-i18n="hero_title_1">مرحبًا بكم في</span>
         <span class="hero__brand">DekoKraft</span>
       </h1>
 
-      <p class="hero__subtitle hero__subtitle--center" data-i18n="hero_subtitle">
+      <p class="hero__subtitle" data-i18n="hero_subtitle">
         هنا تجدون هدايا مصنوعة بعناية، ديكور مميز للأطفال، وخدمات متنوعة.
       </p>
     </section>
 
+    <!-- ================= SECTIONS ================= -->
     <section class="sections container">
-      <!-- Gifts -->
-      <article class="card card--product">
-        <a class="card__media" href="pages/gifts.html" aria-label="الهدايا">
-          <div class="card__badge" aria-hidden="true">neu</div>
-          <div class="card__thumb" aria-hidden="true">
-            🎁
+      <div class="card">
+        <div class="card__icon">🎁</div>
+        <h3 class="card__title" data-i18n="card_gifts_title">الهدايا</h3>
+        <p class="card__text" data-i18n="card_gifts_text">أفكار هدايا مميزة.</p>
+        <a class="btn" href="#" data-i18n="card_btn">عرض القسم →</a>
+      </div>
+
+      <div class="card">
+        <div class="card__icon">🏠</div>
+        <h3 class="card__title" data-i18n="card_decoration_title">الديكور</h3>
+        <p class="card__text" data-i18n="card_decoration_text">لمسات ديكور جميلة.</p>
+        <a class="btn" href="#" data-i18n="card_btn">عرض القسم →</a>
+      </div>
+
+      <div class="card">
+        <div class="card__icon">🧸</div>
+        <h3 class="card__title" data-i18n="card_kids_title">هدايا الأطفال</h3>
+        <p class="card__text" data-i18n="card_kids_text">هدايا آمنة للأطفال.</p>
+        <a class="btn" href="#" data-i18n="card_btn">عرض القسم →</a>
+      </div>
+
+      <div class="card">
+        <div class="card__icon">🛠️</div>
+        <h3 class="card__title" data-i18n="card_service_title">الخدمات</h3>
+        <p class="card__text" data-i18n="card_service_text">خدمات حسب الطلب.</p>
+        <a class="btn" href="#" data-i18n="card_btn">عرض القسم →</a>
+      </div>
+    </section>
+
+    <!-- ================= KONTAKT ================= -->
+    <section class="kontakt container" id="kontakt">
+      <div class="kontakt__card">
+        <h2 class="kontakt__title" data-i18n="contact_title">KONTAKT</h2>
+
+        <div class="kontakt__grid">
+          <div>
+            <h3 data-i18n="contact_social">وسائل التواصل</h3>
+            <div class="social">
+              <a href="https://wa.me/4917681213098">💬 WhatsApp</a>
+              <a href="viber://chat?number=%2B4917681213098">📞 Viber</a>
+              <a href="https://www.instagram.com/adamplanet02">📷 Instagram</a>
+              <a href="https://www.facebook.com/AhmedRabah">📘 Facebook</a>
+            </div>
           </div>
-        </a>
 
-        <div class="card__body">
-          <h2 class="card__title" data-i18n="card_gifts_title">الهدايا 🎁</h2>
-          <p class="card__text" data-i18n="card_gifts_text">أفكار هدايا مميزة لكل المناسبات.</p>
-
-          <div class="card__actions">
-            <a class="btn btn--small" href="pages/gifts.html" data-i18n="card_btn">عرض القسم →</a>
-          </div>
-        </div>
-      </article>
-
-      <!-- Decoration -->
-      <article class="card card--product">
-        <a class="card__media" href="pages/decoration.html" aria-label="الديكور">
-          <div class="card__badge" aria-hidden="true">neu</div>
-          <div class="card__thumb" aria-hidden="true">
-            🏠
-          </div>
-        </a>
-
-        <div class="card__body">
-          <h2 class="card__title" data-i18n="card_decoration_title">الديكور 🏠</h2>
-          <p class="card__text" data-i18n="card_decoration_text">لمسات ديكور تضيف جمالًا للمكان.</p>
-
-          <div class="card__actions">
-            <a class="btn btn--small" href="pages/decoration.html" data-i18n="card_btn">عرض القسم →</a>
-          </div>
-        </div>
-      </article>
-
-      <!-- Kids -->
-      <article class="card card--product">
-        <a class="card__media" href="pages/kids.html" aria-label="هدايا الأطفال">
-          <div class="card__badge" aria-hidden="true">neu</div>
-          <div class="card__thumb" aria-hidden="true">
-            🧸
-          </div>
-        </a>
-
-        <div class="card__body">
-          <h2 class="card__title" data-i18n="card_kids_title">هدايا الأطفال 🧸</h2>
-          <p class="card__text" data-i18n="card_kids_text">هدايا مصنوعة بحب وآمنة للأطفال.</p>
-
-          <div class="card__actions">
-            <a class="btn btn--small" href="pages/kids.html" data-i18n="card_btn">عرض القسم →</a>
+          <div>
+            <h3 data-i18n="contact_direct">مباشر</h3>
+            < note >
+            <p>🎧 <a href="tel:+4917681213098">+49 176 81213098</a></p>
+            <p>(Mo–Fr 9–12 Uhr)</p>
+            <p>✉️ <a href="mailto:ra_ahmed@hotmail.de">ra_ahmed@hotmail.de</a></p>
           </div>
         </div>
-      </article>
-
-      <!-- Service -->
-      <article class="card card--product">
-        <a class="card__media" href="pages/service.html" aria-label="الخدمات">
-          <div class="card__badge" aria-hidden="true">neu</div>
-          <div class="card__thumb" aria-hidden="true">
-            🛠️
-          </div>
-        </a>
-
-        <div class="card__body">
-          <h2 class="card__title" data-i18n="card_service_title">الخدمات 🛠️</h2>
-          <p class="card__text" data-i18n="card_service_text">خدمات مخصصة حسب الطلب.</p>
-
-          <div class="card__actions">
-            <a class="btn btn--small" href="pages/service.html" data-i18n="card_btn">عرض القسم →</a>
-          </div>
-        </div>
-      </article>
+      </div>
     </section>
   </main>
 
   <footer class="site-footer">
-    <div class="container footer-wrap">
-      <p class="footer-text">© <span id="year"></span> DekoKraft</p>
-    </div>
+    <p>© <span id="year"></span> DekoKraft</p>
   </footer>
 
-  <script src="assets/js/main.js?v=5007"></script>
+  <script src="assets/js/main.js?v=5010"></script>
 </body>
 </html>
