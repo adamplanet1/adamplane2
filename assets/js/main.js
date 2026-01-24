@@ -7,19 +7,28 @@
    ===================================================== */
 
 (function () {
-  // Year
+  /* ===============================
+     FOOTER YEAR
+     =============================== */
   const yearEl = document.getElementById("year");
-  if (yearEl) yearEl.textContent = new Date().getFullYear();
+  if (yearEl) {
+    yearEl.textContent = new Date().getFullYear();
+  }
 
-  // Elements
+  /* ===============================
+     ELEMENTS
+     =============================== */
   const htmlEl = document.documentElement;
+  const bodyEl = document.body;
 
   const menuBtn = document.querySelector(".menu-btn");
   const overlay = document.getElementById("mobileMenu");
   const closeBtn = overlay ? overlay.querySelector(".menu-close") : null;
   const panel = overlay ? overlay.querySelector(".menu-panel") : null;
 
-  // ===== i18n dictionary =====
+  /* ===============================
+     I18N DICTIONARY
+     =============================== */
   const I18N = {
     ar: {
       nav_home: "الرئيسية",
@@ -27,10 +36,12 @@
       nav_decoration: "الديكور",
       nav_kids: "هدايا الأطفال",
       nav_service: "الخدمات",
-      menu_btn: "Menu",
-      menu_title: "Menu",
+      menu_title: "القائمة",
+
       hero_title_1: "مرحبًا بكم في",
-      hero_subtitle: "هنا تجدون هدايا مصنوعة بعناية، ديكور مميز للأطفال، وخدمات متنوعة.",
+      hero_subtitle:
+        "هنا تجدون هدايا مصنوعة بعناية، ديكور مميز للأطفال، وخدمات متنوعة.",
+
       card_gifts_title: "الهدايا 🎁",
       card_gifts_text: "أفكار هدايا مميزة لكل المناسبات.",
       card_decoration_title: "الديكور 🏠",
@@ -39,18 +50,25 @@
       card_kids_text: "هدايا مصنوعة بحب وآمنة للأطفال.",
       card_service_title: "الخدمات 🛠️",
       card_service_text: "خدمات مخصصة حسب الطلب.",
-      card_btn: "عرض القسم →"
+      card_btn: "عرض القسم →",
+
+      contact_title: "التواصل",
+      contact_social: "وسائل التواصل",
+      contact_direct: "مباشر"
     },
+
     de: {
       nav_home: "Startseite",
       nav_gifts: "Geschenke",
       nav_decoration: "Dekoration",
       nav_kids: "Kinder-Geschenke",
       nav_service: "Service",
-      menu_btn: "Menü",
       menu_title: "Menü",
+
       hero_title_1: "Willkommen bei",
-      hero_subtitle: "Hier findest du handgemachte Geschenke, Kinder-Deko und verschiedene Services.",
+      hero_subtitle:
+        "Hier findest du handgemachte Geschenke, Kinder-Deko und verschiedene Services.",
+
       card_gifts_title: "Geschenke 🎁",
       card_gifts_text: "Besondere Geschenkideen für jeden Anlass.",
       card_decoration_title: "Dekoration 🏠",
@@ -59,81 +77,85 @@
       card_kids_text: "Liebevoll gemacht und kinderfreundlich.",
       card_service_title: "Service 🛠️",
       card_service_text: "Individuelle Services nach Wunsch.",
-      card_btn: "Bereich ansehen →"
+      card_btn: "Bereich ansehen →",
+
+      contact_title: "KONTAKT",
+      contact_social: "Social",
+      contact_direct: "Direkt"
     }
   };
 
-  // ===== Language switch =====
+  /* ===============================
+     LANGUAGE SWITCH
+     =============================== */
   const langButtons = document.querySelectorAll(".lang-btn");
-  const applyLang = (lang) => {
+
+  function applyLang(lang) {
     const dict = I18N[lang] || I18N.ar;
 
-    // Set html lang/dir
     if (lang === "de") {
       htmlEl.lang = "de";
       htmlEl.dir = "ltr";
-      document.body.style.direction = "ltr";
+      bodyEl.style.direction = "ltr";
     } else {
       htmlEl.lang = "ar";
       htmlEl.dir = "rtl";
-      document.body.style.direction = "rtl";
+      bodyEl.style.direction = "rtl";
     }
 
-    // Update pressed state
-    langButtons.forEach((b) => {
-      const isActive = b.dataset.lang === lang;
-      b.setAttribute("aria-pressed", String(isActive));
+    langButtons.forEach((btn) => {
+      btn.setAttribute(
+        "aria-pressed",
+        btn.dataset.lang === lang ? "true" : "false"
+      );
     });
 
-    // Replace text by data-i18n
     document.querySelectorAll("[data-i18n]").forEach((el) => {
       const key = el.getAttribute("data-i18n");
-      if (key && dict[key]) el.textContent = dict[key];
+      if (dict[key]) {
+        el.textContent = dict[key];
+      }
     });
 
-    // Save
     try {
       localStorage.setItem("dekokraft_lang", lang);
-    } catch (_) {}
-  };
+    } catch (e) {}
+  }
 
-  // Load saved language
   let savedLang = "ar";
   try {
     savedLang = localStorage.getItem("dekokraft_lang") || "ar";
-  } catch (_) {}
+  } catch (e) {}
+
   applyLang(savedLang);
 
   langButtons.forEach((btn) => {
     btn.addEventListener("click", () => {
-      applyLang(btn.dataset.lang || "ar");
+      applyLang(btn.dataset.lang);
     });
   });
 
-  // ===== Mobile menu =====
+  /* ===============================
+     MOBILE MENU
+     =============================== */
   if (!menuBtn || !overlay || !panel) return;
 
-  const openMenu = () => {
+  function openMenu() {
     overlay.classList.add("is-open");
     overlay.setAttribute("aria-hidden", "false");
-    document.body.classList.add("menu-open");
-    menuBtn.setAttribute("aria-expanded", "true");
-  };
+    bodyEl.classList.add("menu-open");
+  }
 
-  const closeMenu = () => {
+  function closeMenu() {
     overlay.classList.remove("is-open");
     overlay.setAttribute("aria-hidden", "true");
-    document.body.classList.remove("menu-open");
-    menuBtn.setAttribute("aria-expanded", "false");
-  };
+    bodyEl.classList.remove("menu-open");
+  }
 
-  // Ensure closed on load
   closeMenu();
 
   menuBtn.addEventListener("click", () => {
-    const isOpen = overlay.classList.contains("is-open");
-    if (isOpen) closeMenu();
-    else openMenu();
+    overlay.classList.contains("is-open") ? closeMenu() : openMenu();
   });
 
   if (closeBtn) {
@@ -144,21 +166,16 @@
     });
   }
 
-  // Click outside panel closes
   overlay.addEventListener("click", () => closeMenu());
-
-  // Click inside panel does NOT close
   panel.addEventListener("click", (e) => e.stopPropagation());
 
-  // Close on ESC
   document.addEventListener("keydown", (e) => {
     if (e.key === "Escape" && overlay.classList.contains("is-open")) {
       closeMenu();
     }
   });
 
-  // Close when clicking any link inside menu
-  overlay.querySelectorAll("a").forEach((a) => {
-    a.addEventListener("click", () => closeMenu());
+  overlay.querySelectorAll("a").forEach((link) => {
+    link.addEventListener("click", () => closeMenu());
   });
 })();
