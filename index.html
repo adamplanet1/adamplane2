@@ -1,125 +1,195 @@
 <!doctype html>
 <html lang="ar" dir="rtl">
 <head>
-  <meta charset="utf-8">
+  <meta charset="utf-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1" />
   <title>DekoKraft</title>
-  <meta name="viewport" content="width=device-width, initial-scale=1">
 
-  <!-- CSS -->
-  <link rel="stylesheet" href="assets/css/base.css">
-  <link rel="stylesheet" href="assets/css/main.css">
+  <link rel="icon" href="assets/images/logo/logo-dekokraft-600.webp" />
+
+  <link rel="stylesheet" href="assets/css/base.css" />
+  <link rel="stylesheet" href="assets/css/main.css" />
 </head>
 
 <body>
 
-<header class="site-header">
-  <div class="container nav-wrap">
+  <!-- HEADER -->
+  <header class="site-header">
+    <div class="container nav-wrap">
 
-    <a class="brand" href="index.html">
-      <img
-        src="assets/images/logo/logo-dekokraft.png"
-        alt="DekoKraft Logo"
-        width="44"
-        height="44">
-      <span class="brand__name">DekoKraft</span>
-    </a>
+      <!-- Brand -->
+      <a class="brand" href="#top" aria-label="DekoKraft Home">
+        <img class="brand__logo" src="assets/images/logo/logo-dekokraft-600.webp" alt="DekoKraft Logo" />
+        <span class="brand__name">DekoKraft</span>
+      </a>
 
-    <div class="lang-switch">
-      <button class="lang-btn" data-lang="de">DE</button>
-      <button class="lang-btn active" data-lang="ar">AR</button>
+      <!-- Language Switch -->
+      <div class="lang-switch" role="group" aria-label="Language switcher">
+        <button class="lang-btn" type="button" data-lang="de" aria-pressed="false">DE</button>
+        <button class="lang-btn" type="button" data-lang="ar" aria-pressed="true">AR</button>
+      </div>
+
+      <!-- Desktop Nav -->
+      <nav class="nav-desktop" aria-label="Main navigation">
+        <a class="nav-link" href="#top">الرئيسية</a>
+        <a class="nav-link" href="#gifts">الهدايا</a>
+        <a class="nav-link" href="#decor">الديكور</a>
+        <a class="nav-link" href="#kids">هدايا الأطفال</a>
+        <a class="nav-link" href="#services">الخدمات</a>
+        <a class="nav-link" href="#kontakt">التواصل</a>
+      </nav>
+
+      <!-- Mobile Menu Button -->
+      <button class="menu-btn" type="button" aria-controls="mobileMenu" aria-expanded="false">
+        <span class="menu-btn__icon">☰</span>
+        <span>Menu</span>
+      </button>
+
     </div>
+  </header>
 
-    <button class="menu-btn" type="button">
-      ☰ Menu
-    </button>
+  <!-- MOBILE MENU OVERLAY -->
+  <div class="menu-overlay" id="mobileMenu" aria-hidden="true">
+    <div class="menu-panel" role="dialog" aria-modal="true" aria-label="Mobile menu">
+      <div class="menu-panel__top">
+        <span class="menu-title">Menu</span>
+        <button class="menu-close" type="button" aria-label="Close">✕</button>
+      </div>
+
+      <nav class="nav-mobile">
+        <a class="nav-link" href="#top">الرئيسية</a>
+        <a class="nav-link" href="#gifts">الهدايا</a>
+        <a class="nav-link" href="#decor">الديكور</a>
+        <a class="nav-link" href="#kids">هدايا الأطفال</a>
+        <a class="nav-link" href="#services">الخدمات</a>
+        <a class="nav-link" href="#kontakt">التواصل</a>
+      </nav>
+    </div>
   </div>
-</header>
 
-<main class="site-main">
+  <!-- MAIN -->
+  <main class="site-main" id="top">
+    <section class="hero container">
+      <h1 class="hero__title">
+        مرحباً بكم في <span class="hero__brand">DekoKraft</span>
+      </h1>
+      <p class="hero__subtitle">
+        هنا تجدون هدايا مصنوعة بعناية، ديكور مميز للأطفال، وخدمات متنوعة.
+      </p>
+    </section>
 
-  <!-- HERO -->
-  <section class="hero container">
-    <h1 class="hero__title">
-      <span>DekoKraft</span>
-      <span>مرحباً بكم في</span>
-    </h1>
+    <section class="sections container">
+      <div class="cards-grid">
 
-    <p class="hero__subtitle">
-      هنا تجدون هدايا مصنوعة بعناية، ديكور مميز للأطفال، وخدمات متنوعة.
-    </p>
-  </section>
+        <!-- GIFTS -->
+        <article class="card" id="gifts">
+          <div class="card__media">
+            <span class="badge">neu</span>
+            <img class="card__img" src="assets/images/icons/gift.webp" alt="هدايا" />
+          </div>
 
-  <!-- CATEGORIES -->
-  <section class="categories container">
+          <h2 class="card__title">🎁 الهدايا</h2>
+          <p class="card__text">أفكار هدايا مميزة لكل المناسبات.</p>
 
-    <div class="cards-grid">
+          <a class="btn" href="#gifts">عرض القسم →</a>
+        </article>
 
-      <div class="card">
-        <span class="badge">neu</span>
-        <div class="card-icon">🎁</div>
-        <h3>الهدايا</h3>
-        <p>أفكار هدايا مميزة لكل المناسبات.</p>
-        <a href="#" class="btn">عرض القسم →</a>
+        <!-- DECOR -->
+        <article class="card" id="decor">
+          <div class="card__media">
+            <span class="badge">neu</span>
+            <img class="card__img" src="assets/images/icons/home.webp" alt="ديكور" />
+          </div>
+
+          <h2 class="card__title">🏡 الديكور</h2>
+          <p class="card__text">لمسات ديكور تضيف جمالاً للمكان.</p>
+
+          <a class="btn" href="#decor">عرض القسم →</a>
+        </article>
+
+        <!-- KIDS -->
+        <article class="card" id="kids">
+          <div class="card__media">
+            <span class="badge">neu</span>
+            <img class="card__img" src="assets/images/icons/teddy.webp" alt="هدايا الأطفال" />
+          </div>
+
+          <h2 class="card__title">🧸 هدايا الأطفال</h2>
+          <p class="card__text">هدايا مصنوعة بحب وآمنة للأطفال.</p>
+
+          <a class="btn" href="#kids">عرض القسم →</a>
+        </article>
+
+        <!-- SERVICES -->
+        <article class="card" id="services">
+          <div class="card__media">
+            <span class="badge">neu</span>
+            <img class="card__img" src="assets/images/icons/tools.webp" alt="الخدمات" />
+          </div>
+
+          <h2 class="card__title">🛠️ الخدمات</h2>
+          <p class="card__text">خدمات مخصصة حسب الطلب.</p>
+
+          <a class="btn" href="#services">عرض القسم →</a>
+        </article>
+
       </div>
+    </section>
 
-      <div class="card">
-        <span class="badge">neu</span>
-        <div class="card-icon">🏠</div>
-        <h3>الديكور</h3>
-        <p>لمسات ديكور تضيف جمالاً للمكان.</p>
-        <a href="#" class="btn">عرض القسم →</a>
-      </div>
+    <!-- KONTAKT -->
+    <section class="kontakt container" id="kontakt">
+      <div class="kontakt__card">
+        <h2 class="kontakt__title">KONTAKT</h2>
 
-      <div class="card">
-        <span class="badge">neu</span>
-        <div class="card-icon">🧸</div>
-        <h3>هدايا الأطفال</h3>
-        <p>هدايا مصنوعة بحب وآمنة للأطفال.</p>
-        <a href="#" class="btn">عرض القسم →</a>
-      </div>
+        <div class="kontakt__grid">
+          <div class="kontakt__block">
+            <h3 class="kontakt__subtitle">مباشراً</h3>
 
-      <div class="card">
-        <span class="badge">neu</span>
-        <div class="card-icon">🛠️</div>
-        <h3>الخدمات</h3>
-        <p>خدمات مخصصة حسب الطلب.</p>
-        <a href="#" class="btn">عرض القسم →</a>
-      </div>
+            <div class="kontakt__row">
+              <span class="kontakt__icon">📱</span>
+              <div>
+                <div class="kontakt__label">WhatsApp</div>
+                <div class="kontakt__value ltr" dir="ltr">+49 176 81213098</div>
+              </div>
+            </div>
 
-    </div>
-  </section>
+            <div class="kontakt__row">
+              <span class="kontakt__icon">✉️</span>
+              <div>
+                <div class="kontakt__label">Email</div>
+                <a class="kontakt__value ltr" dir="ltr" href="mailto:ra_ahmed@hotmail.de">ra_ahmed@hotmail.de</a>
+              </div>
+            </div>
+          </div>
 
-  <!-- KONTAKT -->
-  <section class="kontakt container">
-    <div class="kontakt_card">
-      <h2 class="kontakt_title">KONTAKT</h2>
+          <div class="kontakt__block">
+            <h3 class="kontakt__subtitle">وسائل التواصل</h3>
+            <div class="social">
+              <a class="social__btn" href="https://instagram.com/adamplanet02" target="_blank" rel="noopener">
+                <span class="social__ico">📷</span>
+                <span>Instagram</span>
+              </a>
 
-      <div class="kontakt_grid">
-
-        <div>
-          <p>📞 WhatsApp</p>
-          <p>+49 176 81213098</p>
-
-          <p style="margin-top:16px;">✉️ Email</p>
-          <p>ra_ahmed@hotmail.de</p>
+              <a class="social__btn" href="https://www.facebook.com/search/top?q=Ahmed%20Rabah" target="_blank" rel="noopener">
+                <span class="social__ico">📘</span>
+                <span>Facebook</span>
+              </a>
+            </div>
+          </div>
         </div>
 
-        <div class="social">
-          <a href="https://www.instagram.com/adamplanet02" target="_blank">📷 Instagram</a>
-          <a href="https://www.facebook.com/" target="_blank">📘 Facebook</a>
-        </div>
-
       </div>
+    </section>
+
+  </main>
+
+  <!-- FOOTER -->
+  <footer class="site-footer">
+    <div class="container footer-wrap">
+      <p class="footer-text">© <span id="year"></span> DekoKraft</p>
     </div>
-  </section>
+  </footer>
 
-</main>
-
-<footer class="site-footer">
-  <p>© <span id="year"></span> DekoKraft</p>
-</footer>
-
-<!-- JS -->
-<script src="assets/js/main.js"></script>
+  <script src="assets/js/main.js"></script>
 </body>
 </html>
