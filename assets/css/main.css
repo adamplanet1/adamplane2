@@ -108,7 +108,7 @@
 .menu-overlay {
   position: fixed;
   inset: 0;
-  height: 100dvh;              /* ✅ مهم للموبايل */
+  height: 100dvh;
   z-index: 9999;
   display: flex;
   align-items: center;
@@ -132,8 +132,8 @@
 
 .menu-panel {
   width: min(520px, 92vw);
-  max-height: calc(100dvh - 36px); /* ✅ يمنع خروج زر X */
-  overflow: auto;                  /* ✅ Scroll داخل المينو */
+  max-height: calc(100dvh - 36px);
+  overflow: auto;
   border-radius: var(--radius-lg);
   background: rgba(16, 24, 74, 0.65);
   border: 1px solid rgba(255,255,255,0.12);
@@ -155,7 +155,7 @@
   gap: 12px;
   margin-bottom: 12px;
 
-  position: sticky;                 /* ✅ يبقى ثابت */
+  position: sticky;
   top: 0;
   z-index: 2;
   background: rgba(16, 24, 74, 0.85);
@@ -191,7 +191,7 @@ body.menu-open {
 }
 
 /* ===============================
-   HERO + CARDS
+   HERO
    =============================== */
 
 .site-main {
@@ -202,10 +202,18 @@ body.menu-open {
   padding: 18px 0 12px;
 }
 
+.hero--center {
+  text-align: center;
+}
+
 .hero__title {
   font-size: clamp(26px, 4vw, 44px);
   font-weight: 900;
   margin-bottom: 10px;
+}
+
+.hero__title--center {
+  text-align: center;
 }
 
 .hero__brand {
@@ -217,29 +225,97 @@ body.menu-open {
   max-width: 720px;
 }
 
+.hero__subtitle--center {
+  margin-inline: auto;
+  text-align: center;
+}
+
+/* ===============================
+   SECTIONS (Grid like "shop")
+   =============================== */
+
 .sections {
   padding: 18px 0 8px;
   display: grid;
-  gap: 16px;
+  gap: 14px;
+
+  /* ✅ على الهاتف: عمودين مثل moses */
+  grid-template-columns: repeat(2, minmax(0, 1fr));
 }
+
+/* إذا كانت الشاشة صغيرة جدًا (أقل من 420px) نرجع عمود واحد */
+@media (max-width: 420px) {
+  .sections {
+    grid-template-columns: 1fr;
+  }
+}
+
+/* ===============================
+   CARD (Product-like)
+   =============================== */
 
 .card {
   background: var(--color-bg-card);
   border: 1px solid rgba(255,255,255,0.10);
   border-radius: var(--radius-lg);
-  padding: 18px;
   box-shadow: 0 10px 30px rgba(0,0,0,0.25);
+  overflow: hidden;
+}
+
+.card--product {
+  padding: 0;
+}
+
+.card__media {
+  position: relative;
+  display: block;
+  padding: 14px 14px 0;
+}
+
+.card__badge {
+  position: absolute;
+  top: 12px;
+  inset-inline-start: 12px;
+  width: 46px;
+  height: 46px;
+  border-radius: 999px;
+  display: grid;
+  place-items: center;
+  font-weight: 900;
+  font-size: 12px;
+  background: rgba(12, 16, 40, 0.70);
+  border: 1px solid rgba(255,255,255,0.14);
+}
+
+.card__thumb {
+  height: 120px;
+  border-radius: 16px;
+  background: rgba(255,255,255,0.06);
+  border: 1px solid rgba(255,255,255,0.10);
+  display: grid;
+  place-items: center;
+  font-size: 42px;
+}
+
+.card__body {
+  padding: 12px 14px 14px;
 }
 
 .card__title {
-  font-size: 22px;
+  font-size: 18px;
   font-weight: 900;
-  margin-bottom: 8px;
+  margin-bottom: 6px;
 }
 
 .card__text {
   color: var(--color-text-muted);
-  margin-bottom: 14px;
+  margin-bottom: 12px;
+  font-size: 14px;
+}
+
+.card__actions {
+  display: flex;
+  justify-content: center;
 }
 
 .btn {
@@ -252,11 +328,17 @@ body.menu-open {
   border: 1px solid rgba(108, 124, 255, 0.35);
   color: #fff;
   transition: transform var(--transition-fast), background var(--transition-fast);
+  white-space: nowrap;
 }
 
 .btn:hover {
   transform: translateY(-1px);
   background: rgba(108, 124, 255, 0.30);
+}
+
+.btn--small {
+  padding: 9px 12px;
+  font-size: 14px;
 }
 
 /* ===============================
@@ -291,7 +373,14 @@ body.menu-open {
     display: none;
   }
 
+  /* على الكمبيوتر: 2 أعمدة (وتقدر نخليها 3 لاحقًا إذا تحب) */
   .sections {
-    grid-template-columns: repeat(2, 1fr);
+    grid-template-columns: repeat(2, minmax(0, 1fr));
+    gap: 16px;
+  }
+
+  .card__thumb {
+    height: 150px;
+    font-size: 48px;
   }
 }
