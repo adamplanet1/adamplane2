@@ -28,6 +28,9 @@
 
 .brand__logo {
   border-radius: 12px;
+  width: 44px;
+  height: 44px;
+  object-fit: cover;
 }
 
 .brand__name {
@@ -99,16 +102,14 @@
 }
 
 /* ===============================
-   ✅ MOBILE MENU (FIXED)
-   - overlay always exists
-   - controlled by .is-open
-   - pointer-events + z-index guaranteed
+   ✅ MOBILE MENU (FIXED + MOBILE SAFE)
    =============================== */
 
 .menu-overlay {
   position: fixed;
   inset: 0;
-  z-index: 9999;              /* ✅ فوق كل شيء */
+  height: 100dvh;              /* ✅ مهم للموبايل */
+  z-index: 9999;
   display: flex;
   align-items: center;
   justify-content: center;
@@ -119,18 +120,20 @@
 
   opacity: 0;
   visibility: hidden;
-  pointer-events: none;        /* ✅ يمنع “التعليق” */
+  pointer-events: none;
   transition: opacity var(--transition-normal), visibility var(--transition-normal);
 }
 
 .menu-overlay.is-open {
   opacity: 1;
   visibility: visible;
-  pointer-events: auto;        /* ✅ النقرات تشتغل */
+  pointer-events: auto;
 }
 
 .menu-panel {
   width: min(520px, 92vw);
+  max-height: calc(100dvh - 36px); /* ✅ يمنع خروج زر X */
+  overflow: auto;                  /* ✅ Scroll داخل المينو */
   border-radius: var(--radius-lg);
   background: rgba(16, 24, 74, 0.65);
   border: 1px solid rgba(255,255,255,0.12);
@@ -151,6 +154,13 @@
   justify-content: space-between;
   gap: 12px;
   margin-bottom: 12px;
+
+  position: sticky;                 /* ✅ يبقى ثابت */
+  top: 0;
+  z-index: 2;
+  background: rgba(16, 24, 74, 0.85);
+  padding-bottom: 10px;
+  border-bottom: 1px solid rgba(255,255,255,0.10);
 }
 
 .menu-title {
