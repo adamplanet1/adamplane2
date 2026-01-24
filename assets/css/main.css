@@ -239,12 +239,12 @@ body.menu-open {
   display: grid;
   gap: 14px;
 
-  /* ✅ على الهاتف: عمودين مثل moses */
+  /* ✅ الهاتف: عمودين */
   grid-template-columns: repeat(2, minmax(0, 1fr));
 }
 
-/* إذا كانت الشاشة صغيرة جدًا (أقل من 420px) نرجع عمود واحد */
-@media (max-width: 420px) {
+/* ✅ فقط لو الشاشة صغيرة جدًا (مثلاً 320px) نخليها عمود واحد */
+@media (max-width: 360px) {
   .sections {
     grid-template-columns: 1fr;
   }
@@ -373,7 +373,6 @@ body.menu-open {
     display: none;
   }
 
-  /* على الكمبيوتر: 2 أعمدة (وتقدر نخليها 3 لاحقًا إذا تحب) */
   .sections {
     grid-template-columns: repeat(2, minmax(0, 1fr));
     gap: 16px;
