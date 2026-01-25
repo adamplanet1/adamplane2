@@ -1,361 +1,378 @@
-/* =========================================================
-   DekoKraft - main.js
-   - Menu toggle (mobile)
-   - Language switch AR/DE + RTL/LTR + localStorage
+/* DekoKraft main.js
+   - Menu
+   - Language AR/DE (dir switch)
    - Load products.json
-   - Render product page + related
-   - Robust responsive images: prefers -600/-1200 webp
-========================================================= */
+   - Render index/category/product
+   - Image auto resolve from imageBase (-1200.webp then -600.webp then placeholder)
+*/
 
-(() => {
-  "use strict";
-
-  const DATA_URL = "assets/data/products.json";
-  const LS_LANG_KEY = "dekokraft_lang";
-
-  // -----------------------------
-  // Helpers
-  // -----------------------------
-  const $ = (sel, root = document) => root.querySelector(sel);
-  const $$ = (sel, root = document) => Array.from(root.querySelectorAll(sel));
-
-  function safeText(el, txt) {
-    if (el) el.textContent = txt ?? "";
+const I18N = {
+  ar: {
+    menu: "Menu",
+    nav_home: "الرئيسية",
+    nav_gifts: "الهدايا",
+    nav_decor: "الديكور",
+    nav_kids: "هدايا الأطفال",
+    nav_services: "الخدمات",
+    nav_contact: "التواصل",
+    hero_welcome: "مرحباً بكم في",
+    hero_sub: "هنا تجدون هدايا مصنوعة بعناية، ديكور مميز للأطفال، وخدمات متنوعة.",
+    sections_title: "الأقسام",
+    featured_title: "منتجات مختارة",
+    related_title: "منتجات مشابهة",
+    view_section: "عرض القسم",
+    back_home: "الرئيسية",
+    back_to_section: "الرجوع للقسم",
+    telegram_hint: "ضع رابط التليجرام هنا",
+    facebook_hint: "ضع رابط فيسبوك هنا",
+    cat_gifts_title: "الهدايا",
+    cat_decor_title: "الديكور",
+    cat_kids_title: "هدايا الأطفال",
+    cat_services_title: "الخدمات",
+    cat_gifts_sub: "أفكار هدايا مميزة لكل المناسبات.",
+    cat_decor_sub: "لمسات ديكور تضيف جمالاً للمكان.",
+    cat_kids_sub: "هدايا ممتعة ومناسبة للأطفال.",
+    cat_services_sub: "خدمات مخصصة حسب الطلب."
+  },
+  de: {
+    menu: "Menu",
+    nav_home: "Startseite",
+    nav_gifts: "Geschenke",
+    nav_decor: "Dekoration",
+    nav_kids: "Kinder-Geschenke",
+    nav_services: "Services",
+    nav_contact: "Kontakt",
+    hero_welcome: "Willkommen bei",
+    hero_sub: "Handgemachte Geschenke, besondere Deko für Kinder und verschiedene Services.",
+    sections_title: "Bereiche",
+    featured_title: "Ausgewählte Produkte",
+    related_title: "Ähnliche Produkte",
+    view_section: "Bereich ansehen",
+    back_home: "Startseite",
+    back_to_section: "Zur Kategorie",
+    telegram_hint: "Telegram-Link hier einfügen",
+    facebook_hint: "Facebook-Link hier einfügen",
+    cat_gifts_title: "Geschenke",
+    cat_decor_title: "Dekoration",
+    cat_kids_title: "Kinder-Geschenke",
+    cat_services_title: "Services",
+    cat_gifts_sub: "Besondere Geschenkideen für alle Anlässe.",
+    cat_decor_sub: "Schöne Dekoration für Ihr Zuhause.",
+    cat_kids_sub: "Sicheres & liebevolles für Kinder.",
+    cat_services_sub: "Individuelle Dienstleistungen nach Wunsch."
   }
+};
 
-  function getPageType() {
-    return document.body?.dataset?.page || "";
-  }
+const CATEGORY_META = {
+  gifts:   { icon: "🎁", titleKey: "cat_gifts_title",   subKey: "cat_gifts_sub",   imageBase: "assets/images/products/gifts/gift-001" },
+  decor:   { icon: "🏡", titleKey: "cat_decor_title",   subKey: "cat_decor_sub",   imageBase: "assets/images/products/decor/decor-001" },
+  kids:    { icon: "🧸", titleKey: "cat_kids_title",    subKey: "cat_kids_sub",    imageBase: "assets/images/products/kids/kids-001" },
+  services:{ icon: "🛠️", titleKey: "cat_services_title",subKey: "cat_services_sub",imageBase: "assets/images/products/services/service-001" }
+};
 
-  // -----------------------------
-  // i18n dictionary
-  // -----------------------------
-  const I18N = {
-    ar: {
-      menu: "Menu",
-      nav_home: "الرئيسية",
-      nav_gifts: "الهدايا",
-      nav_decor: "الديكور",
-      nav_kids: "هدايا الأطفال",
-      nav_services: "الخدمات",
-      nav_contact: "التواصل",
+function getLang(){
+  return localStorage.getItem("lang") || "ar";
+}
+function setLang(lang){
+  localStorage.setItem("lang", lang);
+  applyLang(lang);
+  rerenderCurrentPage();
+}
+function t(key){
+  const lang = getLang();
+  return (I18N[lang] && I18N[lang][key]) ? I18N[lang][key] : key;
+}
+function applyLang(lang){
+  document.documentElement.lang = lang;
+  document.documentElement.dir = (lang === "ar") ? "rtl" : "ltr";
 
-      // kontakt
-      kontakt_title: "KONTAKT",
-      kontakt_direct: "مباشر",
-      kontakt_social: "وسائل التواصل",
-      label_whatsapp: "WhatsApp",
-      label_email: "Email",
-      label_instagram: "Instagram",
-      label_facebook: "Facebook",
-
-      // product page
-      product_related_title: "منتجات مشابهة",
-      back_home: "العودة للرئيسية",
-    },
-    de: {
-      menu: "Menu",
-      nav_home: "Startseite",
-      nav_gifts: "Geschenke",
-      nav_decor: "Dekoration",
-      nav_kids: "Kinder-Geschenke",
-      nav_services: "Services",
-      nav_contact: "Kontakt",
-
-      // kontakt
-      kontakt_title: "KONTAKT",
-      kontakt_direct: "Direkt",
-      kontakt_social: "Social",
-      label_whatsapp: "WhatsApp",
-      label_email: "E-Mail",
-      label_instagram: "Instagram",
-      label_facebook: "Facebook",
-
-      // product page
-      product_related_title: "Ähnliche Produkte",
-      back_home: "Zur Startseite",
-    }
-  };
-
-  function getInitialLang() {
-    const saved = localStorage.getItem(LS_LANG_KEY);
-    if (saved === "ar" || saved === "de") return saved;
-    // default: AR because your site is Arabic-first
-    return "ar";
-  }
-
-  function applyLang(lang) {
-    const dict = I18N[lang] || I18N.ar;
-
-    // html lang + direction
-    document.documentElement.lang = lang === "ar" ? "ar" : "de";
-    document.documentElement.dir = lang === "ar" ? "rtl" : "ltr";
-
-    // translate text nodes
-    $$("[data-i18n]").forEach(el => {
-      const key = el.getAttribute("data-i18n");
-      if (!key) return;
-      if (dict[key] != null) el.textContent = dict[key];
-    });
-
-    // translate placeholders (optional)
-    $$("[data-i18n-placeholder]").forEach(el => {
-      const key = el.getAttribute("data-i18n-placeholder");
-      if (!key) return;
-      if (dict[key] != null) el.setAttribute("placeholder", dict[key]);
-    });
-
-    // mark active language buttons
-    $$("[data-lang]").forEach(btn => {
-      const isActive = btn.getAttribute("data-lang") === lang;
-      btn.classList.toggle("is-active", isActive);
-      btn.setAttribute("aria-pressed", isActive ? "true" : "false");
-    });
-
-    localStorage.setItem(LS_LANG_KEY, lang);
-
-    // rerender product page content in the new language (if needed)
-    if (getPageType() === "product") {
-      renderProductPage(lang).catch(() => {});
-    }
-  }
-
-  // -----------------------------
-  // Mobile Menu (robust)
-  // -----------------------------
-  function setupMenu() {
-    const btn = $(".menu-btn");
-    const nav = $(".nav");
-    if (!btn || !nav) return;
-
-    // create backdrop dynamically (no HTML edits needed)
-    let backdrop = $(".menu-backdrop");
-    if (!backdrop) {
-      backdrop = document.createElement("div");
-      backdrop.className = "menu-backdrop";
-      document.body.appendChild(backdrop);
-    }
-
-    function open() {
-      document.body.classList.add("menu-open");
-      btn.setAttribute("aria-expanded", "true");
-    }
-    function close() {
-      document.body.classList.remove("menu-open");
-      btn.setAttribute("aria-expanded", "false");
-    }
-    function toggle() {
-      document.body.classList.contains("menu-open") ? close() : open();
-    }
-
-    btn.addEventListener("click", toggle);
-    backdrop.addEventListener("click", close);
-
-    // close when clicking a link (mobile)
-    nav.addEventListener("click", (e) => {
-      const a = e.target.closest("a");
-      if (!a) return;
-      close();
-    });
-
-    // close on ESC
-    document.addEventListener("keydown", (e) => {
-      if (e.key === "Escape") close();
-    });
-
-    // initial state
-    btn.setAttribute("aria-expanded", "false");
-  }
-
-  // -----------------------------
-  // Responsive Images (fix your issue)
-  // -----------------------------
-  function buildResponsiveWebp(url) {
-    // If url already ends with -600.webp or -1200.webp, derive base
-    // Else if url ends with .webp, derive -600/-1200 variants
-    if (!url || typeof url !== "string") return null;
-
-    const lower = url.toLowerCase();
-    if (!lower.endsWith(".webp")) {
-      return {
-        src: url,
-        srcset: "",
-      };
-    }
-
-    const base = url.slice(0, -5); // remove ".webp"
-    const has600 = base.endsWith("-600");
-    const has1200 = base.endsWith("-1200");
-
-    let core = base;
-    if (has600) core = base.slice(0, -4);
-    if (has1200) core = base.slice(0, -5);
-
-    const src600 = `${core}-600.webp`;
-    const src1200 = `${core}-1200.webp`;
-    const fallback = `${core}.webp`;
-
-    return { src600, src1200, fallback };
-  }
-
-  function setProductImg(imgEl, originalUrl, altText) {
-    if (!imgEl) return;
-
-    imgEl.alt = altText || "";
-    imgEl.loading = "lazy";
-    imgEl.decoding = "async";
-
-    const r = buildResponsiveWebp(originalUrl);
-    if (!r) {
-      imgEl.src = originalUrl;
-      return;
-    }
-
-    // Prefer -600 as main src (your case)
-    imgEl.src = r.src600 || originalUrl;
-
-    // Use srcset if we have both
-    imgEl.srcset = r.src1200
-      ? `${r.src600} 600w, ${r.src1200} 1200w`
-      : "";
-
-    // sensible sizes for cards / product page
-    imgEl.sizes = "(max-width: 700px) 92vw, 520px";
-
-    // Fallback chain:
-    // 1) if -600 missing -> try fallback .webp
-    // 2) if fallback missing -> keep broken (so you notice file naming)
-    imgEl.onerror = () => {
-      // already tried fallback? stop
-      if (imgEl.dataset.fallbackTried === "1") return;
-
-      imgEl.dataset.fallbackTried = "1";
-      imgEl.srcset = ""; // avoid repeated requests
-      imgEl.src = r.fallback || originalUrl;
-    };
-  }
-
-  // -----------------------------
-  // Data Loading
-  // -----------------------------
-  let _productsCache = null;
-
-  async function loadProducts() {
-    if (_productsCache) return _productsCache;
-    const res = await fetch(DATA_URL, { cache: "no-store" });
-    if (!res.ok) throw new Error("Failed to load products.json");
-    const json = await res.json();
-    _productsCache = json;
-    return json;
-  }
-
-  function getLocalized(product, lang) {
-    const l = lang === "de" ? "de" : "ar";
-    const title = product?.title?.[l] ?? product?.title?.ar ?? "";
-    const desc = product?.description?.[l] ?? product?.description?.ar ?? "";
-    return { title, desc };
-  }
-
-  // -----------------------------
-  // Product Page Rendering
-  // Expects in product.html:
-  // #productTitle, #productDesc, #productImg, #relatedGrid, #relatedTitle
-  // -----------------------------
-  async function renderProductPage(lang) {
-    const page = getPageType();
-    if (page !== "product") return;
-
-    const params = new URLSearchParams(location.search);
-    const id = params.get("id");
-    if (!id) return;
-
-    const data = await loadProducts();
-    const products = data.products || [];
-    const product = products.find(p => p.id === id);
-    if (!product) return;
-
-    const { title, desc } = getLocalized(product, lang);
-
-    safeText($("#productTitle"), title);
-    safeText($("#productDesc"), desc);
-
-    const img = $("#productImg");
-    setProductImg(img, product.image, title);
-
-    // Related
-    const relatedTitleEl = $("#relatedTitle");
-    if (relatedTitleEl) {
-      const dict = I18N[lang] || I18N.ar;
-      relatedTitleEl.textContent = dict.product_related_title;
-    }
-
-    const grid = $("#relatedGrid");
-    if (!grid) return;
-
-    grid.innerHTML = "";
-    const relatedIds = Array.isArray(product.related) ? product.related : [];
-    const related = products.filter(p => relatedIds.includes(p.id));
-
-    related.forEach(p => {
-      const { title: t, desc: d } = getLocalized(p, lang);
-
-      const a = document.createElement("a");
-      a.className = "p-card";
-      a.href = `product.html?id=${encodeURIComponent(p.id)}`;
-
-      const media = document.createElement("div");
-      media.className = "p-card__media";
-
-      const im = document.createElement("img");
-      setProductImg(im, p.image, t);
-      media.appendChild(im);
-
-      const body = document.createElement("div");
-      body.className = "p-card__body";
-
-      const h = document.createElement("h3");
-      h.className = "p-card__title";
-      h.textContent = t;
-
-      const small = document.createElement("p");
-      small.className = "p-card__desc";
-      small.textContent = d;
-
-      body.appendChild(h);
-      body.appendChild(small);
-
-      a.appendChild(media);
-      a.appendChild(body);
-
-      grid.appendChild(a);
-    });
-  }
-
-  // -----------------------------
-  // Language buttons
-  // -----------------------------
-  function setupLangButtons() {
-    $$("[data-lang]").forEach(btn => {
-      btn.addEventListener("click", () => {
-        const lang = btn.getAttribute("data-lang");
-        if (lang === "ar" || lang === "de") applyLang(lang);
-      });
-    });
-  }
-
-  // -----------------------------
-  // Init
-  // -----------------------------
-  document.addEventListener("DOMContentLoaded", async () => {
-    setupMenu();
-    setupLangButtons();
-
-    const lang = getInitialLang();
-    applyLang(lang);
-
-    // render product page if we are there
-    if (getPageType() === "product") {
-      try { await renderProductPage(lang); } catch (e) {}
-    }
+  // buttons state
+  document.querySelectorAll(".lang-btn").forEach(btn=>{
+    btn.classList.toggle("is-active", btn.dataset.lang === lang);
   });
-})();
+
+  // i18n text
+  document.querySelectorAll("[data-i18n]").forEach(el=>{
+    const key = el.getAttribute("data-i18n");
+    el.textContent = t(key);
+  });
+}
+
+/* Menu */
+function initMenu(){
+  const nav = document.getElementById("nav");
+  const menuBtn = document.getElementById("menuBtn");
+  const navClose = document.getElementById("navClose");
+  if(!nav || !menuBtn || !navClose) return;
+
+  const open = ()=> nav.classList.add("is-open");
+  const close = ()=> nav.classList.remove("is-open");
+
+  menuBtn.addEventListener("click", open);
+  navClose.addEventListener("click", close);
+  nav.addEventListener("click", (e)=>{
+    if(e.target === nav) close();
+  });
+}
+
+/* Safe URL params */
+function qs(name){
+  const u = new URL(location.href);
+  return u.searchParams.get(name);
+}
+
+/* Data */
+let PRODUCTS_CACHE = null;
+
+async function loadProducts(){
+  if(PRODUCTS_CACHE) return PRODUCTS_CACHE;
+  const res = await fetch("assets/data/products.json", {cache:"no-store"});
+  const json = await res.json();
+  PRODUCTS_CACHE = json.products || [];
+  return PRODUCTS_CACHE;
+}
+
+/* Placeholder (no file needed) */
+function placeholderDataURI(label="No Image"){
+  const text = encodeURIComponent(label);
+  const svg =
+`<svg xmlns="http://www.w3.org/2000/svg" width="1200" height="800">
+  <defs>
+    <linearGradient id="g" x1="0" x2="1" y1="0" y2="1">
+      <stop offset="0" stop-color="#141a35"/>
+      <stop offset="1" stop-color="#0b1024"/>
+    </linearGradient>
+  </defs>
+  <rect width="100%" height="100%" fill="url(#g)"/>
+  <rect x="60" y="60" width="1080" height="680" rx="40" fill="rgba(255,255,255,0.06)" stroke="rgba(255,255,255,0.15)"/>
+  <text x="50%" y="50%" dominant-baseline="middle" text-anchor="middle" fill="rgba(234,240,255,0.75)" font-family="Arial" font-size="44">${text}</text>
+</svg>`;
+  return `data:image/svg+xml;charset=utf-8,${encodeURIComponent(svg)}`;
+}
+
+function tryLoadImage(url){
+  return new Promise((resolve)=>{
+    const img = new Image();
+    img.onload = ()=> resolve(true);
+    img.onerror = ()=> resolve(false);
+    img.src = url;
+  });
+}
+
+/* Auto resolve imageBase */
+async function resolveImageFromBase(imageBase){
+  if(!imageBase) return placeholderDataURI("No imageBase");
+  const big = `${imageBase}-1200.webp`;
+  const small = `${imageBase}-600.webp`;
+
+  // prefer 1200 then 600
+  if(await tryLoadImage(big)) return big;
+  if(await tryLoadImage(small)) return small;
+
+  return placeholderDataURI("Image not found");
+}
+
+/* Render cards */
+async function createTileCard({badgeText, title, desc, imageBase, href, showButton, buttonText}){
+  const card = document.createElement("a");
+  card.className = "card tile";
+  card.href = href;
+
+  const badge = document.createElement("div");
+  badge.className = "badge";
+  badge.textContent = badgeText;
+  card.appendChild(badge);
+
+  const media = document.createElement("div");
+  media.className = "tile-media";
+  const img = document.createElement("img");
+  img.alt = title;
+  img.src = placeholderDataURI("Loading...");
+  media.appendChild(img);
+  card.appendChild(media);
+
+  const h = document.createElement("h3");
+  h.className = "tile-title";
+  h.textContent = title;
+  card.appendChild(h);
+
+  const p = document.createElement("p");
+  p.className = "tile-desc";
+  p.textContent = desc;
+  card.appendChild(p);
+
+  if(showButton){
+    const btn = document.createElement("span");
+    btn.className = "btn";
+    btn.textContent = buttonText;
+    card.appendChild(btn);
+  }
+
+  // load real image
+  resolveImageFromBase(imageBase).then(url=> { img.src = url; });
+
+  return card;
+}
+
+/* Pages render */
+async function renderHome(){
+  const catGrid = document.getElementById("categoryGrid");
+  const featuredGrid = document.getElementById("featuredGrid");
+  if(!catGrid || !featuredGrid) return;
+
+  catGrid.innerHTML = "";
+  featuredGrid.innerHTML = "";
+
+  // categories tiles
+  for(const cat of Object.keys(CATEGORY_META)){
+    const meta = CATEGORY_META[cat];
+    const title = `${meta.icon} ${t(meta.titleKey)}`;
+    const desc = t(meta.subKey);
+
+    const tile = await createTileCard({
+      badgeText: "neu",
+      title,
+      desc,
+      imageBase: meta.imageBase,
+      href: `category.html?cat=${encodeURIComponent(cat)}`,
+      showButton: true,
+      buttonText: t("view_section") + " →"
+    });
+
+    catGrid.appendChild(tile);
+  }
+
+  // featured products random mix
+  const products = await loadProducts();
+  const shuffled = [...products].sort(()=> Math.random() - 0.5);
+  const picks = shuffled.slice(0, 6);
+
+  for(const pr of picks){
+    const lang = getLang();
+    const title = pr.title?.[lang] || pr.id;
+    const desc  = pr.description?.[lang] || "";
+    const tile = await createTileCard({
+      badgeText: "neu",
+      title,
+      desc,
+      imageBase: pr.imageBase,
+      href: `product.html?id=${encodeURIComponent(pr.id)}`,
+      showButton: false,
+      buttonText: ""
+    });
+    featuredGrid.appendChild(tile);
+  }
+}
+
+async function renderCategory(){
+  const cat = qs("cat") || "gifts";
+  const titleEl = document.getElementById("categoryTitle");
+  const subEl = document.getElementById("categorySub");
+  const grid = document.getElementById("categoryGrid");
+  if(!titleEl || !subEl || !grid) return;
+
+  const meta = CATEGORY_META[cat] || CATEGORY_META.gifts;
+
+  titleEl.textContent = `${meta.icon} ${t(meta.titleKey)}`;
+  subEl.textContent = t(meta.subKey);
+
+  grid.innerHTML = "";
+
+  const products = await loadProducts();
+  const list = products.filter(p => p.category === cat);
+
+  for(const pr of list){
+    const lang = getLang();
+    const title = pr.title?.[lang] || pr.id;
+    const desc  = pr.description?.[lang] || "";
+    const tile = await createTileCard({
+      badgeText: "neu",
+      title,
+      desc,
+      imageBase: pr.imageBase,
+      href: `product.html?id=${encodeURIComponent(pr.id)}`,
+      showButton: false,
+      buttonText: ""
+    });
+    grid.appendChild(tile);
+  }
+}
+
+async function renderProduct(){
+  const id = qs("id");
+  const imgEl = document.getElementById("productImage");
+  const titleEl = document.getElementById("productTitle");
+  const descEl = document.getElementById("productDesc");
+  const relatedGrid = document.getElementById("relatedGrid");
+  const backToCategory = document.getElementById("backToCategory");
+
+  if(!imgEl || !titleEl || !descEl || !relatedGrid) return;
+
+  const products = await loadProducts();
+  const pr = products.find(p => p.id === id) || products[0];
+
+  const lang = getLang();
+  const title = pr.title?.[lang] || pr.id;
+  const desc  = pr.description?.[lang] || "";
+
+  titleEl.textContent = title;
+  descEl.textContent = desc;
+
+  // back link
+  if(backToCategory){
+    backToCategory.href = `category.html?cat=${encodeURIComponent(pr.category)}`;
+  }
+
+  imgEl.alt = title;
+  imgEl.src = placeholderDataURI("Loading...");
+  imgEl.src = await resolveImageFromBase(pr.imageBase);
+
+  // related
+  relatedGrid.innerHTML = "";
+  const relatedIds = Array.isArray(pr.related) ? pr.related : [];
+  let related = products.filter(p => relatedIds.includes(p.id));
+
+  // fallback: same category
+  if(related.length === 0){
+    related = products.filter(p => p.category === pr.category && p.id !== pr.id).slice(0, 6);
+  }
+
+  for(const r of related){
+    const rTitle = r.title?.[lang] || r.id;
+    const rDesc  = r.description?.[lang] || "";
+    const tile = await createTileCard({
+      badgeText: "neu",
+      title: rTitle,
+      desc: rDesc,
+      imageBase: r.imageBase,
+      href: `product.html?id=${encodeURIComponent(r.id)}`,
+      showButton: false,
+      buttonText: ""
+    });
+    relatedGrid.appendChild(tile);
+  }
+}
+
+/* rerender when language changes */
+function rerenderCurrentPage(){
+  const page = document.body.getAttribute("data-page");
+  if(page === "home") renderHome();
+  if(page === "category") renderCategory();
+  if(page === "product") renderProduct();
+}
+
+/* init */
+document.addEventListener("DOMContentLoaded", async ()=>{
+  initMenu();
+
+  document.querySelectorAll(".lang-btn").forEach(btn=>{
+    btn.addEventListener("click", ()=> setLang(btn.dataset.lang));
+  });
+
+  applyLang(getLang());
+
+  const page = document.body.getAttribute("data-page");
+  if(page === "home") await renderHome();
+  if(page === "category") await renderCategory();
+  if(page === "product") await renderProduct();
+});
