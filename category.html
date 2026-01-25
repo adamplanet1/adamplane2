@@ -10,34 +10,35 @@
 
 <header class="site-header">
   <div class="container header-inner">
-    <a class="brand" href="index.html" aria-label="DekoKraft Home">
-      <img class="brand-logo" src="assets/images/logo/logo-dekokraft.png" alt="DekoKraft" />
-      <span class="brand-name">DekoKraft</span>
-    </a>
+    <div class="brand">
+      <img
+        class="brand-logo"
+        src="assets/images/logo/logo-dekokraft-600.webp"
+        srcset="assets/images/logo/logo-dekokraft-600.webp 600w, assets/images/logo/logo-dekokraft-1200.webp 1200w"
+        sizes="48px"
+        alt="DekoKraft"
+      />
+      <div class="brand-name">DekoKraft</div>
+    </div>
 
     <div class="header-actions">
+      <button class="lang-btn" type="button" data-lang="ar">AR</button>
       <button class="lang-btn" type="button" data-lang="de">DE</button>
-      <button class="lang-btn is-active" type="button" data-lang="ar">AR</button>
 
-      <button class="menu-btn" type="button" aria-label="Menu" id="menuBtn">
+      <button class="menu-btn" type="button" aria-label="Menu">
+        <span class="menu-icon" aria-hidden="true"><span></span><span></span><span></span></span>
         <span data-i18n="menu">Menu</span>
-        <span class="menu-icon" aria-hidden="true">
-          <span></span><span></span><span></span>
-        </span>
       </button>
     </div>
   </div>
 
-  <nav class="nav" id="nav">
-    <div class="container nav-inner">
-      <a href="index.html" data-i18n="nav_home">الرئيسية</a>
-      <a href="category.html?cat=gifts" data-i18n="nav_gifts">الهدايا</a>
-      <a href="category.html?cat=decor" data-i18n="nav_decor">الديكور</a>
-      <a href="category.html?cat=kids" data-i18n="nav_kids">هدايا الأطفال</a>
-      <a href="category.html?cat=services" data-i18n="nav_services">الخدمات</a>
-      <a href="#kontakt" data-i18n="nav_contact">التواصل</a>
-      <button class="nav-close" type="button" aria-label="Close" id="navClose">✕</button>
-    </div>
+  <nav class="nav container">
+    <a href="index.html" data-i18n="nav_home">الرئيسية</a>
+    <a href="category.html?cat=gifts" data-i18n="nav_gifts">الهدايا</a>
+    <a href="category.html?cat=decor" data-i18n="nav_decor">الديكور</a>
+    <a href="category.html?cat=kids" data-i18n="nav_kids">هدايا الأطفال</a>
+    <a href="category.html?cat=services" data-i18n="nav_services">الخدمات</a>
+    <a href="#kontakt" data-i18n="nav_contact">Kontakt</a>
   </nav>
 </header>
 
@@ -45,63 +46,16 @@
   <section class="section">
     <div class="container">
       <div class="section-head">
-        <h1 class="section-title" id="categoryTitle"></h1>
-        <p class="section-sub" id="categorySub"></p>
+        <h2 id="categoryTitle">Category</h2>
       </div>
-
-      <div class="grid" id="categoryGrid" aria-live="polite"></div>
+      <div class="grid grid-products" id="categoryGrid"></div>
     </div>
   </section>
 
   <section class="section" id="kontakt">
     <div class="container">
-      <div class="kontakt card">
-        <div class="kontakt-left">
-          <h2 class="kontakt-title">KONTAKT</h2>
-
-          <div class="kontakt-row">
-            <img class="icon" src="assets/images/icons/whatsapp.svg" alt="WhatsApp" />
-            <div>
-              <div class="kontakt-label">WhatsApp</div>
-              <a class="kontakt-link" href="https://wa.me/4917681213098" target="_blank" rel="noopener">+49 176 81213098</a>
-            </div>
-          </div>
-
-          <div class="kontakt-row">
-            <img class="icon" src="assets/images/icons/telegram.svg" alt="Telegram" />
-            <div>
-              <div class="kontakt-label">Telegram</div>
-              <a class="kontakt-link" href="#" target="_blank" rel="noopener" data-i18n="telegram_hint">ضع رابط التليجرام هنا</a>
-            </div>
-          </div>
-
-          <div class="kontakt-row">
-            <img class="icon" src="assets/images/icons/facebook.svg" alt="Facebook" />
-            <div>
-              <div class="kontakt-label">Facebook</div>
-              <a class="kontakt-link" href="#" target="_blank" rel="noopener" data-i18n="facebook_hint">ضع رابط فيسبوك هنا</a>
-            </div>
-          </div>
-
-          <div class="kontakt-row">
-            <div class="dot" aria-hidden="true"></div>
-            <div>
-              <div class="kontakt-label">Email</div>
-              <a class="kontakt-link" href="mailto:ra_ahmed@hotmail.de">ra_ahmed@hotmail.de</a>
-            </div>
-          </div>
-        </div>
-
-        <div class="kontakt-right">
-          <div class="kontakt-visual">
-            <div class="bubble"></div>
-          </div>
-        </div>
-      </div>
-
-      <div class="footer">
-        <span>© 2026 DekoKraft</span>
-      </div>
+      <div class="kontakt-card" id="kontaktCard"></div>
+      <div class="footer-note">DekoKraft 2026 ©</div>
     </div>
   </section>
 </main>
