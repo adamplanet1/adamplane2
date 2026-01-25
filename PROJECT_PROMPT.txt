@@ -2,68 +2,64 @@ PROJECT: DekoKraft (Static site on GitHub Pages)
 STACK: HTML + CSS + Vanilla JavaScript + JSON فقط (بدون Framework, بدون Backend)
 
 GOAL:
-موقع ثابت بتصميم Dark/Glass. يدعم AR و DE. عرض أقسام + منتجات مختارة + صفحة عرض منتج تفاعلية + Kontakt موحد.
+موقع ثابت بواجهة Dark/Glass يدعم لغتين AR/DE.
+تبديل اللغة لا يغير الروابط ولا يكسر التصميم.
+RTL في العربية و LTR في الألمانية.
 
 PAGES:
-1) index.html
+1) index.html (الصفحة الرئيسية)
 - Hero
-- Sections Grid (4 بطاقات أقسام رئيسية)
-  - كل بطاقة قسم رئيسية = “Main Section Card”
-  - تحتوي: صورة ممثلة (أول منتج في القسم) + زر "عرض القسم"
-  - IMPORTANT: الضغط على زر "عرض القسم" يأخذ إلى product.html?id=... (صفحة عرض منتج)
-  - البطاقة أيضاً يمكن جعلها قابلة للنقر (اختياري) مع الحفاظ على زر
-- Featured Products Grid (صور عشوائية/منتجات مختارة)
-  - “Random/Featured Product Cards”
-  - لا تحتوي زر
-  - الصورة/البطاقة نفسها تكون رابط إلى product.html?id=...
-  - يجب عدم تكرار نفس المنتج المستخدم كصورة ممثلة للقسم ضمن المنتجات المختارة
-- Kontakt
+- قسم "الأقسام" (4 بطاقات رئيسية): Gifts / Decor / Kids / Services
+  * يجب أن تكون 2×2 على الهاتف
+  * ويجب أن تبقى 2×2 على الكمبيوتر أيضاً (لا تتحول إلى 4×4)
+  * بطاقة القسم تحتوي زر "عرض القسم" + يمكن جعل البطاقة نفسها رابط أيضاً.
+  * IMPORTANT NAVIGATION:
+    زر "عرض القسم" يجب أن يفتح صفحة المنتج (product.html) مباشرة
+    عبر أول منتج في هذا القسم (firstProductId لكل قسم) — وليس صفحة category.html
 
-2) product.html (صفحة العرض المطلوبة)
-- عند فتح المنتج:
-  - صورة كبيرة (Main Viewer)
-  - عنوان + وصف قصير وجذاب
-- ثم أسفل/جانب الصورة:
-  - قائمة عمودية (على الكمبيوتر) / أفقية (على الهاتف) لمنتجات نفس القسم (thumbnails)
-  - كل thumbnail عند الضغط عليها:
-    - تستبدل الصورة الكبيرة + العنوان + الوصف لهذا المنتج فوراً (بدون فتح صفحة جديدة)
-    - ويمكن تحديث الرابط عبر history.pushState (?id=...) حتى يبقى الرابط صحيحاً
-- Kontakt
+- قسم "منتجات مختارة" (Featured / Random)
+  * هذه البطاقات لا تحتوي زر داخلها
+  * البطاقة كلها تكون رابط إلى صفحة المنتج product.html?id=...
+  * يجب عدم تكرار نفس منتجات الأقسام الرئيسية (استبعاد firstProductId لكل قسم)
 
-3) category.html (اختياري)
-- يبقى موجوداً لكنه غير أساسي في الـ UX الحالي
-- يمكن استخدامه لاحقاً كصفحة عرض كل منتجات القسم
-- حالياً الروابط الرئيسية من “عرض القسم” تتجه إلى product.html كما هو مطلوب
+- KONTAKT (موحد في كل الصفحات)
+  * WhatsApp + Telegram + Email فقط
+  * حذف Facebook نهائياً (لا كود ولا SVG)
+  * أسفل KONTAKT يظهر Logo كبير داخل مربع الزجاج
 
-ASSETS:
-- assets/css/main.css: كل التنسيقات (Glass/Dark + Responsive + Grid + Cards + Kontakt + Product viewer)
-- assets/js/main.js: المنطق (Menu + AR/DE + تحميل JSON + Rendering + viewer thumbnails)
-- assets/data/products.json: بيانات المنتجات
-- assets/images/icons: whatsapp.svg, telegram.svg, email.svg (تم حذف facebook نهائياً)
-- assets/images/logo: logo-dekokraft-600.webp + logo-dekokraft-1200.webp
-- assets/images/products/*: صور المنتجات
+2) category.html (اختياري)
+- شبكة منتجات قسم معين حسب ?cat=
+- كل بطاقة تفتح product.html?id=...
+- KONTAKT
+(ممكن إبقاؤها للعرض، لكن الزر الرئيسي في الصفحة الرئيسية لا يذهب إليها)
 
-LANGUAGES:
-- AR = RTL, DE = LTR
-- حفظ اللغة في localStorage
-- تبديل اللغة لا يغيّر الروابط ولا يكسر التصميم
+3) product.html (صفحة المنتج)
+- عرض المنتج بشكل مُكبر:
+  * صورة كبيرة رئيسية
+  * عنوان + وصف قصير جميل تحت/بجانب الصورة
+- أسفل/جانب العرض:
+  * قائمة عمودية Thumbnails لمنتجات نفس القسم (صغير)
+  * عند الضغط على Thumbnail:
+    - تتغير الصورة الكبيرة + العنوان + الوصف إلى المنتج المختار
+    - ويتغير رابط الصفحة (history.replaceState) إلى id الجديد بدون إعادة تحميل
+- KONTAKT في الأسفل
 
 CRITICAL IMAGE RULE:
+صور المنتجات ليست gift-001.webp
+بل:
+gift-001-600.webp و gift-001-1200.webp (قد يوجد واحد منهما)
 في products.json نستخدم:
-imageBase: "assets/images/products/<cat>/<name>"
+imageBase: "assets/images/products/gifts/gift-001"
 والكود يختار:
-- يفضّل -1200.webp إن كان موجوداً
-- وإلا -600.webp إن كان موجوداً
-- وإلا placeholder
+- -1200.webp إذا موجود
+- وإلا -600.webp إذا موجود
+- وإلا Placeholder بدون كسر التصميم
 
-VISUAL DISTINCTION RULE:
-- Main Section Cards: شكل نظيف وصورة واضحة (بدون “بخار/زجاج” فوق الصورة)
-- Featured/Random Product Cards: تأثير “ضباب على الزجاج” (Decor overlay) يظهر فقط عليها، لإبراز الفرق
-
-DESKTOP LAYOUT RULE:
-- تجنّب جعل البطاقات صغيرة جداً على الكمبيوتر
-- عدد الأعمدة للمنتجات يكون مرناً لكن لا يصبح كثيفاً (حد أقصى 3 أعمدة للمنتجات على شاشات عادية)
-- الأقسام: 4 أعمدة على الكمبيوتر، و 2×2 على الهاتف
+VISUAL DIFFERENTIATION:
+- Cards الأقسام الرئيسية: زجاج نظيف بدون “بخار أزرق”
+- Cards المنتجات المختارة: يوضع Overlay ديكور (Blue Fog / Glass Vapor) فوق الصورة فقط أو فوق الكارت
+  (بدون أن يبدو كصورة مكسورة، وبشكل واضح أنه ديكور)
 
 WORKFLOW:
-عند كل تحديث: طباعة PROJECT_PROMPT.txt و PROJECT_STATE.txt ثم طباعة الأكواد كاملة.
+عند طلب تعديل ملف: اطبع الكود كامل لذلك الملف فقط.
+(الآن طباعة كاملة للمشروع مطلوبة.)
