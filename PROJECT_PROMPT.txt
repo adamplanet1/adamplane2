@@ -1,11 +1,32 @@
-الخطوة التالية (عملية جدًا)
-بدل ما نعيد تصميم:
-افتح الموقع
-افتح Console وشوف هل يظهر: main.js loaded
-إذا ما ظهر → المشكلة تحميل JS أو نشر Pages وليس “المنيو”.
-إذا تحب، أكتب لك قائمة تحقق سريعة بالصور: أين تضغط في Chrome/Safari على الهاتف لعرض أخطاء الـConsole (حسب جهازك).
+PROJECT: DekoKraft (Static site on GitHub Pages)
+STACK: HTML + CSS + Vanilla JavaScript + JSON only
 
-ENVIRONMENT NOTE
-- The development machine uses German (DE) system language.
-- When giving debugging or browser instructions, always use German UI terms
-  (e.g. „Untersuchen“, „Konsole“, „Entwickler-Tools“, „Netzwerk“).
+FILES:
+- index.html: Home (Hero + Category cards + Featured products + Kontakt)
+- category.html: Category page (Grid of products of a selected category + Kontakt)
+- product.html: Product page (Large image + title + description + related products + Kontakt)
+- assets/css/main.css: One stylesheet for all pages
+- assets/js/main.js: Menu, language toggle, JSON loading, rendering, image resolving
+- assets/data/products.json: Database of products
+
+LANGUAGES:
+- AR and DE.
+- AR => dir=rtl, DE => dir=ltr.
+- Use localStorage "lang" to remember.
+
+CRITICAL IMAGE RULE:
+- Product images are NOT stored as gift-001.webp
+- They are stored as: gift-001-600.webp / gift-001-1200.webp etc.
+- products.json must store imageBase only, e.g.:
+  "imageBase": "assets/images/products/gifts/gift-001"
+- main.js must auto-resolve:
+  prefer "-1200.webp" then "-600.webp", else fallback placeholder.
+
+RENDERING RULES:
+- Category cards on home show an image and a button "عرض القسم / Bereich ansehen".
+- Featured products show same card style but without button; clicking card opens product.html?id=...
+- Product page has NO big category title; only product info + similar products + Kontakt.
+- Kontakt section is identical on all pages.
+
+WORKFLOW:
+- When modifying files, output full file content.
