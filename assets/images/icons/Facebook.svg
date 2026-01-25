@@ -1,6 +1,0 @@
-<!-- assets/images/icons/facebook.svg -->
-<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24" fill="none">
-  <circle cx="12" cy="12" r="10" fill="currentColor" opacity="0.12"/>
-  <path d="M14 8.8h1.8V6.2H14c-2.2 0-3.6 1.4-3.6 3.7V11H8.6v2.5h1.8V18h2.8v-4.5h2.2l.4-2.5h-2.6V10c0-.8.2-1.2.8-1.2Z"
-        fill="currentColor"/>
-</svg>
