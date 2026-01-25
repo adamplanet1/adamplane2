@@ -2,9 +2,17 @@
    - Menu toggle
    - AR/DE language switch
    - Load products.json
-   - index: Sections (main) vs Featured (random)
-   - product: viewer + thumbnails swap + pushState
-   - Kontakt: WhatsApp + Telegram + Email (Facebook removed)
+   - Render: index/category/product
+   - Smart image resolver: -1200.webp preferred, else -600.webp, else placeholder
+   - Home:
+     * Sections (2x2 always) + button opens product page of firstProductId
+     * Featured: no button; card clickable; exclude section representative products
+     * Blue fog overlay only for featured cards (class is-featured)
+   - Product page:
+     * Big view + short text
+     * Vertical thumbnails for same category; click swaps main product (no reload)
+   - Kontakt:
+     * WhatsApp/Telegram/Email فقط (Facebook removed)
 */
 
 const STATE = {
@@ -16,42 +24,46 @@ const I18N = {
   ar: {
     menu: "Menu",
     nav_home: "الرئيسية",
-    nav_sections: "الأقسام",
-    nav_featured: "منتجات مختارة",
-    nav_viewer: "عرض المنتج",
+    nav_gifts: "الهدايا",
+    nav_decor: "الديكور",
+    nav_kids: "هدايا الأطفال",
+    nav_services: "الخدمات",
     nav_contact: "Kontakt",
     hero_welcome: "مرحباً بكم في",
     hero_sub: "هنا تجدون هدايا مصنوعة بعناية، ديكور مميز للأطفال، وخدمات متنوعة.",
     sections_title: "الأقسام",
     featured_title: "منتجات مختارة",
     view_section: "عرض القسم →",
-    same_category: "من نفس القسم",
-    back_home: "العودة",
+    view_product: "عرض المنتج →",
+    back_home: "العودة للرئيسية",
     kontakt_title: "KONTAKT",
     whatsapp: "WhatsApp",
     telegram: "Telegram",
     email: "Email",
-    put_telegram: "ضع رابط التليجرام هنا"
+    put_telegram: "ضع رابط التليجرام هنا",
+    gallery_title: "منتجات من نفس المجموعة"
   },
   de: {
     menu: "Menu",
     nav_home: "Startseite",
-    nav_sections: "Bereiche",
-    nav_featured: "Ausgewählte Produkte",
-    nav_viewer: "Produktansicht",
+    nav_gifts: "Geschenke",
+    nav_decor: "Dekoration",
+    nav_kids: "Kinder-Geschenke",
+    nav_services: "Services",
     nav_contact: "Kontakt",
     hero_welcome: "Willkommen bei",
     hero_sub: "Handgemachte Geschenke, besondere Deko für Kinder und verschiedene Services.",
     sections_title: "Bereiche",
     featured_title: "Ausgewählte Produkte",
     view_section: "Bereich ansehen →",
-    same_category: "Aus der gleichen Kategorie",
-    back_home: "Zurück",
+    view_product: "Produkt ansehen →",
+    back_home: "Zur Startseite",
     kontakt_title: "KONTAKT",
     whatsapp: "WhatsApp",
     telegram: "Telegram",
     email: "Email",
-    put_telegram: "Telegram-Link hier einfügen"
+    put_telegram: "Telegram-Link hier einfügen",
+    gallery_title: "Produkte aus derselben Gruppe"
   }
 };
 
@@ -103,6 +115,15 @@ function buildPlaceholderDataURI(label=""){
   return "data:image/svg+xml;charset=utf-8," + encodeURIComponent(svg);
 }
 
+async function resolveImageFromBase(imageBase, label){
+  if (!imageBase) return buildPlaceholderDataURI(label);
+  const large = `${imageBase}-1200.webp`;
+  const small = `${imageBase}-600.webp`;
+  if (await urlExists(large)) return large;
+  if (await urlExists(small)) return small;
+  return buildPlaceholderDataURI(label);
+}
+
 async function urlExists(url){
   try{
     const res = await fetch(url, { method:"HEAD", cache:"no-store" });
@@ -110,18 +131,6 @@ async function urlExists(url){
   }catch(e){
     return false;
   }
-}
-
-async function resolveImageFromBase(imageBase, label){
-  if (!imageBase) return buildPlaceholderDataURI(label);
-
-  const large = `${imageBase}-1200.webp`;
-  const small = `${imageBase}-600.webp`;
-
-  if (await urlExists(large)) return large;
-  if (await urlExists(small)) return small;
-
-  return buildPlaceholderDataURI(label);
 }
 
 function getLangText(obj){
@@ -134,48 +143,26 @@ function getParam(name){
   return u.searchParams.get(name);
 }
 
-/* Categories order + label mapping */
+/* ✅ Meta الأقسام + تعريف المنتج الأول لكل قسم */
 function categoryMeta(){
   return {
-    gifts:   { keyAR:"الهدايا 🎁", keyDE:"Geschenke 🎁" },
-    decor:   { keyAR:"الديكور 🏡", keyDE:"Dekoration 🏡" },
-    kids:    { keyAR:"هدايا الأطفال 🧸", keyDE:"Kinder-Geschenke 🧸" },
-    services:{ keyAR:"الخدمات 🛠️", keyDE:"Services 🛠️" }
+    gifts:    { key:"nav_gifts",    emoji:"🎁", firstProductId:"gift-001",    imageBase:"assets/images/products/gifts/gift-001" },
+    decor:    { key:"nav_decor",    emoji:"🏡", firstProductId:"decor-001",   imageBase:"assets/images/products/decor/decor-001" },
+    kids:     { key:"nav_kids",     emoji:"🧸", firstProductId:"kids-001",    imageBase:"assets/images/products/kids/kids-001" },
+    services: { key:"nav_services", emoji:"🛠️", firstProductId:"service-001", imageBase:"assets/images/products/services/service-001" }
   };
-}
-
-function categoryTitle(cat){
-  const m = categoryMeta()[cat];
-  if (!m) return cat;
-  return (STATE.lang === "ar") ? m.keyAR : m.keyDE;
-}
-
-/* Pick representative product per category (first one found) */
-function getRepresentativeByCategory(cat){
-  return STATE.products.find(p => p.category === cat) || null;
-}
-
-/* Featured products: exclude representative ones to avoid duplication */
-function getFeaturedProducts(limit=6){
-  const reps = new Set(["gifts","decor","kids","services"]
-    .map(c => getRepresentativeByCategory(c))
-    .filter(Boolean)
-    .map(p => p.id));
-
-  const rest = STATE.products.filter(p => !reps.has(p.id));
-  // simple: take first N
-  return rest.slice(0, limit);
 }
 
 async function renderKontakt(){
   const wrap = qs("#kontaktCard");
   if (!wrap) return;
-
   const t = I18N[STATE.lang];
 
   const whatsappNumber = "+49 176 81213098";
   const whatsappHref = `https://wa.me/4917681213098`;
-  const telegramHref = "#";
+
+  const telegramHref = "#"; // ضع رابطك هنا لاحقاً
+
   const emailAddress = "ra_ahmed@hotmail.de";
   const emailHref = `mailto:${emailAddress}`;
 
@@ -184,32 +171,32 @@ async function renderKontakt(){
 
     <div class="kontakt-list">
       <a class="kontakt-item" href="${whatsappHref}" target="_blank" rel="noopener">
-        <div>
-          <div class="kontakt-label">${t.whatsapp}</div>
-          <div class="kontakt-value">${whatsappNumber}</div>
-        </div>
         <div class="kontakt-icon" style="color:#3bd45a">
           <img src="assets/images/icons/whatsapp.svg" alt="WhatsApp">
+        </div>
+        <div class="kontakt-text">
+          <div class="kontakt-label">${t.whatsapp}</div>
+          <div class="kontakt-value">${whatsappNumber}</div>
         </div>
       </a>
 
       <a class="kontakt-item" href="${telegramHref}">
-        <div>
-          <div class="kontakt-label">${t.telegram}</div>
-          <div class="kontakt-value">${t.put_telegram}</div>
-        </div>
         <div class="kontakt-icon" style="color:#2aa8ff">
           <img src="assets/images/icons/telegram.svg" alt="Telegram">
+        </div>
+        <div class="kontakt-text">
+          <div class="kontakt-label">${t.telegram}</div>
+          <div class="kontakt-value">${t.put_telegram}</div>
         </div>
       </a>
 
       <a class="kontakt-item" href="${emailHref}">
-        <div>
-          <div class="kontakt-label">${t.email}</div>
-          <div class="kontakt-value">${emailAddress}</div>
-        </div>
         <div class="kontakt-icon" style="color:#8aa0ff">
           <img src="assets/images/icons/email.svg" alt="Email">
+        </div>
+        <div class="kontakt-text">
+          <div class="kontakt-label">${t.email}</div>
+          <div class="kontakt-value">${emailAddress}</div>
         </div>
       </a>
     </div>
@@ -219,79 +206,85 @@ async function renderKontakt(){
         class="kontakt-logo"
         src="assets/images/logo/logo-dekokraft-600.webp"
         srcset="assets/images/logo/logo-dekokraft-600.webp 600w, assets/images/logo/logo-dekokraft-1200.webp 1200w"
-        sizes="220px"
+        sizes="240px"
         alt="DekoKraft Logo"
       />
     </div>
   `;
 }
 
-/* ---------- HOME RENDER ---------- */
+/* =========================
+   HOME
+   ========================= */
 async function renderHome(){
   const sectionsGrid = qs("#sectionsGrid");
   const featuredGrid = qs("#featuredGrid");
   if (!sectionsGrid || !featuredGrid) return;
 
+  const meta = categoryMeta();
   const t = I18N[STATE.lang];
 
-  // Main sections (representative product per category)
+  // ✅ 1) الأقسام الرئيسية
   sectionsGrid.innerHTML = "";
-  const cats = ["gifts","decor","kids","services"];
+  for (const cat of Object.keys(meta)){
+    const m = meta[cat];
+    const title = (I18N[STATE.lang][m.key] || cat);
+    const img = await resolveImageFromBase(m.imageBase, title);
 
-  for (const cat of cats){
-    const rep = getRepresentativeByCategory(cat);
-    const title = categoryTitle(cat);
-
-    let img = buildPlaceholderDataURI(title);
-    let productId = null;
-
-    if (rep){
-      productId = rep.id;
-      img = await resolveImageFromBase(rep.imageBase, title);
-    }
+    const productHref = `product.html?id=${encodeURIComponent(m.firstProductId)}`;
 
     const card = document.createElement("div");
-    card.className = "card card--section";
+    card.className = "card is-section";
     card.innerHTML = `
       <span class="badge">neu</span>
-      <div class="card-inner">
-        <a class="link-card" href="product.html?id=${encodeURIComponent(productId || "")}">
+
+      <a class="card-link" href="${productHref}">
+        <div class="card-inner">
           <div class="card-media">
             <img src="${img}" alt="${title}">
           </div>
-          <div class="card-title">${title}</div>
-        </a>
+          <div class="card-title">${title} ${m.emoji}</div>
+          <p class="card-desc">${title}</p>
+        </div>
+      </a>
 
+      <div class="card-inner" style="padding-top:0">
         <div class="card-actions">
-          <!-- ✅ زر عرض القسم يذهب لصفحة العرض مباشرة -->
-          <a class="btn" href="product.html?id=${encodeURIComponent(productId || "")}">${t.view_section}</a>
+          <a class="btn" href="${productHref}">${t.view_section}</a>
         </div>
       </div>
     `;
     sectionsGrid.appendChild(card);
   }
 
-  // Featured/random products: cards are links, no buttons, with mist overlay
-  const featured = getFeaturedProducts(6);
-  featuredGrid.innerHTML = "";
+  // ✅ 2) المنتجات المختارة (بدون زر) + استبعاد صور الأقسام الرئيسية
+  const excludeIds = new Set(Object.values(meta).map(m => m.firstProductId));
+  const candidates = STATE.products.filter(p => !excludeIds.has(p.id));
 
+  // خذ أول 4 (أو أقل)
+  const featured = candidates.slice(0, 4);
+
+  featuredGrid.innerHTML = "";
   for (const p of featured){
     const title = getLangText(p.title);
     const desc = getLangText(p.description);
     const img = await resolveImageFromBase(p.imageBase, title);
 
-    const card = document.createElement("a");
-    card.className = "card card--product link-card";
-    card.href = `product.html?id=${encodeURIComponent(p.id)}`;
+    const href = `product.html?id=${encodeURIComponent(p.id)}`;
+
+    const card = document.createElement("div");
+    card.className = "card is-featured";
     card.innerHTML = `
       <span class="badge">neu</span>
-      <div class="card-inner">
-        <div class="card-media">
-          <img src="${img}" alt="${title}">
+      <a class="card-link" href="${href}">
+        <div class="card-inner">
+          <div class="card-media">
+            <img src="${img}" alt="${title}">
+          </div>
+          <div class="card-title">${title}</div>
+          <p class="card-desc">${desc}</p>
         </div>
-        <div class="card-title">${title}</div>
-        <p class="card-desc">${desc}</p>
-      </div>
+      </a>
     `;
     featuredGrid.appendChild(card);
   }
@@ -299,131 +292,146 @@ async function renderHome(){
   await renderKontakt();
 }
 
-/* ---------- PRODUCT VIEWER ---------- */
-function makeShortPitch(desc){
-  // وصف قصير “يوحي بالحاجة” (بدون تعقيد)
-  if (!desc) return "";
-  // نتركه كما هو لكن نحسّن الإيقاع:
-  return desc.length > 140 ? (desc.slice(0, 140) + "…") : desc;
-}
-
-async function setViewerProduct(productId, {push=true} = {}){
-  const p = STATE.products.find(x => x.id === productId);
-  if (!p) return;
-
-  const imgEl = qs("#viewerImage");
-  const titleEl = qs("#viewerTitle");
-  const descEl = qs("#viewerDesc");
-
-  const title = getLangText(p.title);
-  const desc = makeShortPitch(getLangText(p.description));
-
-  titleEl.textContent = title;
-  descEl.textContent = desc;
-  imgEl.src = await resolveImageFromBase(p.imageBase, title);
-  imgEl.alt = title;
-
-  // active thumb
-  qsa(".thumb").forEach(el=>{
-    el.classList.toggle("is-active", el.dataset.id === productId);
-  });
-
-  if (push){
-    const url = new URL(location.href);
-    url.searchParams.set("id", productId);
-    history.pushState({id: productId}, "", url.toString());
-  }
-}
-
-async function renderProduct(){
-  const id = getParam("id");
-  const thumbList = qs("#thumbList");
-  if (!thumbList) return;
-
-  const p = STATE.products.find(x => x.id === id) || STATE.products[0];
-  if (!p){
-    await renderKontakt();
-    return;
-  }
-
-  // Build thumbnails of same category
-  const sameCat = STATE.products.filter(x => x.category === p.category);
-
-  thumbList.innerHTML = "";
-  for (const item of sameCat){
-    const title = getLangText(item.title);
-    const sub = getLangText(item.description);
-    const img = await resolveImageFromBase(item.imageBase, title);
-
-    const div = document.createElement("div");
-    div.className = "thumb";
-    div.dataset.id = item.id;
-    div.innerHTML = `
-      <img src="${img}" alt="${title}">
-      <div>
-        <p class="thumb-title">${title}</p>
-        <p class="thumb-sub">${makeShortPitch(sub)}</p>
-      </div>
-    `;
-    div.addEventListener("click", ()=> setViewerProduct(item.id, {push:true}));
-    thumbList.appendChild(div);
-  }
-
-  // initial viewer
-  await setViewerProduct(p.id, {push:false});
-  await renderKontakt();
-
-  // handle back/forward
-  window.onpopstate = (e)=>{
-    const newId = (e.state && e.state.id) ? e.state.id : getParam("id");
-    if (newId) setViewerProduct(newId, {push:false});
-  };
-}
-
-/* ---------- CATEGORY (optional) ---------- */
+/* =========================
+   CATEGORY
+   ========================= */
 async function renderCategory(){
   const cat = getParam("cat") || "gifts";
   const grid = qs("#categoryGrid");
   const titleEl = qs("#categoryTitle");
   if (!grid || !titleEl) return;
 
-  titleEl.textContent = categoryTitle(cat);
-  const items = STATE.products.filter(p => p.category === cat);
+  const meta = categoryMeta();
+  const m = meta[cat] || meta.gifts;
+  titleEl.textContent = (I18N[STATE.lang][m.key] || cat);
 
+  const items = STATE.products.filter(p => p.category === cat);
   grid.innerHTML = "";
+
   for (const p of items){
     const title = getLangText(p.title);
     const desc = getLangText(p.description);
     const img = await resolveImageFromBase(p.imageBase, title);
+    const href = `product.html?id=${encodeURIComponent(p.id)}`;
 
-    const a = document.createElement("a");
-    a.className = "card card--product link-card";
-    a.href = `product.html?id=${encodeURIComponent(p.id)}`;
-    a.innerHTML = `
+    const card = document.createElement("div");
+    card.className = "card is-featured";
+    card.innerHTML = `
       <span class="badge">neu</span>
-      <div class="card-inner">
-        <div class="card-media"><img src="${img}" alt="${title}"></div>
-        <div class="card-title">${title}</div>
-        <p class="card-desc">${desc}</p>
-      </div>
+      <a class="card-link" href="${href}">
+        <div class="card-inner">
+          <div class="card-media">
+            <img src="${img}" alt="${title}">
+          </div>
+          <div class="card-title">${title}</div>
+          <p class="card-desc">${desc}</p>
+        </div>
+      </a>
     `;
-    grid.appendChild(a);
+    grid.appendChild(card);
   }
 
   await renderKontakt();
 }
 
-/* ---------- INIT ---------- */
-async function bootRender(){
-  setDirAndLang(STATE.lang);
-  const page = document.body.getAttribute("data-page");
+/* =========================
+   PRODUCT (Gallery)
+   ========================= */
+async function renderProduct(){
+  const imgEl = qs("#productImage");
+  const titleEl = qs("#productTitle");
+  const descEl = qs("#productDesc");
+  const thumbsCol = qs("#thumbsCol");
 
-  if (page === "home") return renderHome();
-  if (page === "product") return renderProduct();
-  if (page === "category") return renderCategory();
+  if (!imgEl || !titleEl || !descEl || !thumbsCol) return;
+
+  const id = getParam("id");
+  let current = STATE.products.find(x => x.id === id) || STATE.products[0];
+
+  if (!current){
+    titleEl.textContent = "Not found";
+    descEl.textContent = "";
+    imgEl.src = buildPlaceholderDataURI("Not found");
+    await renderKontakt();
+    return;
+  }
+
+  async function showProduct(prod, pushUrl){
+    const title = getLangText(prod.title);
+    const desc = getLangText(prod.description);
+
+    titleEl.textContent = title;
+    descEl.textContent = desc;
+    imgEl.src = await resolveImageFromBase(prod.imageBase, title);
+
+    if (pushUrl){
+      const u = new URL(location.href);
+      u.searchParams.set("id", prod.id);
+      history.replaceState({}, "", u.toString());
+    }
+
+    // active state in thumbs
+    qsa(".thumb", thumbsCol).forEach(el=>{
+      el.classList.toggle("is-active", el.dataset.id === prod.id);
+    });
+  }
+
+  // Build thumbs for same category
+  const group = STATE.products.filter(p => p.category === current.category);
+  thumbsCol.innerHTML = "";
+
+  for (const p of group){
+    const tt = getLangText(p.title);
+    const sub = getLangText(p.description);
+    const thumbImg = await resolveImageFromBase(p.imageBase, tt);
+
+    const item = document.createElement("div");
+    item.className = "thumb";
+    item.dataset.id = p.id;
+    item.innerHTML = `
+      <img src="${thumbImg}" alt="${tt}">
+      <div>
+        <div class="thumb-title">${tt}</div>
+        <div class="thumb-sub">${sub}</div>
+      </div>
+    `;
+    item.addEventListener("click", async ()=>{
+      current = p;
+      await showProduct(p, true);
+    });
+    thumbsCol.appendChild(item);
+  }
+
+  await showProduct(current, false);
+  await renderKontakt();
 }
 
+/* =========================
+   INIT
+   ========================= */
 async function init(){
   setDirAndLang(STATE.lang);
 
-  const menuBtn = qs
+  const menuBtn = qs(".menu-btn");
+  if (menuBtn) menuBtn.addEventListener("click", toggleMenu);
+
+  qsa(".lang-btn").forEach(btn=>{
+    btn.addEventListener("click", ()=>{
+      setDirAndLang(btn.dataset.lang);
+      bootRender();
+    });
+  });
+
+  await loadProducts();
+  await bootRender();
+}
+
+async function bootRender(){
+  setDirAndLang(STATE.lang);
+  const page = document.body.getAttribute("data-page");
+  if (page === "home") return renderHome();
+  if (page === "category") return renderCategory();
+  if (page === "product") return renderProduct();
+}
+
+init();
