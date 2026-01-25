@@ -3,10 +3,10 @@
 <head>
   <meta charset="utf-8" />
   <meta name="viewport" content="width=device-width,initial-scale=1" />
-  <title>DekoKraft</title>
+  <title>DekoKraft - Product</title>
   <link rel="stylesheet" href="assets/css/main.css" />
 </head>
-<body data-page="home">
+<body data-page="product">
 
 <header class="site-header">
   <div class="container header-inner">
@@ -42,35 +42,32 @@
 </header>
 
 <main>
-  <section class="hero">
-    <div class="container hero-inner">
-      <h1 class="hero-title">
-        <span class="hero-brand">DekoKraft</span>
-        <span data-i18n="hero_welcome">مرحباً بكم في</span>
-      </h1>
-      <p class="hero-sub" data-i18n="hero_sub">
-        هنا تجدون هدايا مصنوعة بعناية، ديكور مميز للأطفال، وخدمات متنوعة.
-      </p>
+  <section class="section">
+    <div class="container">
+      <div class="product card" id="productView" aria-live="polite">
+        <div class="product-media">
+          <img id="productImage" alt="" />
+        </div>
+        <div class="product-body">
+          <h1 class="product-title" id="productTitle"></h1>
+          <p class="product-desc" id="productDesc"></p>
+
+          <div class="product-actions">
+            <a class="btn" id="backToCategory" href="index.html" data-i18n="back_to_section">الرجوع للقسم</a>
+            <a class="btn btn-ghost" href="index.html" data-i18n="back_home">الرئيسية</a>
+          </div>
+        </div>
+      </div>
     </div>
   </section>
 
   <section class="section">
     <div class="container">
       <div class="section-head">
-        <h2 class="section-title" data-i18n="sections_title">الأقسام</h2>
+        <h2 class="section-title" data-i18n="related_title">منتجات مشابهة</h2>
       </div>
 
-      <div class="grid" id="categoryGrid" aria-live="polite"></div>
-    </div>
-  </section>
-
-  <section class="section">
-    <div class="container">
-      <div class="section-head">
-        <h2 class="section-title" data-i18n="featured_title">منتجات مختارة</h2>
-      </div>
-
-      <div class="grid" id="featuredGrid" aria-live="polite"></div>
+      <div class="grid" id="relatedGrid" aria-live="polite"></div>
     </div>
   </section>
 
