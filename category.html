@@ -8,111 +8,102 @@
 </head>
 <body data-page="category">
 
-<header>
+<header class="site-header">
   <div class="container header-inner">
-    <button class="menu-btn" type="button" aria-label="Menu">
-      <span data-i18n="menu">Menu</span>
-      <span class="menu-icon" aria-hidden="true">
-        <span></span><span></span><span></span>
-      </span>
-    </button>
+    <a class="brand" href="index.html" aria-label="DekoKraft Home">
+      <img class="brand-logo" src="assets/images/logo/logo-dekokraft.png" alt="DekoKraft" />
+      <span class="brand-name">DekoKraft</span>
+    </a>
 
-    <nav class="nav">
+    <div class="header-actions">
+      <button class="lang-btn" type="button" data-lang="de">DE</button>
+      <button class="lang-btn is-active" type="button" data-lang="ar">AR</button>
+
+      <button class="menu-btn" type="button" aria-label="Menu" id="menuBtn">
+        <span data-i18n="menu">Menu</span>
+        <span class="menu-icon" aria-hidden="true">
+          <span></span><span></span><span></span>
+        </span>
+      </button>
+    </div>
+  </div>
+
+  <nav class="nav" id="nav">
+    <div class="container nav-inner">
       <a href="index.html" data-i18n="nav_home">الرئيسية</a>
       <a href="category.html?cat=gifts" data-i18n="nav_gifts">الهدايا</a>
       <a href="category.html?cat=decor" data-i18n="nav_decor">الديكور</a>
       <a href="category.html?cat=kids" data-i18n="nav_kids">هدايا الأطفال</a>
       <a href="category.html?cat=services" data-i18n="nav_services">الخدمات</a>
       <a href="#kontakt" data-i18n="nav_contact">التواصل</a>
-    </nav>
-
-    <div class="lang">
-      <button type="button" data-lang="ar">AR</button>
-      <button type="button" data-lang="de">DE</button>
+      <button class="nav-close" type="button" aria-label="Close" id="navClose">✕</button>
     </div>
-
-    <div class="brand">
-      <div class="brand-title">DekoKraft</div>
-      <img class="brand-logo" src="assets/images/logo/logo-dekokraft-600.webp" alt="DekoKraft Logo">
-    </div>
-  </div>
+  </nav>
 </header>
 
-<div id="mobileMenu" aria-hidden="true">
-  <div class="menu-panel">
-    <div class="menu-top">
-      <strong>DekoKraft</strong>
-      <button class="menu-close" type="button">✕</button>
-    </div>
-    <div class="menu-links">
-      <a href="index.html" data-i18n="nav_home">الرئيسية</a>
-      <a href="category.html?cat=gifts" data-i18n="nav_gifts">الهدايا</a>
-      <a href="category.html?cat=decor" data-i18n="nav_decor">الديكور</a>
-      <a href="category.html?cat=kids" data-i18n="nav_kids">هدايا الأطفال</a>
-      <a href="category.html?cat=services" data-i18n="nav_services">الخدمات</a>
-      <a href="#kontakt" data-i18n="nav_contact">التواصل</a>
-    </div>
-  </div>
-</div>
-
-<main class="container">
-  <section class="hero" style="padding-bottom:10px;">
-    <h1 id="categoryTitle">Category</h1>
-    <p data-i18n="hero_subtitle"> </p>
-  </section>
-
+<main>
   <section class="section">
-    <div id="categoryGrid" class="grid cols"></div>
+    <div class="container">
+      <div class="section-head">
+        <h1 class="section-title" id="categoryTitle"></h1>
+        <p class="section-sub" id="categorySub"></p>
+      </div>
+
+      <div class="grid" id="categoryGrid" aria-live="polite"></div>
+    </div>
   </section>
 
-  <!-- KONTAKT (same as index) -->
-  <section id="kontakt" class="kontakt">
-    <div class="kontakt_card">
-      <h2 class="kontakt_title" data-i18n="kontakt">KONTAKT</h2>
+  <section class="section" id="kontakt">
+    <div class="container">
+      <div class="kontakt card">
+        <div class="kontakt-left">
+          <h2 class="kontakt-title">KONTAKT</h2>
 
-      <div class="kontakt_grid">
-        <div>
-          <div class="kline">
-            <img class="icon" src="assets/images/icons/whatsapp.svg" alt="">
+          <div class="kontakt-row">
+            <img class="icon" src="assets/images/icons/whatsapp.svg" alt="WhatsApp" />
             <div>
-              <div><strong data-i18n="whatsapp">WhatsApp</strong></div>
-              <small><a href="https://wa.me/4917681213098" target="_blank" rel="noopener">+49 176 81213098</a></small>
+              <div class="kontakt-label">WhatsApp</div>
+              <a class="kontakt-link" href="https://wa.me/4917681213098" target="_blank" rel="noopener">+49 176 81213098</a>
             </div>
           </div>
 
-          <div class="kline">
-            <img class="icon" src="assets/images/icons/email.svg" alt="">
+          <div class="kontakt-row">
+            <img class="icon" src="assets/images/icons/telegram.svg" alt="Telegram" />
             <div>
-              <div><strong data-i18n="email">Email</strong></div>
-              <small><a href="mailto:ra_ahmed@hotmail.de">ra_ahmed@hotmail.de</a></small>
+              <div class="kontakt-label">Telegram</div>
+              <a class="kontakt-link" href="#" target="_blank" rel="noopener" data-i18n="telegram_hint">ضع رابط التليجرام هنا</a>
+            </div>
+          </div>
+
+          <div class="kontakt-row">
+            <img class="icon" src="assets/images/icons/facebook.svg" alt="Facebook" />
+            <div>
+              <div class="kontakt-label">Facebook</div>
+              <a class="kontakt-link" href="#" target="_blank" rel="noopener" data-i18n="facebook_hint">ضع رابط فيسبوك هنا</a>
+            </div>
+          </div>
+
+          <div class="kontakt-row">
+            <div class="dot" aria-hidden="true"></div>
+            <div>
+              <div class="kontakt-label">Email</div>
+              <a class="kontakt-link" href="mailto:ra_ahmed@hotmail.de">ra_ahmed@hotmail.de</a>
             </div>
           </div>
         </div>
 
-        <div>
-          <div class="section-title" style="margin-top:0;">
-            <h2 style="margin:0;" data-i18n="kontakt_social">وسائل التواصل</h2>
-          </div>
-          <div class="social">
-            <a href="https://instagram.com/adamplanet02" target="_blank" rel="noopener">
-              <img class="icon" src="assets/images/icons/instagram.svg" alt="">
-              <span data-i18n="instagram">Instagram</span>
-            </a>
-            <a href="https://facebook.com/" target="_blank" rel="noopener">
-              <img class="icon" src="assets/images/icons/facebook.svg" alt="">
-              <span data-i18n="facebook">Facebook</span>
-            </a>
-            <a href="https://t.me/" target="_blank" rel="noopener">
-              <img class="icon" src="assets/images/icons/telegram.svg" alt="">
-              <span data-i18n="telegram">Telegram</span>
-            </a>
+        <div class="kontakt-right">
+          <div class="kontakt-visual">
+            <div class="bubble"></div>
           </div>
         </div>
       </div>
+
+      <div class="footer">
+        <span>© 2026 DekoKraft</span>
+      </div>
     </div>
   </section>
-
-  <div class="footer">DekoKraft <span id="year"></span> ©</div>
 </main>
 
 <script src="assets/js/main.js"></script>
