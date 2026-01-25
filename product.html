@@ -3,10 +3,10 @@
 <head>
   <meta charset="utf-8" />
   <meta name="viewport" content="width=device-width,initial-scale=1" />
-  <title>DekoKraft</title>
+  <title>DekoKraft - Product</title>
   <link rel="stylesheet" href="assets/css/main.css" />
 </head>
-<body data-page="home">
+<body data-page="product">
 
 <header class="site-header">
   <div class="container header-inner">
@@ -43,32 +43,28 @@
 </header>
 
 <main>
-  <section class="hero">
-    <div class="container">
-      <h1 class="hero-title">
-        <span data-i18n="hero_welcome">مرحباً بكم في</span> <span class="hero-brand">DekoKraft</span>
-      </h1>
-      <p class="hero-sub" data-i18n="hero_sub">
-        هنا تجدون هدايا مصنوعة بعناية، ديكور مميز للأطفال، وخدمات متنوعة.
-      </p>
-    </div>
-  </section>
-
   <section class="section">
     <div class="container">
-      <div class="section-head">
-        <h2 data-i18n="sections_title">الأقسام</h2>
-      </div>
-      <div class="grid grid-sections" id="sectionsGrid"></div>
-    </div>
-  </section>
+      <div class="product-shell">
+        <div class="product-main">
+          <div class="product-media">
+            <img id="productImage" alt="" />
+          </div>
+          <div class="product-info">
+            <h1 id="productTitle" class="product-title">Product</h1>
+            <p id="productDesc" class="product-desc"></p>
+          </div>
+        </div>
 
-  <section class="section">
-    <div class="container">
-      <div class="section-head">
-        <h2 data-i18n="featured_title">منتجات مختارة</h2>
+        <aside class="product-side">
+          <div class="side-head" data-i18n="gallery_title">منتجات من نفس المجموعة</div>
+          <div class="thumbs" id="thumbsCol"></div>
+        </aside>
       </div>
-      <div class="grid grid-products" id="featuredGrid"></div>
+
+      <div class="product-actions">
+        <a class="btn" href="index.html" data-i18n="back_home">العودة للرئيسية</a>
+      </div>
     </div>
   </section>
 
