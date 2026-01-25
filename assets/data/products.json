@@ -3,116 +3,116 @@
     {
       "id": "gift-001",
       "category": "gifts",
-      "title": { "ar": "هدية 001 🎁", "de": "Geschenk 001 🎁" },
-      "description": {
-        "ar": "هدية جميلة ومناسبة لكل المناسبات.",
-        "de": "Ein schönes Geschenk für jeden Anlass."
+      "title": {
+        "ar": "هدية صندوق مفاجأة",
+        "de": "Überraschungs-Geschenkbox"
       },
-      "image": "assets/images/products/gifts/gift-001-600.webp",
-      "images": [
-        "assets/images/products/gifts/gift-001-600.webp"
-      ],
+      "description": {
+        "ar": "هدية مميزة مناسبة لجميع المناسبات.",
+        "de": "Ein besonderes Geschenk für alle Anlässe."
+      },
+      "imageBase": "assets/images/products/gifts/gift-001",
       "related": ["gift-002"]
     },
     {
       "id": "gift-002",
       "category": "gifts",
-      "title": { "ar": "هدية 002 🎁", "de": "Geschenk 002 🎁" },
-      "description": {
-        "ar": "فكرة هدية مميزة ومختلفة.",
-        "de": "Eine besondere Geschenkidee."
+      "title": {
+        "ar": "هدية أنيقة",
+        "de": "Elegantes Geschenk"
       },
-      "image": "assets/images/products/gifts/gift-002-1200.webp",
-      "images": [
-        "assets/images/products/gifts/gift-002-1200.webp"
-      ],
+      "description": {
+        "ar": "تفاصيل جميلة ولمسة فريدة.",
+        "de": "Schöne Details und eine besondere Note."
+      },
+      "imageBase": "assets/images/products/gifts/gift-002",
       "related": ["gift-001"]
     },
 
     {
       "id": "decor-001",
       "category": "decor",
-      "title": { "ar": "ديكور 001 🏠", "de": "Dekoration 001 🏠" },
-      "description": {
-        "ar": "قطعة ديكور أنيقة للمنزل.",
-        "de": "Elegante Dekoration für Ihr Zuhause."
+      "title": {
+        "ar": "ديكور منزلي أنيق",
+        "de": "Elegante Wohn-Dekoration"
       },
-      "image": "assets/images/products/decor/decor-001-1200.webp",
-      "images": [
-        "assets/images/products/decor/decor-001-1200.webp"
-      ],
+      "description": {
+        "ar": "لمسات ديكور تضيف جمالاً للمكان.",
+        "de": "Dekorationselemente für ein schönes Zuhause."
+      },
+      "imageBase": "assets/images/products/decor/decor-001",
       "related": ["decor-002"]
     },
     {
       "id": "decor-002",
       "category": "decor",
-      "title": { "ar": "ديكور 002 🏠", "de": "Dekoration 002 🏠" },
-      "description": {
-        "ar": "ديكور عصري بلمسة فنية.",
-        "de": "Moderne Dekoration mit künstlerischem Touch."
+      "title": {
+        "ar": "ديكور عصري",
+        "de": "Moderne Dekoration"
       },
-      "image": "assets/images/products/decor/decor-002-1200.webp",
-      "images": [
-        "assets/images/products/decor/decor-002-1200.webp"
-      ],
+      "description": {
+        "ar": "ستايل عصري يناسب كل الزوايا.",
+        "de": "Moderner Stil für jede Ecke."
+      },
+      "imageBase": "assets/images/products/decor/decor-002",
       "related": ["decor-001"]
     },
 
     {
       "id": "kids-001",
       "category": "kids",
-      "title": { "ar": "منتج أطفال 001 🧸", "de": "Kinderprodukt 001 🧸" },
-      "description": {
-        "ar": "منتج آمن ومناسب للأطفال.",
-        "de": "Ein sicheres Produkt für Kinder."
+      "title": {
+        "ar": "لعبة للأطفال",
+        "de": "Holzspielzeug für Kinder"
       },
-      "image": "assets/images/products/kids/kids-001-1200.webp",
-      "images": [
-        "assets/images/products/kids/kids-001-1200.webp"
-      ],
+      "description": {
+        "ar": "لعبة آمنة وممتعة للأطفال.",
+        "de": "Sicheres und unterhaltsames Spielzeug."
+      },
+      "imageBase": "assets/images/products/kids/kids-001",
       "related": ["kids-002"]
     },
     {
       "id": "kids-002",
       "category": "kids",
-      "title": { "ar": "منتج أطفال 002 🧸", "de": "Kinderprodukt 002 🧸" },
-      "description": {
-        "ar": "هدية جميلة للأطفال.",
-        "de": "Eine schöne Geschenkidee für Kinder."
+      "title": {
+        "ar": "هدية تعليمية",
+        "de": "Lernspiel"
       },
-      "image": "assets/images/products/kids/kids-002-1200.webp",
-      "images": [
-        "assets/images/products/kids/kids-002-1200.webp"
-      ],
+      "description": {
+        "ar": "هدية تساعد على التعلم والمرح.",
+        "de": "Zum Lernen und Spielen."
+      },
+      "imageBase": "assets/images/products/kids/kids-002",
       "related": ["kids-001"]
     },
 
     {
       "id": "service-001",
       "category": "services",
-      "title": { "ar": "خدمة 001 🛠️", "de": "Service 001 🛠️" },
-      "description": {
-        "ar": "خدمة حسب الطلب.",
-        "de": "Service nach Wunsch."
+      "title": {
+        "ar": "خدمة حسب الطلب",
+        "de": "Service nach Wunsch"
       },
-      "image": "assets/images/products/services/service-001-1200.webp",
-      "images": [
-        "assets/images/products/services/service-001-1200.webp"
-      ],
+      "description": {
+        "ar": "نقدم خدمات مخصصة حسب طلبك.",
+        "de": "Individuelle Dienstleistungen nach Wunsch."
+      },
+      "imageBase": "assets/images/products/services/service-001",
       "related": ["service-002"]
     },
     {
       "id": "service-002",
       "category": "services",
-      "title": { "ar": "خدمة 002 🛠️", "de": "Service 002 🛠️" },
-      "description": {
-        "ar": "خدمة إضافية حسب الطلب.",
-        "de": "Zusätzlicher Service nach Wunsch."
+      "title": {
+        "ar": "خدمة إضافية",
+        "de": "Zusätzlicher Service"
       },
-      "image": "assets/images/products/services/service-002-1200.webp",
-      "images": [
-        "assets/images/products/services/service-002-1200.webp"
-      ],
+      "description": {
+        "ar": "خيار خدمة إضافية حسب الحاجة.",
+        "de": "Ein zusätzlicher Service nach Bedarf."
+      },
+      "imageBase": "assets/images/products/services/service-002",
       "related": ["service-001"]
     }
   ]
