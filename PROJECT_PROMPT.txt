@@ -1,32 +1,60 @@
 PROJECT: DekoKraft (Static site on GitHub Pages)
-STACK: HTML + CSS + Vanilla JavaScript + JSON only
+STACK: HTML + CSS + Vanilla JavaScript + JSON فقط (بدون Framework, بدون Backend)
 
-FILES:
-- index.html: Home (Hero + Category cards + Featured products + Kontakt)
-- category.html: Category page (Grid of products of a selected category + Kontakt)
-- product.html: Product page (Large image + title + description + related products + Kontakt)
-- assets/css/main.css: One stylesheet for all pages
-- assets/js/main.js: Menu, language toggle, JSON loading, rendering, image resolving
-- assets/data/products.json: Database of products
+GOAL:
+موقع ثابت بواجهة Dark/Glass. يدعم لغتين (AR/DE) مع تبديل اللغة بدون كسر الروابط أو التصميم.
+يحتوي على: أقسام + منتجات + صفحة منتج + صفحة قسم + قسم KONTAKT موحد في كل الصفحات.
+
+PAGES:
+1) index.html
+- Hero
+- قسم "الأقسام": 4 بطاقات (Gifts/Decor/Kids/Services)
+  IMPORTANT: على الهاتف يجب أن تكون البطاقات 2×2 (عمودين).
+- قسم "منتجات مختارة"
+- KONTAKT
+
+2) category.html
+- يعرض شبكة منتجات القسم حسب ?cat=
+- KONTAKT
+
+3) product.html
+- يعرض منتج واحد حسب ?id=
+- صورة كبيرة + عنوان + وصف + منتجات مشابهة من نفس القسم
+- KONTAKT
+
+ASSETS:
+- assets/css/main.css: جميع التنسيقات (Glass/Dark + Responsive + Grid + Kontakt + Menu)
+- assets/js/main.js: المنطق (Menu + AR/DE + تحميل JSON + Rendering لكل الصفحات)
+- assets/data/products.json: بيانات المنتجات
 
 LANGUAGES:
-- AR and DE.
-- AR => dir=rtl, DE => dir=ltr.
-- Use localStorage "lang" to remember.
+- AR: RTL, DE: LTR
+- زر/أزرار التبديل AR/DE تحفظ الاختيار في localStorage
+- تغيير اللغة يغيّر النصوص فقط، لا يغيّر الروابط.
+- العناصر التي تحتوي data-i18n يتم تبديلها حسب اللغة.
 
-CRITICAL IMAGE RULE:
-- Product images are NOT stored as gift-001.webp
-- They are stored as: gift-001-600.webp / gift-001-1200.webp etc.
-- products.json must store imageBase only, e.g.:
-  "imageBase": "assets/images/products/gifts/gift-001"
-- main.js must auto-resolve:
-  prefer "-1200.webp" then "-600.webp", else fallback placeholder.
+CRITICAL IMAGE RULE (حل مشكلة الصور):
+صور المنتجات ليست gift-001.webp
+بل تأتي كالتالي:
+- gift-001-600.webp
+- gift-001-1200.webp (قد لا تكون موجودة دائماً)
+لذلك داخل products.json نعتمد:
+imageBase: "assets/images/products/gifts/gift-001"
+والكود يكوّن المسار الصحيح:
+- يفضّل "-1200.webp" إذا كانت موجودة
+- وإلا يستخدم "-600.webp" إذا كانت موجودة
+- وإلا يستخدم Placeholder (بدون كسر التصميم)
 
-RENDERING RULES:
-- Category cards on home show an image and a button "عرض القسم / Bereich ansehen".
-- Featured products show same card style but without button; clicking card opens product.html?id=...
-- Product page has NO big category title; only product info + similar products + Kontakt.
-- Kontakt section is identical on all pages.
+UI FIXES REQUIRED (حسب آخر ملاحظات):
+- Grid الأقسام على الهاتف 2×2 (عمودين).
+- على الكمبيوتر: الصور داخل بطاقات الأقسام والمنتجات لا تكون "قريبة/مقصوصة" بشكل مزعج.
+  استخدم object-fit مناسب + ارتفاع ثابت + فراغات (gap/padding) أفضل.
+- KONTAKT:
+  - إصلاح أيقونة Facebook (قراءة SVG صحيحة)
+  - إضافة أيقونة Email
+  - استبدال الدائرة الكبيرة بصورة logo داخل نفس المكان (logo-dekokraft-600.webp/1200.webp)
+  - أيقونات التواصل تأتي من assets/images/icons/*.svg
 
-WORKFLOW:
-- When modifying files, output full file content.
+WORKFLOW RULE:
+عند طلب تعديل ملف: اطبع الكود كامل لذلك الملف فقط.
+(حالياً المستخدم طلب طباعة كل الأكواد كاملة للمشروع دفعة واحدة.)
