@@ -1,10 +1,15 @@
-/* DekoKraft main.js
-   - Menu
-   - Language AR/DE (dir switch)
+/* DekoKraft — main.js (Vanilla JS)
+   - Menu toggle
+   - AR/DE language switch
    - Load products.json
-   - Render index/category/product
-   - Image auto resolve from imageBase (-1200.webp then -600.webp then placeholder)
+   - Render: index/category/product
+   - Smart image resolver: -1200.webp preferred, else -600.webp, else placeholder
 */
+
+const STATE = {
+  lang: localStorage.getItem("dk_lang") || "ar",
+  products: [],
+};
 
 const I18N = {
   ar: {
@@ -14,25 +19,22 @@ const I18N = {
     nav_decor: "الديكور",
     nav_kids: "هدايا الأطفال",
     nav_services: "الخدمات",
-    nav_contact: "التواصل",
+    nav_contact: "Kontakt",
     hero_welcome: "مرحباً بكم في",
     hero_sub: "هنا تجدون هدايا مصنوعة بعناية، ديكور مميز للأطفال، وخدمات متنوعة.",
     sections_title: "الأقسام",
     featured_title: "منتجات مختارة",
+    view_section: "عرض القسم →",
+    view_product: "عرض المنتج →",
     related_title: "منتجات مشابهة",
-    view_section: "عرض القسم",
-    back_home: "الرئيسية",
-    back_to_section: "الرجوع للقسم",
-    telegram_hint: "ضع رابط التليجرام هنا",
-    facebook_hint: "ضع رابط فيسبوك هنا",
-    cat_gifts_title: "الهدايا",
-    cat_decor_title: "الديكور",
-    cat_kids_title: "هدايا الأطفال",
-    cat_services_title: "الخدمات",
-    cat_gifts_sub: "أفكار هدايا مميزة لكل المناسبات.",
-    cat_decor_sub: "لمسات ديكور تضيف جمالاً للمكان.",
-    cat_kids_sub: "هدايا ممتعة ومناسبة للأطفال.",
-    cat_services_sub: "خدمات مخصصة حسب الطلب."
+    back_home: "العودة للرئيسية",
+    kontakt_title: "KONTAKT",
+    whatsapp: "WhatsApp",
+    telegram: "Telegram",
+    facebook: "Facebook",
+    email: "Email",
+    put_telegram: "ضع رابط التليجرام هنا",
+    put_facebook: "ضع رابط فيسبوك هنا"
   },
   de: {
     menu: "Menu",
@@ -46,333 +48,380 @@ const I18N = {
     hero_sub: "Handgemachte Geschenke, besondere Deko für Kinder und verschiedene Services.",
     sections_title: "Bereiche",
     featured_title: "Ausgewählte Produkte",
+    view_section: "Bereich ansehen →",
+    view_product: "Produkt ansehen →",
     related_title: "Ähnliche Produkte",
-    view_section: "Bereich ansehen",
-    back_home: "Startseite",
-    back_to_section: "Zur Kategorie",
-    telegram_hint: "Telegram-Link hier einfügen",
-    facebook_hint: "Facebook-Link hier einfügen",
-    cat_gifts_title: "Geschenke",
-    cat_decor_title: "Dekoration",
-    cat_kids_title: "Kinder-Geschenke",
-    cat_services_title: "Services",
-    cat_gifts_sub: "Besondere Geschenkideen für alle Anlässe.",
-    cat_decor_sub: "Schöne Dekoration für Ihr Zuhause.",
-    cat_kids_sub: "Sicheres & liebevolles für Kinder.",
-    cat_services_sub: "Individuelle Dienstleistungen nach Wunsch."
+    back_home: "Zur Startseite",
+    kontakt_title: "KONTAKT",
+    whatsapp: "WhatsApp",
+    telegram: "Telegram",
+    facebook: "Facebook",
+    email: "Email",
+    put_telegram: "Telegram-Link hier einfügen",
+    put_facebook: "Facebook-Link hier einfügen"
   }
 };
 
-const CATEGORY_META = {
-  gifts:   { icon: "🎁", titleKey: "cat_gifts_title",   subKey: "cat_gifts_sub",   imageBase: "assets/images/products/gifts/gift-001" },
-  decor:   { icon: "🏡", titleKey: "cat_decor_title",   subKey: "cat_decor_sub",   imageBase: "assets/images/products/decor/decor-001" },
-  kids:    { icon: "🧸", titleKey: "cat_kids_title",    subKey: "cat_kids_sub",    imageBase: "assets/images/products/kids/kids-001" },
-  services:{ icon: "🛠️", titleKey: "cat_services_title",subKey: "cat_services_sub",imageBase: "assets/images/products/services/service-001" }
-};
+function qs(sel, root=document){ return root.querySelector(sel); }
+function qsa(sel, root=document){ return Array.from(root.querySelectorAll(sel)); }
 
-function getLang(){
-  return localStorage.getItem("lang") || "ar";
-}
-function setLang(lang){
-  localStorage.setItem("lang", lang);
-  applyLang(lang);
-  rerenderCurrentPage();
-}
-function t(key){
-  const lang = getLang();
-  return (I18N[lang] && I18N[lang][key]) ? I18N[lang][key] : key;
-}
-function applyLang(lang){
+function setDirAndLang(lang){
+  STATE.lang = lang;
+  localStorage.setItem("dk_lang", lang);
   document.documentElement.lang = lang;
   document.documentElement.dir = (lang === "ar") ? "rtl" : "ltr";
 
-  // buttons state
-  document.querySelectorAll(".lang-btn").forEach(btn=>{
+  qsa(".lang-btn").forEach(btn=>{
     btn.classList.toggle("is-active", btn.dataset.lang === lang);
   });
 
-  // i18n text
-  document.querySelectorAll("[data-i18n]").forEach(el=>{
+  // Replace i18n texts
+  qsa("[data-i18n]").forEach(el=>{
     const key = el.getAttribute("data-i18n");
-    el.textContent = t(key);
+    if (I18N[lang] && I18N[lang][key]) el.textContent = I18N[lang][key];
   });
 }
 
-/* Menu */
-function initMenu(){
-  const nav = document.getElementById("nav");
-  const menuBtn = document.getElementById("menuBtn");
-  const navClose = document.getElementById("navClose");
-  if(!nav || !menuBtn || !navClose) return;
-
-  const open = ()=> nav.classList.add("is-open");
-  const close = ()=> nav.classList.remove("is-open");
-
-  menuBtn.addEventListener("click", open);
-  navClose.addEventListener("click", close);
-  nav.addEventListener("click", (e)=>{
-    if(e.target === nav) close();
-  });
+function toggleMenu(){
+  const nav = qs(".nav");
+  if (!nav) return;
+  nav.classList.toggle("is-open");
 }
 
-/* Safe URL params */
-function qs(name){
+async function loadProducts(){
+  const res = await fetch("assets/data/products.json", { cache: "no-store" });
+  const data = await res.json();
+  STATE.products = data.products || [];
+}
+
+function buildPlaceholderDataURI(label=""){
+  const txt = encodeURIComponent(label || "DekoKraft");
+  const svg = `
+  <svg xmlns="http://www.w3.org/2000/svg" width="1200" height="800">
+    <defs>
+      <linearGradient id="g" x1="0" y1="0" x2="1" y2="1">
+        <stop stop-color="rgba(120,140,255,0.18)" offset="0"/>
+        <stop stop-color="rgba(255,255,255,0.06)" offset="1"/>
+      </linearGradient>
+    </defs>
+    <rect width="100%" height="100%" fill="rgba(0,0,0,0.25)"/>
+    <rect x="40" y="40" rx="48" ry="48" width="1120" height="720" fill="url(#g)" stroke="rgba(255,255,255,0.12)" />
+    <text x="50%" y="50%" font-size="60" text-anchor="middle" fill="rgba(255,255,255,0.7)" font-family="Arial, sans-serif">${txt}</text>
+  </svg>`;
+  return "data:image/svg+xml;charset=utf-8," + encodeURIComponent(svg);
+}
+
+/* ✅ Smart image resolver:
+   tries -1200.webp then -600.webp then placeholder
+*/
+async function resolveImageFromBase(imageBase, label){
+  if (!imageBase) return buildPlaceholderDataURI(label);
+
+  const large = `${imageBase}-1200.webp`;
+  const small = `${imageBase}-600.webp`;
+
+  // Try large first
+  if (await urlExists(large)) return large;
+  if (await urlExists(small)) return small;
+
+  return buildPlaceholderDataURI(label);
+}
+
+async function urlExists(url){
+  try{
+    const res = await fetch(url, { method:"HEAD", cache:"no-store" });
+    return res.ok;
+  }catch(e){
+    return false;
+  }
+}
+
+function getLangText(obj){
+  if (!obj) return "";
+  return obj[STATE.lang] || obj.ar || obj.de || "";
+}
+
+function getParam(name){
   const u = new URL(location.href);
   return u.searchParams.get(name);
 }
 
-/* Data */
-let PRODUCTS_CACHE = null;
-
-async function loadProducts(){
-  if(PRODUCTS_CACHE) return PRODUCTS_CACHE;
-  const res = await fetch("assets/data/products.json", {cache:"no-store"});
-  const json = await res.json();
-  PRODUCTS_CACHE = json.products || [];
-  return PRODUCTS_CACHE;
+function categoryMeta(){
+  return {
+    gifts:   { key:"nav_gifts",  emoji:"🎁", imageBase:"assets/images/products/gifts/gift-001" },
+    decor:   { key:"nav_decor",  emoji:"🏡", imageBase:"assets/images/products/decor/decor-001" },
+    kids:    { key:"nav_kids",   emoji:"🧸", imageBase:"assets/images/products/kids/kids-001" },
+    services:{ key:"nav_services",emoji:"🛠️", imageBase:"assets/images/products/services/service-001" }
+  };
 }
 
-/* Placeholder (no file needed) */
-function placeholderDataURI(label="No Image"){
-  const text = encodeURIComponent(label);
-  const svg =
-`<svg xmlns="http://www.w3.org/2000/svg" width="1200" height="800">
-  <defs>
-    <linearGradient id="g" x1="0" x2="1" y1="0" y2="1">
-      <stop offset="0" stop-color="#141a35"/>
-      <stop offset="1" stop-color="#0b1024"/>
-    </linearGradient>
-  </defs>
-  <rect width="100%" height="100%" fill="url(#g)"/>
-  <rect x="60" y="60" width="1080" height="680" rx="40" fill="rgba(255,255,255,0.06)" stroke="rgba(255,255,255,0.15)"/>
-  <text x="50%" y="50%" dominant-baseline="middle" text-anchor="middle" fill="rgba(234,240,255,0.75)" font-family="Arial" font-size="44">${text}</text>
-</svg>`;
-  return `data:image/svg+xml;charset=utf-8,${encodeURIComponent(svg)}`;
+async function renderKontakt(){
+  const wrap = qs("#kontaktCard");
+  if (!wrap) return;
+
+  const t = I18N[STATE.lang];
+
+  // You can replace these links later:
+  const whatsappNumber = "+49 176 81213098";
+  const whatsappHref = `https://wa.me/4917681213098`;
+  const telegramHref = "#";
+  const facebookHref = "#";
+  const emailAddress = "ra_ahmed@hotmail.de";
+  const emailHref = `mailto:${emailAddress}`;
+
+  wrap.innerHTML = `
+    <div class="kontakt-top">
+      <h2 class="kontakt-title">${t.kontakt_title}</h2>
+      <div style="opacity:.0"></div>
+    </div>
+
+    <div class="kontakt-list">
+      <a class="kontakt-item" href="${whatsappHref}" target="_blank" rel="noopener">
+        <div>
+          <div class="kontakt-label">${t.whatsapp}</div>
+          <div class="kontakt-value">${whatsappNumber}</div>
+        </div>
+        <div class="kontakt-icon" style="color:#3bd45a">
+          <img src="assets/images/icons/whatsapp.svg" alt="WhatsApp">
+        </div>
+      </a>
+
+      <a class="kontakt-item" href="${telegramHref}">
+        <div>
+          <div class="kontakt-label">${t.telegram}</div>
+          <div class="kontakt-value">${t.put_telegram}</div>
+        </div>
+        <div class="kontakt-icon" style="color:#2aa8ff">
+          <img src="assets/images/icons/telegram.svg" alt="Telegram">
+        </div>
+      </a>
+
+      <a class="kontakt-item" href="${facebookHref}">
+        <div>
+          <div class="kontakt-label">${t.facebook}</div>
+          <div class="kontakt-value">${t.put_facebook}</div>
+        </div>
+        <div class="kontakt-icon" style="color:#8aa0ff">
+          <img src="assets/images/icons/facebook.svg" alt="Facebook">
+        </div>
+      </a>
+
+      <a class="kontakt-item" href="${emailHref}">
+        <div>
+          <div class="kontakt-label">${t.email}</div>
+          <div class="kontakt-value">${emailAddress}</div>
+        </div>
+        <div class="kontakt-icon" style="color:#8aa0ff">
+          <img src="assets/images/icons/email.svg" alt="Email">
+        </div>
+      </a>
+    </div>
+
+    <div class="kontakt-logo-wrap">
+      <img
+        class="kontakt-logo"
+        src="assets/images/logo/logo-dekokraft-600.webp"
+        srcset="assets/images/logo/logo-dekokraft-600.webp 600w, assets/images/logo/logo-dekokraft-1200.webp 1200w"
+        sizes="220px"
+        alt="DekoKraft Logo"
+      />
+    </div>
+  `;
 }
 
-function tryLoadImage(url){
-  return new Promise((resolve)=>{
-    const img = new Image();
-    img.onload = ()=> resolve(true);
-    img.onerror = ()=> resolve(false);
-    img.src = url;
-  });
-}
-
-/* Auto resolve imageBase */
-async function resolveImageFromBase(imageBase){
-  if(!imageBase) return placeholderDataURI("No imageBase");
-  const big = `${imageBase}-1200.webp`;
-  const small = `${imageBase}-600.webp`;
-
-  // prefer 1200 then 600
-  if(await tryLoadImage(big)) return big;
-  if(await tryLoadImage(small)) return small;
-
-  return placeholderDataURI("Image not found");
-}
-
-/* Render cards */
-async function createTileCard({badgeText, title, desc, imageBase, href, showButton, buttonText}){
-  const card = document.createElement("a");
-  card.className = "card tile";
-  card.href = href;
-
-  const badge = document.createElement("div");
-  badge.className = "badge";
-  badge.textContent = badgeText;
-  card.appendChild(badge);
-
-  const media = document.createElement("div");
-  media.className = "tile-media";
-  const img = document.createElement("img");
-  img.alt = title;
-  img.src = placeholderDataURI("Loading...");
-  media.appendChild(img);
-  card.appendChild(media);
-
-  const h = document.createElement("h3");
-  h.className = "tile-title";
-  h.textContent = title;
-  card.appendChild(h);
-
-  const p = document.createElement("p");
-  p.className = "tile-desc";
-  p.textContent = desc;
-  card.appendChild(p);
-
-  if(showButton){
-    const btn = document.createElement("span");
-    btn.className = "btn";
-    btn.textContent = buttonText;
-    card.appendChild(btn);
-  }
-
-  // load real image
-  resolveImageFromBase(imageBase).then(url=> { img.src = url; });
-
-  return card;
-}
-
-/* Pages render */
 async function renderHome(){
-  const catGrid = document.getElementById("categoryGrid");
-  const featuredGrid = document.getElementById("featuredGrid");
-  if(!catGrid || !featuredGrid) return;
+  const sectionsGrid = qs("#sectionsGrid");
+  const featuredGrid = qs("#featuredGrid");
+  if (!sectionsGrid || !featuredGrid) return;
 
-  catGrid.innerHTML = "";
+  const meta = categoryMeta();
+  const t = I18N[STATE.lang];
+
+  // Sections
+  sectionsGrid.innerHTML = "";
+  for (const cat of Object.keys(meta)){
+    const m = meta[cat];
+    const title = (I18N[STATE.lang][m.key] || cat);
+    const img = await resolveImageFromBase(m.imageBase, title);
+
+    const card = document.createElement("div");
+    card.className = "card";
+    card.innerHTML = `
+      <span class="badge">neu</span>
+      <div class="card-inner">
+        <div class="card-media">
+          <img src="${img}" alt="${title}">
+        </div>
+        <div class="card-title">${title} ${m.emoji}</div>
+        <p class="card-desc">${title}</p>
+        <div class="card-actions">
+          <a class="btn" href="category.html?cat=${cat}">${t.view_section}</a>
+        </div>
+      </div>
+    `;
+    sectionsGrid.appendChild(card);
+  }
+
+  // Featured products (first 4)
+  const featured = STATE.products.slice(0, 4);
   featuredGrid.innerHTML = "";
+  for (const p of featured){
+    const title = getLangText(p.title);
+    const desc = getLangText(p.description);
+    const img = await resolveImageFromBase(p.imageBase, title);
 
-  // categories tiles
-  for(const cat of Object.keys(CATEGORY_META)){
-    const meta = CATEGORY_META[cat];
-    const title = `${meta.icon} ${t(meta.titleKey)}`;
-    const desc = t(meta.subKey);
-
-    const tile = await createTileCard({
-      badgeText: "neu",
-      title,
-      desc,
-      imageBase: meta.imageBase,
-      href: `category.html?cat=${encodeURIComponent(cat)}`,
-      showButton: true,
-      buttonText: t("view_section") + " →"
-    });
-
-    catGrid.appendChild(tile);
+    const card = document.createElement("div");
+    card.className = "card";
+    card.innerHTML = `
+      <span class="badge">neu</span>
+      <div class="card-inner">
+        <div class="card-media">
+          <img src="${img}" alt="${title}">
+        </div>
+        <div class="card-title">${title}</div>
+        <p class="card-desc">${desc}</p>
+        <div class="card-actions">
+          <a class="btn" href="product.html?id=${encodeURIComponent(p.id)}">${t.view_product}</a>
+        </div>
+      </div>
+    `;
+    featuredGrid.appendChild(card);
   }
 
-  // featured products random mix
-  const products = await loadProducts();
-  const shuffled = [...products].sort(()=> Math.random() - 0.5);
-  const picks = shuffled.slice(0, 6);
-
-  for(const pr of picks){
-    const lang = getLang();
-    const title = pr.title?.[lang] || pr.id;
-    const desc  = pr.description?.[lang] || "";
-    const tile = await createTileCard({
-      badgeText: "neu",
-      title,
-      desc,
-      imageBase: pr.imageBase,
-      href: `product.html?id=${encodeURIComponent(pr.id)}`,
-      showButton: false,
-      buttonText: ""
-    });
-    featuredGrid.appendChild(tile);
-  }
+  await renderKontakt();
 }
 
 async function renderCategory(){
-  const cat = qs("cat") || "gifts";
-  const titleEl = document.getElementById("categoryTitle");
-  const subEl = document.getElementById("categorySub");
-  const grid = document.getElementById("categoryGrid");
-  if(!titleEl || !subEl || !grid) return;
+  const cat = getParam("cat") || "gifts";
+  const grid = qs("#categoryGrid");
+  const titleEl = qs("#categoryTitle");
+  if (!grid || !titleEl) return;
 
-  const meta = CATEGORY_META[cat] || CATEGORY_META.gifts;
+  const meta = categoryMeta();
+  const m = meta[cat] || meta.gifts;
+  titleEl.textContent = (I18N[STATE.lang][m.key] || cat);
 
-  titleEl.textContent = `${meta.icon} ${t(meta.titleKey)}`;
-  subEl.textContent = t(meta.subKey);
-
+  const items = STATE.products.filter(p => p.category === cat);
   grid.innerHTML = "";
 
-  const products = await loadProducts();
-  const list = products.filter(p => p.category === cat);
+  const t = I18N[STATE.lang];
 
-  for(const pr of list){
-    const lang = getLang();
-    const title = pr.title?.[lang] || pr.id;
-    const desc  = pr.description?.[lang] || "";
-    const tile = await createTileCard({
-      badgeText: "neu",
-      title,
-      desc,
-      imageBase: pr.imageBase,
-      href: `product.html?id=${encodeURIComponent(pr.id)}`,
-      showButton: false,
-      buttonText: ""
-    });
-    grid.appendChild(tile);
+  for (const p of items){
+    const title = getLangText(p.title);
+    const desc = getLangText(p.description);
+    const img = await resolveImageFromBase(p.imageBase, title);
+
+    const card = document.createElement("div");
+    card.className = "card";
+    card.innerHTML = `
+      <span class="badge">neu</span>
+      <div class="card-inner">
+        <div class="card-media">
+          <img src="${img}" alt="${title}">
+        </div>
+        <div class="card-title">${title}</div>
+        <p class="card-desc">${desc}</p>
+        <div class="card-actions">
+          <a class="btn" href="product.html?id=${encodeURIComponent(p.id)}">${t.view_product}</a>
+        </div>
+      </div>
+    `;
+    grid.appendChild(card);
   }
+
+  await renderKontakt();
 }
 
 async function renderProduct(){
-  const id = qs("id");
-  const imgEl = document.getElementById("productImage");
-  const titleEl = document.getElementById("productTitle");
-  const descEl = document.getElementById("productDesc");
-  const relatedGrid = document.getElementById("relatedGrid");
-  const backToCategory = document.getElementById("backToCategory");
+  const id = getParam("id");
+  const imgEl = qs("#productImage");
+  const titleEl = qs("#productTitle");
+  const descEl = qs("#productDesc");
+  const relatedGrid = qs("#relatedGrid");
 
-  if(!imgEl || !titleEl || !descEl || !relatedGrid) return;
+  if (!id || !imgEl || !titleEl || !descEl || !relatedGrid) return;
 
-  const products = await loadProducts();
-  const pr = products.find(p => p.id === id) || products[0];
+  const p = STATE.products.find(x => x.id === id);
+  if (!p){
+    titleEl.textContent = "Not found";
+    descEl.textContent = "";
+    imgEl.src = buildPlaceholderDataURI("Not found");
+    await renderKontakt();
+    return;
+  }
 
-  const lang = getLang();
-  const title = pr.title?.[lang] || pr.id;
-  const desc  = pr.description?.[lang] || "";
+  const title = getLangText(p.title);
+  const desc = getLangText(p.description);
 
   titleEl.textContent = title;
   descEl.textContent = desc;
+  imgEl.src = await resolveImageFromBase(p.imageBase, title);
 
-  // back link
-  if(backToCategory){
-    backToCategory.href = `category.html?cat=${encodeURIComponent(pr.category)}`;
+  // Related: same category or explicit list
+  const t = I18N[STATE.lang];
+  const relatedIds = Array.isArray(p.related) ? p.related : [];
+  let related = [];
+
+  if (relatedIds.length){
+    related = STATE.products.filter(x => relatedIds.includes(x.id));
+  } else {
+    related = STATE.products.filter(x => x.category === p.category && x.id !== p.id).slice(0, 4);
   }
 
-  imgEl.alt = title;
-  imgEl.src = placeholderDataURI("Loading...");
-  imgEl.src = await resolveImageFromBase(pr.imageBase);
-
-  // related
   relatedGrid.innerHTML = "";
-  const relatedIds = Array.isArray(pr.related) ? pr.related : [];
-  let related = products.filter(p => relatedIds.includes(p.id));
+  for (const r of related){
+    const rt = getLangText(r.title);
+    const rd = getLangText(r.description);
+    const img = await resolveImageFromBase(r.imageBase, rt);
 
-  // fallback: same category
-  if(related.length === 0){
-    related = products.filter(p => p.category === pr.category && p.id !== pr.id).slice(0, 6);
+    const card = document.createElement("div");
+    card.className = "card";
+    card.innerHTML = `
+      <span class="badge">neu</span>
+      <div class="card-inner">
+        <div class="card-media">
+          <img src="${img}" alt="${rt}">
+        </div>
+        <div class="card-title">${rt}</div>
+        <p class="card-desc">${rd}</p>
+        <div class="card-actions">
+          <a class="btn" href="product.html?id=${encodeURIComponent(r.id)}">${t.view_product}</a>
+        </div>
+      </div>
+    `;
+    relatedGrid.appendChild(card);
   }
 
-  for(const r of related){
-    const rTitle = r.title?.[lang] || r.id;
-    const rDesc  = r.description?.[lang] || "";
-    const tile = await createTileCard({
-      badgeText: "neu",
-      title: rTitle,
-      desc: rDesc,
-      imageBase: r.imageBase,
-      href: `product.html?id=${encodeURIComponent(r.id)}`,
-      showButton: false,
-      buttonText: ""
+  await renderKontakt();
+}
+
+async function init(){
+  setDirAndLang(STATE.lang);
+
+  const menuBtn = qs(".menu-btn");
+  if (menuBtn) menuBtn.addEventListener("click", toggleMenu);
+
+  qsa(".lang-btn").forEach(btn=>{
+    btn.addEventListener("click", ()=>{
+      setDirAndLang(btn.dataset.lang);
+      // re-render current page texts + content
+      bootRender();
     });
-    relatedGrid.appendChild(tile);
-  }
-}
-
-/* rerender when language changes */
-function rerenderCurrentPage(){
-  const page = document.body.getAttribute("data-page");
-  if(page === "home") renderHome();
-  if(page === "category") renderCategory();
-  if(page === "product") renderProduct();
-}
-
-/* init */
-document.addEventListener("DOMContentLoaded", async ()=>{
-  initMenu();
-
-  document.querySelectorAll(".lang-btn").forEach(btn=>{
-    btn.addEventListener("click", ()=> setLang(btn.dataset.lang));
   });
 
-  applyLang(getLang());
+  await loadProducts();
+  await bootRender();
+}
+
+async function bootRender(){
+  // Update i18n texts
+  setDirAndLang(STATE.lang);
 
   const page = document.body.getAttribute("data-page");
-  if(page === "home") await renderHome();
-  if(page === "category") await renderCategory();
-  if(page === "product") await renderProduct();
-});
+
+  if (page === "home") return renderHome();
+  if (page === "category") return renderCategory();
+  if (page === "product") return renderProduct();
+}
+
+init();
