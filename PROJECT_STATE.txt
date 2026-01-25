@@ -1,39 +1,34 @@
-PROJECT STATE — DekoKraft (GitHub Pages)
+PROJECT STATE — DekoKraft
 
-CURRENT STATUS:
-- الموقع يعمل ويفتح على الهاتف والكمبيوتر.
-- تبديل اللغة AR/DE موجود.
-- تحميل products.json يعمل.
-- عرض الأقسام + KONTAKT يعمل.
+WORKING:
+- الموقع يعمل على GitHub Pages.
+- اللغة AR/DE تعمل + RTL/LTR.
+- حل صور -1200/-600 يعمل.
+- Kontakt يظهر ويعرض Logo داخل الدائرة.
 
-KNOWN ISSUES (آخر ملاحظات المستخدم):
-1) Mobile:
-- Grid الأقسام ليس 2×2 (يظهر كبطاقات متتابعة بدل عمودين).
+FIXES APPLIED (حسب آخر ملاحظات):
+1) تمييز واضح بين:
+   - بطاقات الأقسام الرئيسية (مع زر "عرض القسم")
+   - بطاقات المنتجات العشوائية/المختارة (بدون زر، البطاقة نفسها رابط)
 
-2) KONTAKT:
-- أيقونة Facebook غير مضبوطة (تظهر كصورة مكسورة/غير مقروءة).
-- Email لا يظهر له icon صحيح.
-- الدائرة الكبيرة داخل KONTAKT يجب أن تصبح صورة logo بدلاً من شكل placeholder.
+2) منع التكرار:
+   - المنتج الذي يُستخدم كصورة ممثلة للقسم لا يظهر مرة ثانية في المنتجات المختارة.
 
-3) Desktop:
-- الصور داخل البطاقات "قريبة جداً" ولا تظهر بشكل مريح.
-  مطلوب: تحسين عرض الصور (object-fit/height/padding/gap) بحيث تبدو كاملة أكثر.
+3) منطق الروابط:
+   - زر "عرض القسم" في بطاقة القسم الرئيسية يذهب مباشرة إلى صفحة العرض product.html?id=...
+   - بطاقات المنتجات المختارة تذهب إلى صفحة العرض أيضاً.
 
-FIX PLAN (مطبق في هذه النسخة):
-- تعديل CSS:
-  - جعل شبكة الأقسام على الموبايل عمودين (2×2) عبر grid-template-columns: repeat(2, 1fr)
-  - تحسين card media: ارتفاع مناسب + object-fit: cover للمظهر الجميل + وضع contain لبعض الحالات
-  - زيادة gap على الشاشات الكبيرة
-- إضافة assets/images/icons/email.svg
-- التأكد من استخدام assets/images/icons/facebook.svg بشكل صحيح
-- استبدال الدائرة الكبيرة في KONTAKT بصورة logo مع srcset (600/1200)
+4) صفحة العرض product.html:
+   - Main Viewer: صورة كبيرة + عنوان + وصف
+   - Thumbnails: قائمة منتجات القسم
+   - الضغط على thumbnail يبدّل المعروض فوراً ويحدّث الرابط عبر pushState.
 
-FILES UPDATED:
-- assets/css/main.css
-- assets/js/main.js
-- index.html / category.html / product.html
-- assets/images/icons/email.svg (جديد)
-- assets/images/icons/facebook.svg (إعادة تثبيت)
+5) حذف Facebook:
+   - إزالة سطر Facebook من KONTAKT + إزالة أيقونته من الكود.
 
-PENDING:
-- إضافة منتجات/صور أكثر حسب الحاجة.
+6) تحسين الكمبيوتر:
+   - ضبط Grid بحيث لا يصبح كثيفاً جداً: المنتجات max 3 أعمدة على desktop
+   - الأقسام 4 أعمدة على desktop و 2×2 على الهاتف
+
+KNOWN TODO (اختياري لاحقاً):
+- تفعيل category.html كصفحة عرض كاملة للقسم إن رغبت.
