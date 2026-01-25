@@ -3,115 +3,64 @@
     {
       "id": "gift-001",
       "category": "gifts",
-      "title": {
-        "ar": "هدية صندوق مفاجأة",
-        "de": "Überraschungs-Geschenkbox"
-      },
-      "description": {
-        "ar": "هدية مميزة مناسبة لجميع المناسبات.",
-        "de": "Ein besonderes Geschenk für alle Anlässe."
-      },
+      "title": { "ar": "هدية صندوق مفاجأة", "de": "Überraschungs-Geschenkbox" },
+      "description": { "ar": "هدية مميزة مناسبة لجميع المناسبات.", "de": "Ein besonderes Geschenk für alle Anlässe." },
       "imageBase": "assets/images/products/gifts/gift-001",
       "related": ["gift-002"]
     },
     {
       "id": "gift-002",
       "category": "gifts",
-      "title": {
-        "ar": "هدية أنيقة",
-        "de": "Elegantes Geschenk"
-      },
-      "description": {
-        "ar": "تفاصيل جميلة ولمسة فريدة.",
-        "de": "Schöne Details und eine besondere Note."
-      },
+      "title": { "ar": "هدية أنيقة", "de": "Elegantes Geschenk" },
+      "description": { "ar": "فكرة هدية جميلة بتفاصيل لطيفة.", "de": "Schöne Geschenkidee mit liebevollen Details." },
       "imageBase": "assets/images/products/gifts/gift-002",
       "related": ["gift-001"]
     },
-
     {
       "id": "decor-001",
       "category": "decor",
-      "title": {
-        "ar": "ديكور منزلي أنيق",
-        "de": "Elegante Wohn-Dekoration"
-      },
-      "description": {
-        "ar": "لمسات ديكور تضيف جمالاً للمكان.",
-        "de": "Dekorationselemente für ein schönes Zuhause."
-      },
+      "title": { "ar": "ديكور منزلي أنيق", "de": "Elegante Wohn-Dekoration" },
+      "description": { "ar": "لمسات ديكور تضيف جمالاً للمكان.", "de": "Dekorationselemente für ein schönes Zuhause." },
       "imageBase": "assets/images/products/decor/decor-001",
       "related": ["decor-002"]
     },
     {
       "id": "decor-002",
       "category": "decor",
-      "title": {
-        "ar": "ديكور عصري",
-        "de": "Moderne Dekoration"
-      },
-      "description": {
-        "ar": "ستايل عصري يناسب كل الزوايا.",
-        "de": "Moderner Stil für jede Ecke."
-      },
+      "title": { "ar": "ديكور إضافي", "de": "Zusätzliche Dekoration" },
+      "description": { "ar": "تفاصيل صغيرة بتأثير كبير.", "de": "Kleine Details mit großer Wirkung." },
       "imageBase": "assets/images/products/decor/decor-002",
       "related": ["decor-001"]
     },
-
     {
       "id": "kids-001",
       "category": "kids",
-      "title": {
-        "ar": "لعبة للأطفال",
-        "de": "Holzspielzeug für Kinder"
-      },
-      "description": {
-        "ar": "لعبة آمنة وممتعة للأطفال.",
-        "de": "Sicheres und unterhaltsames Spielzeug."
-      },
+      "title": { "ar": "هدايا للأطفال", "de": "Holzspielzeug für Kinder" },
+      "description": { "ar": "لعبة آمنة وممتعة للأطفال.", "de": "Sicheres und unterhaltsames Spielzeug." },
       "imageBase": "assets/images/products/kids/kids-001",
       "related": ["kids-002"]
     },
     {
       "id": "kids-002",
       "category": "kids",
-      "title": {
-        "ar": "هدية تعليمية",
-        "de": "Lernspiel"
-      },
-      "description": {
-        "ar": "هدية تساعد على التعلم والمرح.",
-        "de": "Zum Lernen und Spielen."
-      },
+      "title": { "ar": "هدية أطفال إضافية", "de": "Kinder-Geschenk" },
+      "description": { "ar": "هدايا بسيطة ومرحة.", "de": "Einfache und fröhliche Geschenke." },
       "imageBase": "assets/images/products/kids/kids-002",
       "related": ["kids-001"]
     },
-
     {
       "id": "service-001",
       "category": "services",
-      "title": {
-        "ar": "خدمة حسب الطلب",
-        "de": "Service nach Wunsch"
-      },
-      "description": {
-        "ar": "نقدم خدمات مخصصة حسب طلبك.",
-        "de": "Individuelle Dienstleistungen nach Wunsch."
-      },
+      "title": { "ar": "خدمة حسب الطلب", "de": "Service nach Wunsch" },
+      "description": { "ar": "نقدم خدمات مخصصة حسب طلبك.", "de": "Individuelle Dienstleistungen nach Wunsch." },
       "imageBase": "assets/images/products/services/service-001",
       "related": ["service-002"]
     },
     {
       "id": "service-002",
       "category": "services",
-      "title": {
-        "ar": "خدمة إضافية",
-        "de": "Zusätzlicher Service"
-      },
-      "description": {
-        "ar": "خيار خدمة إضافية حسب الحاجة.",
-        "de": "Ein zusätzlicher Service nach Bedarf."
-      },
+      "title": { "ar": "خدمة إضافية", "de": "Zusätzlicher Service" },
+      "description": { "ar": "خيار خدمة إضافية حسب الحاجة.", "de": "Zusätzliche Option je nach Bedarf." },
       "imageBase": "assets/images/products/services/service-002",
       "related": ["service-001"]
     }
