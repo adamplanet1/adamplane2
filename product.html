@@ -3,10 +3,10 @@
 <head>
   <meta charset="utf-8" />
   <meta name="viewport" content="width=device-width,initial-scale=1" />
-  <title>DekoKraft - Product</title>
+  <title>DekoKraft</title>
   <link rel="stylesheet" href="assets/css/main.css" />
 </head>
-<body data-page="product">
+<body data-page="home">
 
 <header class="site-header">
   <div class="container header-inner">
@@ -34,35 +34,41 @@
 
   <nav class="nav container">
     <a href="index.html" data-i18n="nav_home">الرئيسية</a>
-    <a href="#viewer" data-i18n="nav_viewer">عرض المنتج</a>
+    <a href="category.html?cat=gifts" data-i18n="nav_gifts">الهدايا</a>
+    <a href="category.html?cat=decor" data-i18n="nav_decor">الديكور</a>
+    <a href="category.html?cat=kids" data-i18n="nav_kids">هدايا الأطفال</a>
+    <a href="category.html?cat=services" data-i18n="nav_services">الخدمات</a>
     <a href="#kontakt" data-i18n="nav_contact">Kontakt</a>
   </nav>
 </header>
 
 <main>
-  <section class="section" id="viewer">
+  <section class="hero">
     <div class="container">
-      <div class="product-viewer">
-        <div class="viewer-main card">
-          <div class="card-inner">
-            <div class="viewer-media">
-              <img id="viewerImage" alt="" />
-            </div>
-            <h1 id="viewerTitle" class="viewer-title">...</h1>
-            <p id="viewerDesc" class="viewer-desc">...</p>
-          </div>
-        </div>
+      <h1 class="hero-title">
+        <span data-i18n="hero_welcome">مرحباً بكم في</span> <span class="hero-brand">DekoKraft</span>
+      </h1>
+      <p class="hero-sub" data-i18n="hero_sub">
+        هنا تجدون هدايا مصنوعة بعناية، ديكور مميز للأطفال، وخدمات متنوعة.
+      </p>
+    </div>
+  </section>
 
-        <aside class="viewer-side card">
-          <div class="card-inner">
-            <div class="viewer-side-head">
-              <h2 class="viewer-side-title" data-i18n="same_category">من نفس القسم</h2>
-              <a class="mini-link" href="index.html" data-i18n="back_home">العودة</a>
-            </div>
-            <div id="thumbList" class="thumb-list"></div>
-          </div>
-        </aside>
+  <section class="section">
+    <div class="container">
+      <div class="section-head">
+        <h2 data-i18n="sections_title">الأقسام</h2>
       </div>
+      <div class="grid grid-sections" id="sectionsGrid"></div>
+    </div>
+  </section>
+
+  <section class="section">
+    <div class="container">
+      <div class="section-head">
+        <h2 data-i18n="featured_title">منتجات مختارة</h2>
+      </div>
+      <div class="grid grid-products" id="featuredGrid"></div>
     </div>
   </section>
 
