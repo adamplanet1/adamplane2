@@ -1,437 +1,609 @@
-/* DekoKraft — main.js
-   - Menu toggle
-   - AR/DE language switch
-   - Load products.json
-   - Render: index/category/product
-   - Smart image resolver: -1200.webp preferred, else -600.webp, else placeholder
-   - Home:
-     * Sections (2x2 always) + button opens product page of firstProductId
-     * Featured: no button; card clickable; exclude section representative products
-     * Blue fog overlay only for featured cards (class is-featured)
-   - Product page:
-     * Big view + short text
-     * Vertical thumbnails for same category; click swaps main product (no reload)
-   - Kontakt:
-     * WhatsApp/Telegram/Email فقط (Facebook removed)
-*/
+/* =========================
+File: assets/js/main.js
+Menu + AR/DE + JSON render + product slider + fullscreen
+NO Facebook
+========================= */
 
-const STATE = {
-  lang: localStorage.getItem("dk_lang") || "ar",
-  products: [],
-};
+(function () {
+  // =========================
+  // Helpers
+  // =========================
+  const qs = (sel, root = document) => root.querySelector(sel);
+  const qsa = (sel, root = document) => Array.from(root.querySelectorAll(sel));
 
-const I18N = {
-  ar: {
-    menu: "Menu",
-    nav_home: "الرئيسية",
-    nav_gifts: "الهدايا",
-    nav_decor: "الديكور",
-    nav_kids: "هدايا الأطفال",
-    nav_services: "الخدمات",
-    nav_contact: "Kontakt",
-    hero_welcome: "مرحباً بكم في",
-    hero_sub: "هنا تجدون هدايا مصنوعة بعناية، ديكور مميز للأطفال، وخدمات متنوعة.",
-    sections_title: "الأقسام",
-    featured_title: "منتجات مختارة",
-    view_section: "عرض القسم →",
-    view_product: "عرض المنتج →",
-    back_home: "العودة للرئيسية",
-    kontakt_title: "KONTAKT",
-    whatsapp: "WhatsApp",
-    telegram: "Telegram",
-    email: "Email",
-    put_telegram: "ضع رابط التليجرام هنا",
-    gallery_title: "منتجات من نفس المجموعة"
-  },
-  de: {
-    menu: "Menu",
-    nav_home: "Startseite",
-    nav_gifts: "Geschenke",
-    nav_decor: "Dekoration",
-    nav_kids: "Kinder-Geschenke",
-    nav_services: "Services",
-    nav_contact: "Kontakt",
-    hero_welcome: "Willkommen bei",
-    hero_sub: "Handgemachte Geschenke, besondere Deko für Kinder und verschiedene Services.",
-    sections_title: "Bereiche",
-    featured_title: "Ausgewählte Produkte",
-    view_section: "Bereich ansehen →",
-    view_product: "Produkt ansehen →",
-    back_home: "Zur Startseite",
-    kontakt_title: "KONTAKT",
-    whatsapp: "WhatsApp",
-    telegram: "Telegram",
-    email: "Email",
-    put_telegram: "Telegram-Link hier einfügen",
-    gallery_title: "Produkte aus derselben Gruppe"
-  }
-};
-
-function qs(sel, root=document){ return root.querySelector(sel); }
-function qsa(sel, root=document){ return Array.from(root.querySelectorAll(sel)); }
-
-function setDirAndLang(lang){
-  STATE.lang = lang;
-  localStorage.setItem("dk_lang", lang);
-  document.documentElement.lang = lang;
-  document.documentElement.dir = (lang === "ar") ? "rtl" : "ltr";
-
-  qsa(".lang-btn").forEach(btn=>{
-    btn.classList.toggle("is-active", btn.dataset.lang === lang);
-  });
-
-  qsa("[data-i18n]").forEach(el=>{
-    const key = el.getAttribute("data-i18n");
-    if (I18N[lang] && I18N[lang][key]) el.textContent = I18N[lang][key];
-  });
-}
-
-function toggleMenu(){
-  const nav = qs(".nav");
-  if (!nav) return;
-  nav.classList.toggle("is-open");
-}
-
-async function loadProducts(){
-  const res = await fetch("assets/data/products.json", { cache: "no-store" });
-  const data = await res.json();
-  STATE.products = data.products || [];
-}
-
-function buildPlaceholderDataURI(label=""){
-  const txt = encodeURIComponent(label || "DekoKraft");
-  const svg = `
-  <svg xmlns="http://www.w3.org/2000/svg" width="1200" height="800">
-    <defs>
-      <linearGradient id="g" x1="0" y1="0" x2="1" y2="1">
-        <stop stop-color="rgba(120,140,255,0.18)" offset="0"/>
-        <stop stop-color="rgba(255,255,255,0.06)" offset="1"/>
-      </linearGradient>
-    </defs>
-    <rect width="100%" height="100%" fill="rgba(0,0,0,0.25)"/>
-    <rect x="40" y="40" rx="48" ry="48" width="1120" height="720" fill="url(#g)" stroke="rgba(255,255,255,0.12)" />
-    <text x="50%" y="50%" font-size="60" text-anchor="middle" fill="rgba(255,255,255,0.7)" font-family="Arial, sans-serif">${txt}</text>
-  </svg>`;
-  return "data:image/svg+xml;charset=utf-8," + encodeURIComponent(svg);
-}
-
-async function resolveImageFromBase(imageBase, label){
-  if (!imageBase) return buildPlaceholderDataURI(label);
-  const large = `${imageBase}-1200.webp`;
-  const small = `${imageBase}-600.webp`;
-  if (await urlExists(large)) return large;
-  if (await urlExists(small)) return small;
-  return buildPlaceholderDataURI(label);
-}
-
-async function urlExists(url){
-  try{
-    const res = await fetch(url, { method:"HEAD", cache:"no-store" });
-    return res.ok;
-  }catch(e){
-    return false;
-  }
-}
-
-function getLangText(obj){
-  if (!obj) return "";
-  return obj[STATE.lang] || obj.ar || obj.de || "";
-}
-
-function getParam(name){
-  const u = new URL(location.href);
-  return u.searchParams.get(name);
-}
-
-/* ✅ Meta الأقسام + تعريف المنتج الأول لكل قسم */
-function categoryMeta(){
-  return {
-    gifts:    { key:"nav_gifts",    emoji:"🎁", firstProductId:"gift-001",    imageBase:"assets/images/products/gifts/gift-001" },
-    decor:    { key:"nav_decor",    emoji:"🏡", firstProductId:"decor-001",   imageBase:"assets/images/products/decor/decor-001" },
-    kids:     { key:"nav_kids",     emoji:"🧸", firstProductId:"kids-001",    imageBase:"assets/images/products/kids/kids-001" },
-    services: { key:"nav_services", emoji:"🛠️", firstProductId:"service-001", imageBase:"assets/images/products/services/service-001" }
+  const getParam = (key) => {
+    const url = new URL(window.location.href);
+    return url.searchParams.get(key);
   };
-}
 
-async function renderKontakt(){
-  const wrap = qs("#kontaktCard");
-  if (!wrap) return;
-  const t = I18N[STATE.lang];
+  const setParamWithoutReload = (key, value) => {
+    const url = new URL(window.location.href);
+    url.searchParams.set(key, value);
+    history.replaceState({}, "", url.toString());
+  };
 
-  const whatsappNumber = "+49 176 81213098";
-  const whatsappHref = `https://wa.me/4917681213098`;
+  // Try to load -1200 first, then -600, then placeholder
+  const resolveImage = (imageBase) => {
+    const try1200 = `${imageBase}-1200.webp`;
+    const try600 = `${imageBase}-600.webp`;
+    const placeholder = `assets/images/products/${imageBase.includes("/products/") ? "" : ""}`; // not used
+    const fallback = "assets/images/qr/qr-site.webp"; // safe existing file if no placeholder exists
+    return { try1200, try600, fallback };
+  };
 
-  const telegramHref = "#"; // ضع رابطك هنا لاحقاً
+  const loadImageWithFallback = (imgEl, imageBase, alt = "") => {
+    const { try1200, try600, fallback } = resolveImage(imageBase);
+    imgEl.alt = alt;
 
-  const emailAddress = "ra_ahmed@hotmail.de";
-  const emailHref = `mailto:${emailAddress}`;
+    imgEl.src = try1200;
+    imgEl.onerror = () => {
+      imgEl.onerror = () => {
+        imgEl.onerror = null;
+        imgEl.src = fallback;
+      };
+      imgEl.src = try600;
+    };
+  };
 
-  wrap.innerHTML = `
-    <h2 class="kontakt-title">${t.kontakt_title}</h2>
+  const shuffle = (arr) => {
+    const a = arr.slice();
+    for (let i = a.length - 1; i > 0; i--) {
+      const j = Math.floor(Math.random() * (i + 1));
+      [a[i], a[j]] = [a[j], a[i]];
+    }
+    return a;
+  };
 
-    <div class="kontakt-list">
-      <a class="kontakt-item" href="${whatsappHref}" target="_blank" rel="noopener">
-        <div class="kontakt-icon" style="color:#3bd45a">
-          <img src="assets/images/icons/whatsapp.svg" alt="WhatsApp">
-        </div>
-        <div class="kontakt-text">
-          <div class="kontakt-label">${t.whatsapp}</div>
-          <div class="kontakt-value">${whatsappNumber}</div>
-        </div>
-      </a>
+  // =========================
+  // i18n
+  // =========================
+  const I18N = {
+    ar: {
+      menu: "Menu",
+      nav_home: "الرئيسية",
+      nav_gifts: "الهدايا",
+      nav_decor: "الديكور",
+      nav_kids: "هدايا الأطفال",
+      nav_services: "الخدمات",
 
-      <a class="kontakt-item" href="${telegramHref}">
-        <div class="kontakt-icon" style="color:#2aa8ff">
-          <img src="assets/images/icons/telegram.svg" alt="Telegram">
-        </div>
-        <div class="kontakt-text">
-          <div class="kontakt-label">${t.telegram}</div>
-          <div class="kontakt-value">${t.put_telegram}</div>
-        </div>
-      </a>
+      hero_title_1: "مرحبًا بكم في",
+      hero_subtitle: "هدايا بعناية، ديكور جميل، منتجات للأطفال وخدمات متنوعة.",
 
-      <a class="kontakt-item" href="${emailHref}">
-        <div class="kontakt-icon" style="color:#8aa0ff">
-          <img src="assets/images/icons/email.svg" alt="Email">
-        </div>
-        <div class="kontakt-text">
-          <div class="kontakt-label">${t.email}</div>
-          <div class="kontakt-value">${emailAddress}</div>
-        </div>
-      </a>
-    </div>
+      sections_title: "الأقسام الرئيسية",
+      featured_title: "منتجات مختارة",
+      featured_subtitle: "اختيارات عشوائية من مجموعات مختلفة",
 
-    <div class="kontakt-logo-wrap">
-      <img
-        class="kontakt-logo"
-        src="assets/images/logo/logo-dekokraft-600.webp"
-        srcset="assets/images/logo/logo-dekokraft-600.webp 600w, assets/images/logo/logo-dekokraft-1200.webp 1200w"
-        sizes="240px"
-        alt="DekoKraft Logo"
-      />
-    </div>
-  `;
-}
+      view_group: "عرض المجموعة",
+      view_product: "عرض المنتج →",
 
-/* =========================
-   HOME
-   ========================= */
-async function renderHome(){
-  const sectionsGrid = qs("#sectionsGrid");
-  const featuredGrid = qs("#featuredGrid");
-  if (!sectionsGrid || !featuredGrid) return;
+      kontakt_title: "KONTAKT",
+      kontakt_whatsapp: "WhatsApp:",
+      kontakt_email: "Email:",
 
-  const meta = categoryMeta();
-  const t = I18N[STATE.lang];
+      gallery_title: "صور إضافية",
+      similar_title: "منتجات من نفس المجموعة",
 
-  // ✅ 1) الأقسام الرئيسية
-  sectionsGrid.innerHTML = "";
-  for (const cat of Object.keys(meta)){
-    const m = meta[cat];
-    const title = (I18N[STATE.lang][m.key] || cat);
-    const img = await resolveImageFromBase(m.imageBase, title);
+      cat_gifts: "الهدايا",
+      cat_decor: "الديكور",
+      cat_kids: "هدايا الأطفال",
+      cat_services: "الخدمات",
 
-    const productHref = `product.html?id=${encodeURIComponent(m.firstProductId)}`;
+      cat_subtitle: "تصفح منتجات هذا القسم"
+    },
+    de: {
+      menu: "Menü",
+      nav_home: "Startseite",
+      nav_gifts: "Geschenke",
+      nav_decor: "Dekoration",
+      nav_kids: "Kinder-Geschenke",
+      nav_services: "Service",
 
-    const card = document.createElement("div");
-    card.className = "card is-section";
-    card.innerHTML = `
-      <span class="badge">neu</span>
+      hero_title_1: "Willkommen bei",
+      hero_subtitle: "Handgemachte Geschenke, schöne Deko, Kinderprodukte und Services.",
 
-      <a class="card-link" href="${productHref}">
-        <div class="card-inner">
-          <div class="card-media">
-            <img src="${img}" alt="${title}">
-          </div>
-          <div class="card-title">${title} ${m.emoji}</div>
-          <p class="card-desc">${title}</p>
-        </div>
-      </a>
+      sections_title: "Hauptkategorien",
+      featured_title: "Ausgewählte Produkte",
+      featured_subtitle: "Zufällige Auswahl aus verschiedenen Gruppen",
 
-      <div class="card-inner" style="padding-top:0">
-        <div class="card-actions">
-          <a class="btn" href="${productHref}">${t.view_section}</a>
-        </div>
-      </div>
-    `;
-    sectionsGrid.appendChild(card);
-  }
+      view_group: "Gruppe ansehen",
+      view_product: "Produkt ansehen →",
 
-  // ✅ 2) المنتجات المختارة (بدون زر) + استبعاد صور الأقسام الرئيسية
-  const excludeIds = new Set(Object.values(meta).map(m => m.firstProductId));
-  const candidates = STATE.products.filter(p => !excludeIds.has(p.id));
+      kontakt_title: "KONTAKT",
+      kontakt_whatsapp: "WhatsApp:",
+      kontakt_email: "E-Mail:",
 
-  // خذ أول 4 (أو أقل)
-  const featured = candidates.slice(0, 4);
+      gallery_title: "Weitere Fotos",
+      similar_title: "Mehr aus derselben Gruppe",
 
-  featuredGrid.innerHTML = "";
-  for (const p of featured){
-    const title = getLangText(p.title);
-    const desc = getLangText(p.description);
-    const img = await resolveImageFromBase(p.imageBase, title);
+      cat_gifts: "Geschenke",
+      cat_decor: "Dekoration",
+      cat_kids: "Kinder-Geschenke",
+      cat_services: "Service",
 
-    const href = `product.html?id=${encodeURIComponent(p.id)}`;
+      cat_subtitle: "Produkte dieser Kategorie ansehen"
+    }
+  };
 
-    const card = document.createElement("div");
-    card.className = "card is-featured";
-    card.innerHTML = `
-      <span class="badge">neu</span>
-      <a class="card-link" href="${href}">
-        <div class="card-inner">
-          <div class="card-media">
-            <img src="${img}" alt="${title}">
-          </div>
-          <div class="card-title">${title}</div>
-          <p class="card-desc">${desc}</p>
-        </div>
-      </a>
-    `;
-    featuredGrid.appendChild(card);
-  }
+  const htmlEl = document.documentElement;
+  const langButtons = qsa(".lang-btn");
 
-  await renderKontakt();
-}
+  const applyLang = (lang) => {
+    const dict = I18N[lang] || I18N.ar;
 
-/* =========================
-   CATEGORY
-   ========================= */
-async function renderCategory(){
-  const cat = getParam("cat") || "gifts";
-  const grid = qs("#categoryGrid");
-  const titleEl = qs("#categoryTitle");
-  if (!grid || !titleEl) return;
-
-  const meta = categoryMeta();
-  const m = meta[cat] || meta.gifts;
-  titleEl.textContent = (I18N[STATE.lang][m.key] || cat);
-
-  const items = STATE.products.filter(p => p.category === cat);
-  grid.innerHTML = "";
-
-  for (const p of items){
-    const title = getLangText(p.title);
-    const desc = getLangText(p.description);
-    const img = await resolveImageFromBase(p.imageBase, title);
-    const href = `product.html?id=${encodeURIComponent(p.id)}`;
-
-    const card = document.createElement("div");
-    card.className = "card is-featured";
-    card.innerHTML = `
-      <span class="badge">neu</span>
-      <a class="card-link" href="${href}">
-        <div class="card-inner">
-          <div class="card-media">
-            <img src="${img}" alt="${title}">
-          </div>
-          <div class="card-title">${title}</div>
-          <p class="card-desc">${desc}</p>
-        </div>
-      </a>
-    `;
-    grid.appendChild(card);
-  }
-
-  await renderKontakt();
-}
-
-/* =========================
-   PRODUCT (Gallery)
-   ========================= */
-async function renderProduct(){
-  const imgEl = qs("#productImage");
-  const titleEl = qs("#productTitle");
-  const descEl = qs("#productDesc");
-  const thumbsCol = qs("#thumbsCol");
-
-  if (!imgEl || !titleEl || !descEl || !thumbsCol) return;
-
-  const id = getParam("id");
-  let current = STATE.products.find(x => x.id === id) || STATE.products[0];
-
-  if (!current){
-    titleEl.textContent = "Not found";
-    descEl.textContent = "";
-    imgEl.src = buildPlaceholderDataURI("Not found");
-    await renderKontakt();
-    return;
-  }
-
-  async function showProduct(prod, pushUrl){
-    const title = getLangText(prod.title);
-    const desc = getLangText(prod.description);
-
-    titleEl.textContent = title;
-    descEl.textContent = desc;
-    imgEl.src = await resolveImageFromBase(prod.imageBase, title);
-
-    if (pushUrl){
-      const u = new URL(location.href);
-      u.searchParams.set("id", prod.id);
-      history.replaceState({}, "", u.toString());
+    if (lang === "de") {
+      htmlEl.lang = "de";
+      htmlEl.dir = "ltr";
+      document.body.style.direction = "ltr";
+    } else {
+      htmlEl.lang = "ar";
+      htmlEl.dir = "rtl";
+      document.body.style.direction = "rtl";
     }
 
-    // active state in thumbs
-    qsa(".thumb", thumbsCol).forEach(el=>{
-      el.classList.toggle("is-active", el.dataset.id === prod.id);
+    langButtons.forEach((b) => {
+      const active = b.dataset.lang === lang;
+      b.setAttribute("aria-pressed", String(active));
     });
-  }
 
-  // Build thumbs for same category
-  const group = STATE.products.filter(p => p.category === current.category);
-  thumbsCol.innerHTML = "";
-
-  for (const p of group){
-    const tt = getLangText(p.title);
-    const sub = getLangText(p.description);
-    const thumbImg = await resolveImageFromBase(p.imageBase, tt);
-
-    const item = document.createElement("div");
-    item.className = "thumb";
-    item.dataset.id = p.id;
-    item.innerHTML = `
-      <img src="${thumbImg}" alt="${tt}">
-      <div>
-        <div class="thumb-title">${tt}</div>
-        <div class="thumb-sub">${sub}</div>
-      </div>
-    `;
-    item.addEventListener("click", async ()=>{
-      current = p;
-      await showProduct(p, true);
+    qsa("[data-i18n]").forEach((el) => {
+      const key = el.getAttribute("data-i18n");
+      if (key && dict[key]) el.textContent = dict[key];
     });
-    thumbsCol.appendChild(item);
-  }
 
-  await showProduct(current, false);
-  await renderKontakt();
-}
+    try { localStorage.setItem("dekokraft_lang", lang); } catch (_) {}
+  };
 
-/* =========================
-   INIT
-   ========================= */
-async function init(){
-  setDirAndLang(STATE.lang);
+  let savedLang = "ar";
+  try { savedLang = localStorage.getItem("dekokraft_lang") || "ar"; } catch (_) {}
+  applyLang(savedLang);
 
-  const menuBtn = qs(".menu-btn");
-  if (menuBtn) menuBtn.addEventListener("click", toggleMenu);
-
-  qsa(".lang-btn").forEach(btn=>{
-    btn.addEventListener("click", ()=>{
-      setDirAndLang(btn.dataset.lang);
-      bootRender();
-    });
+  langButtons.forEach((btn) => {
+    btn.addEventListener("click", () => applyLang(btn.dataset.lang || "ar"));
   });
 
-  await loadProducts();
-  await bootRender();
-}
+  // =========================
+  // Menu (mobile)
+  // =========================
+  const menuBtn = qs(".menu-btn");
+  const overlay = qs("#mobileMenu");
+  const panel = overlay ? qs(".menu-panel", overlay) : null;
+  const closeBtn = overlay ? qs(".menu-close", overlay) : null;
 
-async function bootRender(){
-  setDirAndLang(STATE.lang);
-  const page = document.body.getAttribute("data-page");
-  if (page === "home") return renderHome();
-  if (page === "category") return renderCategory();
-  if (page === "product") return renderProduct();
-}
+  const openMenu = () => {
+    if (!overlay) return;
+    overlay.classList.add("is-open");
+    overlay.setAttribute("aria-hidden", "false");
+    document.body.classList.add("menu-open");
+    if (menuBtn) menuBtn.setAttribute("aria-expanded", "true");
+  };
 
-init();
+  const closeMenu = () => {
+    if (!overlay) return;
+    overlay.classList.remove("is-open");
+    overlay.setAttribute("aria-hidden", "true");
+    document.body.classList.remove("menu-open");
+    if (menuBtn) menuBtn.setAttribute("aria-expanded", "false");
+  };
+
+  if (menuBtn && overlay && panel) {
+    closeMenu();
+
+    menuBtn.addEventListener("click", () => {
+      const isOpen = overlay.classList.contains("is-open");
+      if (isOpen) closeMenu();
+      else openMenu();
+    });
+
+    if (closeBtn) {
+      closeBtn.addEventListener("click", (e) => {
+        e.preventDefault();
+        e.stopPropagation();
+        closeMenu();
+      });
+    }
+
+    overlay.addEventListener("click", () => closeMenu());
+    panel.addEventListener("click", (e) => e.stopPropagation());
+
+    document.addEventListener("keydown", (e) => {
+      if (e.key === "Escape" && overlay.classList.contains("is-open")) closeMenu();
+    });
+
+    qsa("a", overlay).forEach((a) => a.addEventListener("click", () => closeMenu()));
+  }
+
+  // =========================
+  // Footer year
+  // =========================
+  const yearEl = qs("#year");
+  if (yearEl) yearEl.textContent = String(new Date().getFullYear());
+
+  // =========================
+  // Data load
+  // =========================
+  const DATA_URL = "assets/data/products.json";
+
+  const loadData = async () => {
+    const res = await fetch(DATA_URL, { cache: "no-store" });
+    if (!res.ok) throw new Error("Failed to load products.json");
+    return res.json();
+  };
+
+  // =========================
+  // Render: index
+  // =========================
+  const renderIndex = (data) => {
+    const sectionsGrid = qs("#sectionsGrid");
+    const featuredGrid = qs("#featuredGrid");
+    if (!sectionsGrid || !featuredGrid) return;
+
+    const lang = (htmlEl.lang === "de") ? "de" : "ar";
+    const dict = I18N[lang];
+
+    // Build a map of first products per category
+    const firstIds = new Set();
+    const firstProductByCat = {};
+    data.categories.forEach((cat) => {
+      firstIds.add(cat.firstProductId);
+      const p = data.products.find((x) => x.id === cat.firstProductId);
+      if (p) firstProductByCat[cat.id] = p;
+    });
+
+    // Sections: 4 cards 2x2 always
+    sectionsGrid.innerHTML = "";
+    data.categories.forEach((cat) => {
+      const p = firstProductByCat[cat.id];
+      const title = (lang === "de") ? cat.title_de : cat.title_ar;
+      const desc = (lang === "de") ? cat.desc_de : cat.desc_ar;
+      const productId = cat.firstProductId;
+
+      const card = document.createElement("article");
+      card.className = "card card--clean";
+
+      const media = document.createElement("div");
+      media.className = "card-media";
+      const img = document.createElement("img");
+      if (p) loadImageWithFallback(img, p.imageBase, title);
+      else {
+        img.src = "assets/images/qr/qr-site.webp";
+        img.alt = title;
+      }
+      media.appendChild(img);
+
+      const body = document.createElement("div");
+      body.className = "card-body";
+
+      const h3 = document.createElement("h3");
+      h3.className = "card-title";
+      h3.textContent = title;
+
+      const t = document.createElement("p");
+      t.className = "card-text";
+      t.textContent = desc;
+
+      const row = document.createElement("div");
+      row.className = "btn-row";
+
+      const btn = document.createElement("a");
+      btn.className = "btn";
+      btn.href = `product.html?id=${encodeURIComponent(productId)}`;
+      btn.textContent = dict.view_group;
+
+      row.appendChild(btn);
+      body.appendChild(h3);
+      body.appendChild(t);
+      body.appendChild(row);
+
+      card.appendChild(media);
+      card.appendChild(body);
+      sectionsGrid.appendChild(card);
+    });
+
+    // Featured products: random excluding first products
+    const rest = data.products.filter((p) => !firstIds.has(p.id));
+    const featured = shuffle(rest).slice(0, 8);
+
+    featuredGrid.innerHTML = "";
+    featured.forEach((p) => {
+      const title = (lang === "de") ? p.title_de : p.title_ar;
+      const desc = (lang === "de") ? p.desc_de : p.desc_ar;
+
+      const a = document.createElement("a");
+      a.className = "card card--fog";
+      a.href = `product.html?id=${encodeURIComponent(p.id)}`;
+      a.setAttribute("aria-label", title);
+
+      const media = document.createElement("div");
+      media.className = "card-media";
+      const img = document.createElement("img");
+      loadImageWithFallback(img, p.imageBase, title);
+      media.appendChild(img);
+
+      const body = document.createElement("div");
+      body.className = "card-body";
+
+      const h3 = document.createElement("h3");
+      h3.className = "card-title";
+      h3.textContent = title;
+
+      const t = document.createElement("p");
+      t.className = "card-text";
+      t.textContent = desc;
+
+      body.appendChild(h3);
+      body.appendChild(t);
+
+      a.appendChild(media);
+      a.appendChild(body);
+
+      featuredGrid.appendChild(a);
+    });
+  };
+
+  // =========================
+  // Render: category
+  // =========================
+  const renderCategory = (data) => {
+    const catId = (getParam("cat") || "").toLowerCase();
+    const grid = qs("#categoryGrid");
+    const titleEl = qs("#categoryTitle");
+    const subEl = qs("#categorySubtitle");
+    if (!grid || !titleEl || !subEl) return;
+
+    const lang = (htmlEl.lang === "de") ? "de" : "ar";
+    const dict = I18N[lang];
+
+    const cat = data.categories.find((c) => c.id === catId) || data.categories[0];
+    const title = (lang === "de") ? cat.title_de : cat.title_ar;
+
+    titleEl.textContent = title;
+    subEl.textContent = dict.cat_subtitle;
+
+    const list = data.products.filter((p) => p.category === cat.id);
+
+    grid.innerHTML = "";
+    list.forEach((p) => {
+      const t = (lang === "de") ? p.title_de : p.title_ar;
+      const d = (lang === "de") ? p.desc_de : p.desc_ar;
+
+      const a = document.createElement("a");
+      a.className = "card card--clean";
+      a.href = `product.html?id=${encodeURIComponent(p.id)}`;
+      a.setAttribute("aria-label", t);
+
+      const media = document.createElement("div");
+      media.className = "card-media";
+      const img = document.createElement("img");
+      loadImageWithFallback(img, p.imageBase, t);
+      media.appendChild(img);
+
+      const body = document.createElement("div");
+      body.className = "card-body";
+
+      const h3 = document.createElement("h3");
+      h3.className = "card-title";
+      h3.textContent = t;
+
+      const desc = document.createElement("p");
+      desc.className = "card-text";
+      desc.textContent = d;
+
+      body.appendChild(h3);
+      body.appendChild(desc);
+
+      a.appendChild(media);
+      a.appendChild(body);
+
+      grid.appendChild(a);
+    });
+  };
+
+  // =========================
+  // Render: product
+  // =========================
+  const renderProductPage = (data) => {
+    const mainImg = qs("#productMainImage");
+    const titleEl = qs("#productTitle");
+    const descEl = qs("#productDesc");
+    const galleryTrack = qs("#galleryTrack");
+    const similarList = qs("#similarList");
+    const openFsBtn = qs("#openFullscreen");
+    const fullscreen = qs("#fullscreen");
+    const fullscreenImg = qs("#fullscreenImg");
+    const closeFsBtn = qs("#closeFullscreen");
+    const prevBtn = qs("#galleryPrev");
+    const nextBtn = qs("#galleryNext");
+
+    if (!mainImg || !titleEl || !descEl || !galleryTrack || !similarList) return;
+
+    const lang = (htmlEl.lang === "de") ? "de" : "ar";
+
+    const getProductById = (id) => data.products.find((p) => p.id === id);
+
+    const buildGallery = (p) => {
+      galleryTrack.innerHTML = "";
+
+      // main (hero) image thumb (always)
+      const thumbs = [];
+      thumbs.push({ srcBase: p.imageBase, label: "main" });
+
+      const count = Number(p.galleryCount || 0);
+      for (let i = 1; i <= count; i++) {
+        thumbs.push({ srcBase: `${p.imageBase}-${i}`, label: `g${i}` });
+      }
+
+      thumbs.forEach((it, idx) => {
+        const btn = document.createElement("button");
+        btn.className = "gallery-thumb" + (idx === 0 ? " is-active" : "");
+        btn.type = "button";
+        btn.setAttribute("aria-label", "thumb");
+
+        const img = document.createElement("img");
+        // gallery images are "-1-1200.webp" style, so srcBase already includes "-1"
+        // We still resolve with -1200 / -600 by appending:
+        // if srcBase ends with "-1" => final becomes "-1-1200.webp"
+        loadImageWithFallback(img, it.srcBase, "thumb");
+
+        btn.appendChild(img);
+
+        btn.addEventListener("click", () => {
+          qsa(".gallery-thumb", galleryTrack).forEach((x) => x.classList.remove("is-active"));
+          btn.classList.add("is-active");
+
+          // set main image to this thumb srcBase
+          loadImageWithFallback(mainImg, it.srcBase, mainImg.alt);
+          // update fullscreen image too
+          fullscreenImg.src = mainImg.src;
+        });
+
+        galleryTrack.appendChild(btn);
+      });
+    };
+
+    const buildSimilar = (p) => {
+      similarList.innerHTML = "";
+      const same = data.products.filter((x) => x.category === p.category && x.id !== p.id);
+
+      same.forEach((s) => {
+        const title = (lang === "de") ? s.title_de : s.title_ar;
+        const desc = (lang === "de") ? s.desc_de : s.desc_ar;
+
+        const btn = document.createElement("button");
+        btn.type = "button";
+        btn.className = "side-item";
+
+        const thumb = document.createElement("div");
+        thumb.className = "side-thumb";
+        const img = document.createElement("img");
+        loadImageWithFallback(img, s.imageBase, title);
+        thumb.appendChild(img);
+
+        const info = document.createElement("div");
+        info.className = "side-info";
+
+        const name = document.createElement("div");
+        name.className = "side-name";
+        name.textContent = title;
+
+        const d = document.createElement("div");
+        d.className = "side-desc";
+        d.textContent = desc;
+
+        info.appendChild(name);
+        info.appendChild(d);
+
+        btn.appendChild(thumb);
+        btn.appendChild(info);
+
+        btn.addEventListener("click", () => {
+          // Update content in-place and update URL
+          setParamWithoutReload("id", s.id);
+          renderById(s.id);
+          // scroll to top of product
+          window.scrollTo({ top: 0, behavior: "smooth" });
+        });
+
+        similarList.appendChild(btn);
+      });
+    };
+
+    const renderById = (id) => {
+      const p = getProductById(id) || data.products[0];
+      if (!p) return;
+
+      const title = (lang === "de") ? p.title_de : p.title_ar;
+      const desc = (lang === "de") ? p.desc_de : p.desc_ar;
+
+      titleEl.textContent = title;
+      descEl.textContent = desc;
+
+      // main image:
+      loadImageWithFallback(mainImg, p.imageBase, title);
+
+      // ensure fullscreen uses current image
+      fullscreenImg.src = mainImg.src;
+      fullscreenImg.alt = title;
+
+      // build gallery + similar
+      buildGallery(p);
+      buildSimilar(p);
+    };
+
+    // Fullscreen
+    const openFullscreen = () => {
+      if (!fullscreen) return;
+      fullscreen.classList.add("is-open");
+      fullscreen.setAttribute("aria-hidden", "false");
+      fullscreenImg.src = mainImg.src;
+      fullscreenImg.alt = mainImg.alt || "";
+    };
+
+    const closeFullscreen = () => {
+      if (!fullscreen) return;
+      fullscreen.classList.remove("is-open");
+      fullscreen.setAttribute("aria-hidden", "true");
+    };
+
+    if (openFsBtn && fullscreen && closeFsBtn) {
+      openFsBtn.addEventListener("click", () => openFullscreen());
+      closeFsBtn.addEventListener("click", () => closeFullscreen());
+      fullscreen.addEventListener("click", () => closeFullscreen());
+      fullscreenImg.addEventListener("click", (e) => e.stopPropagation());
+      document.addEventListener("keydown", (e) => {
+        if (e.key === "Escape" && fullscreen.classList.contains("is-open")) closeFullscreen();
+      });
+    }
+
+    // Gallery scroll controls
+    if (prevBtn && nextBtn) {
+      prevBtn.addEventListener("click", () => {
+        galleryTrack.scrollBy({ left: -240, behavior: "smooth" });
+      });
+      nextBtn.addEventListener("click", () => {
+        galleryTrack.scrollBy({ left: 240, behavior: "smooth" });
+      });
+    }
+
+    const id = getParam("id") || data.products[0]?.id || "gift-001";
+    renderById(id);
+  };
+
+  // =========================
+  // Boot
+  // =========================
+  const boot = async () => {
+    try {
+      const data = await loadData();
+
+      const page = document.body.getAttribute("data-page");
+
+      // re-render on lang change by listening to click (simple)
+      langButtons.forEach((btn) => {
+        btn.addEventListener("click", () => {
+          // reload current page content with new lang
+          const currentPage = document.body.getAttribute("data-page");
+          const langNow = (htmlEl.lang === "de") ? "de" : "ar";
+
+          // Just re-render page sections after language applies
+          if (currentPage === "index") renderIndex(data);
+          if (currentPage === "category") renderCategory(data);
+          if (currentPage === "product") renderProductPage(data);
+
+          // Ensure some texts are updated
+          const dict = I18N[langNow];
+          // Update dynamic button labels in index if needed (handled by render)
+          // Update titles in category/product (handled by render)
+        });
+      });
+
+      if (page === "index") renderIndex(data);
+      if (page === "category") renderCategory(data);
+      if (page === "product") renderProductPage(data);
+    } catch (err) {
+      // Minimal fallback
+      console.error(err);
+    }
+  };
+
+  boot();
+})();
