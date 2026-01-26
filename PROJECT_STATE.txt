@@ -1,29 +1,72 @@
-PROJECT STATE — DekoKraft
+=========================
+File: PROJEKT_STATE.TEXT
+=========================
 
-WORKING:
-- الموقع يعمل على GitHub Pages
-- اللغة AR/DE تعمل + RTL/LTR
+PROJEKT_STATE — DekoKraft (adamplane2)
+
+LAST UPDATE: 2026-01-26
+
+STATUS
+- المشروع يعمل على GitHub Pages
+- نقوم بتحسينات بصرية + سلوك صفحة المنتج (Fullscreen + Gallery/Slider + Similar products)
+
+WORKING (مؤكد)
+- GitHub Pages يعمل (الرابط الأساسي يفتح)
+- تصميم Dark/Glass موجود
+- دعم AR/DE يعمل + RTL/LTR
+- Menu على الهاتف يعمل (فتح/إغلاق)
 - تحميل products.json يعمل
-- الصور تُحلّ تلقائياً (1200 ثم 600 ثم placeholder)
-- KONTAKT يظهر مع WhatsApp/Telegram/Email + Logo
+- حلّ الصور تلقائياً: 1200 ثم 600 ثم fallback
+- صفحة product.html تعرض منتج حسب id
+- KONTAKT موجود في الصفحات
 
-FIXES APPLIED IN THIS VERSION:
-1) Distinction between MAIN SECTIONS vs FEATURED PRODUCTS:
-- الأقسام الرئيسية: 2×2 دائماً (موبايل + كمبيوتر)
-- المنتجات المختارة: بدون زر، والكارت كله رابط إلى صفحة المنتج
+CRITICAL RULES CONFIRMED
+- ممنوع Facebook نهائياً:
+  لا روابط، لا SVG، لا ذكر في الكود.
+- صور المنتجات تعتمد على:
+  imageBase + (-1200.webp أو -600.webp)
+- صور الـ Slider/Gallery تعتمد على:
+  imageBase + "-1-1200.webp" ... "-6-1200.webp" (إن وُجد)
+  مع fallback إذا لم توجد بعض الصور.
 
-2) Correct navigation:
-- زر "عرض القسم" في بطاقات الأقسام يذهب إلى product.html لأول منتج في القسم
-  (بدلاً من الذهاب إلى category.html)
+FIXES APPLIED IN LAST GOOD VERSION
+1) تمييز الأقسام الرئيسية عن المنتجات المختارة:
+- الأقسام الرئيسية: Grid ثابت 2×2 (موبايل + كمبيوتر) + زر داخل البطاقة "عرض المجموعة"
+- المنتجات المختارة: بدون زر + الكارت كله رابط
 
-3) Avoid duplication:
-- المنتجات المختارة تستبعد منتجات الأقسام الرئيسية (firstProductId لكل قسم)
+2) Navigation:
+- زر الأقسام يفتح product.html لأول منتج في القسم (firstProductId)
+- عدم التكرار: استبعاد firstProductId من featured products
 
-4) Blue Fog overlay:
-- يظهر فقط على بطاقات المنتجات المختارة (كديكور زجاجي) وليس على الأقسام الرئيسية
+3) Blue Fog:
+- يظهر فقط على بطاقات المنتجات المختارة (كديكور زجاجي)
+- لا يظهر على الأقسام الرئيسية
 
-5) Facebook removed:
-- حذف Facebook بالكامل من KONTAKT ومن أيقوناته
+4) KONTAKT:
+- WhatsApp + Telegram + Email فقط
+- Facebook محذوف بالكامل
+- تصميم KONTAKT بدون Card واضحة (مندمج مع الخلفية)
+- ترتيب: Logo ثم أيقونات ثم QR ثم معلومات نصية
 
-PENDING / NEXT:
-- إضافة منتجات جديدة أو ربط Telegram/WhatsApp/Facebook (Facebook محذوف حالياً حسب طلب المستخدم)
+PENDING / NEXT (إذا ظهر خلل)
+- إذا لم تظهر صور الـGallery:
+  تحقق من أسماء الملفات:
+  مثال: gift-001-1-1200.webp ... gift-001-6-1200.webp
+  وتأكد أن products.json يحتوي galleryCount=6 لهذا المنتج.
+- إذا فشل تحميل صورة 1200:
+  الكود ينتقل تلقائياً إلى 600 ثم fallback.
+- إذا لم يعمل Telegram:
+  يجب وضع رابط تيليجرام الحقيقي (username/channel) بدل https://t.me/
+
+FILES IN USE
+- index.html
+- product.html
+- category.html
+- assets/css/main.css
+- assets/js/main.js
+- assets/data/products.json
+- assets/images/icons: whatsapp.svg, telegram.svg, email.svg
+- assets/images/qr/qr-site.webp
+- assets/images/products/... (600/1200 + صور الـ gallery)
+
+```0
