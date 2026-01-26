@@ -1,65 +1,181 @@
+=========================
+File: PROJECT_PROMPT.TEXT
+=========================
+
 PROJECT: DekoKraft (Static site on GitHub Pages)
-STACK: HTML + CSS + Vanilla JavaScript + JSON فقط (بدون Framework, بدون Backend)
+REPO: adamplane2
+STACK: HTML + CSS + Vanilla JavaScript + JSON فقط
+NO Frameworks, NO Backend, NO Build tools
 
-GOAL:
-موقع ثابت بواجهة Dark/Glass يدعم لغتين AR/DE.
-تبديل اللغة لا يغير الروابط ولا يكسر التصميم.
-RTL في العربية و LTR في الألمانية.
+GOAL
+إنشاء موقع ثابت أنيق (Dark/Glass) لمشروع DekoKraft.
+يدعم لغتين: العربية (AR) + الألمانية (DE).
+التبديل بين اللغات لا يغير الروابط ولا يكسر التصميم.
+AR = RTL ، DE = LTR.
 
-PAGES:
-1) index.html (الصفحة الرئيسية)
+ORGANIGRAMM (ROOT STRUCTURE)
+adamplane2/
+├─ index.html
+├─ product.html
+├─ category.html
+│
+├─ assets/
+│  ├─ css/
+│  │  └─ main.css
+│  │
+│  ├─ js/
+│  │  └─ main.js
+│  │
+│  ├─ data/
+│  │  └─ products.json
+│  │
+│  └─ images/
+│     ├─ logo/
+│     │  ├─ .keep
+│     │  ├─ logo-dekokraft.png
+│     │  ├─ logo-dekokraft-600.webp
+│     │  └─ logo-dekokraft-1200.webp
+│     │
+│     ├─ icons/
+│     │  ├─ .keep
+│     │  ├─ whatsapp.svg
+│     │  ├─ telegram.svg
+│     │  └─ email.svg
+│     │
+│     ├─ qr/
+│     │  ├─ .keep
+│     │  └─ qr-site.webp
+│     │
+│     └─ products/
+│        ├─ gifts/
+│        │  ├─ .keep
+│        │  ├─ gift-001-600.webp
+│        │  ├─ gift-001-1200.webp
+│        │  ├─ gift-001-1-1200.webp
+│        │  ├─ gift-001-2-1200.webp
+│        │  ├─ gift-001-3-1200.webp
+│        │  ├─ gift-001-4-1200.webp
+│        │  ├─ gift-001-5-1200.webp
+│        │  ├─ gift-001-6-1200.webp
+│        │  ├─ gift-002-600.webp
+│        │  └─ gift-002-1200.webp
+│        │
+│        ├─ decor/
+│        │  ├─ .keep
+│        │  ├─ decor-001-600.webp
+│        │  ├─ decor-001-1200.webp
+│        │  ├─ decor-001-1-1200.webp
+│        │  ├─ decor-001-2-1200.webp
+│        │  ├─ decor-001-3-1200.webp
+│        │  ├─ decor-001-4-1200.webp
+│        │  ├─ decor-001-5-1200.webp
+│        │  ├─ decor-001-6-1200.webp
+│        │  ├─ decor-002-600.webp
+│        │  └─ decor-002-1200.webp
+│        │
+│        ├─ kids/
+│        │  ├─ .keep
+│        │  ├─ kids-001-600.webp
+│        │  ├─ kids-001-1200.webp
+│        │  ├─ kids-001-1-1200.webp
+│        │  ├─ kids-001-2-1200.webp
+│        │  ├─ kids-001-3-1200.webp
+│        │  ├─ kids-001-4-1200.webp
+│        │  ├─ kids-001-5-1200.webp
+│        │  ├─ kids-001-6-1200.webp
+│        │  ├─ kids-002-600.webp
+│        │  └─ kids-002-1200.webp
+│        │
+│        └─ services/
+│           ├─ .keep
+│           ├─ service-001-600.webp
+│           ├─ service-001-1200.webp
+│           ├─ service-002-600.webp
+│           └─ service-002-1200.webp
+
+PAGES
+1) index.html
 - Hero
-- قسم "الأقسام" (4 بطاقات رئيسية): Gifts / Decor / Kids / Services
-  * يجب أن تكون 2×2 على الهاتف
-  * ويجب أن تبقى 2×2 على الكمبيوتر أيضاً (لا تتحول إلى 4×4)
-  * بطاقة القسم تحتوي زر "عرض القسم" + يمكن جعل البطاقة نفسها رابط أيضاً.
-  * IMPORTANT NAVIGATION:
-    زر "عرض القسم" يجب أن يفتح صفحة المنتج (product.html) مباشرة
-    عبر أول منتج في هذا القسم (firstProductId لكل قسم) — وليس صفحة category.html
+- قسم "الأقسام الرئيسية" (4 بطاقات): Gifts / Decor / Kids / Services
+  REQUIRED:
+  - البطاقات الرئيسية يجب تكون 2×2 على الهاتف
+  - وتبقى 2×2 على الكمبيوتر أيضاً (لا تتحول إلى 4×4)
+  - كل بطاقة قسم تحتوي:
+    (1) صورة تمثل القسم (هي أول منتج في هذا القسم)
+    (2) عنوان + وصف
+    (3) زر واضح: "عرض المجموعة"
+  NAVIGATION:
+  - زر "عرض المجموعة" يفتح product.html?id=FIRST_PRODUCT_ID مباشرة
+    (لا يذهب إلى category.html)
 
 - قسم "منتجات مختارة" (Featured / Random)
-  * هذه البطاقات لا تحتوي زر داخلها
-  * البطاقة كلها تكون رابط إلى صفحة المنتج product.html?id=...
-  * يجب عدم تكرار نفس منتجات الأقسام الرئيسية (استبعاد firstProductId لكل قسم)
+  REQUIRED:
+  - هذه البطاقات بدون زر داخلها
+  - البطاقة كلها تكون رابط إلى product.html?id=...
+  - يجب عدم تكرار منتجات الأقسام الرئيسية
+    (استبعاد firstProductId لكل قسم)
+  VISUAL:
+  - الأقسام الرئيسية: Glass نظيف بدون بخار أزرق
+  - المنتجات المختارة: يسمح بديكور (Blue Fog / Glass Vapor) خفيف وواضح
+    لكن لا يظهر كأنه صورة مكسورة.
 
 - KONTAKT (موحد في كل الصفحات)
-  * WhatsApp + Telegram + Email فقط
-  * حذف Facebook نهائياً (لا كود ولا SVG)
-  * أسفل KONTAKT يظهر Logo كبير داخل مربع الزجاج
+  REQUIRED DESIGN:
+  - لا نريد مربع/خلفية منفصلة لمحتوى KONTAKT (يندمج مع خلفية الصفحة)
+  - يظهر Logo ثم تحته مباشرة أيقونات التواصل (بدون خلفيات زر)
+  - ثم QR-Code لصورة الموقع
+  CONTENT:
+  - WhatsApp + Telegram + Email فقط
+  - ممنوع Facebook (لا كود ولا SVG ولا روابط)
 
-2) category.html (اختياري)
-- شبكة منتجات قسم معين حسب ?cat=
-- كل بطاقة تفتح product.html?id=...
-- KONTAKT
-(ممكن إبقاؤها للعرض، لكن الزر الرئيسي في الصفحة الرئيسية لا يذهب إليها)
-
-3) product.html (صفحة المنتج)
-- عرض المنتج بشكل مُكبر:
-  * صورة كبيرة رئيسية
-  * عنوان + وصف قصير جميل تحت/بجانب الصورة
-- أسفل/جانب العرض:
-  * قائمة عمودية Thumbnails لمنتجات نفس القسم (صغير)
-  * عند الضغط على Thumbnail:
-    - تتغير الصورة الكبيرة + العنوان + الوصف إلى المنتج المختار
-    - ويتغير رابط الصفحة (history.replaceState) إلى id الجديد بدون إعادة تحميل
+2) product.html
+- صفحة عرض منتج واحد:
+  REQUIRED:
+  - صورة كبيرة رئيسية
+  - عنوان + وصف قصير جميل
+  - عند الضغط على الصورة الكبيرة: تفتح الصورة الأصلية (fullscreen / overlay)
+    بدون عنوان وبدون وصف.
+- Slider / Gallery للمنتج:
+  REQUIRED:
+  - المنتج قد يملك 6 صور زوايا (gallery)
+  - تظهر كشريط تمرير (slider) أو thumbnails قابلة للتمرير
+  - عند اختيار صورة من الـ gallery:
+    - تتغير الصورة الكبيرة
+- منتجات نفس القسم (Similar / Same category):
+  REQUIRED:
+  - قائمة/شبكة لمنتجات من نفس القسم
+  - عند الضغط على منتج مشابه:
+    - يبقى في product.html
+    - يتغير المحتوى (الصورة/العنوان/الوصف/gallery)
+    - ويتغير رابط الصفحة باستخدام history.replaceState إلى id الجديد
+    - وكأنه فتحت صفحة جديدة بدون reload
 - KONTAKT في الأسفل
 
-CRITICAL IMAGE RULE:
-صور المنتجات ليست gift-001.webp
-بل:
-gift-001-600.webp و gift-001-1200.webp (قد يوجد واحد منهما)
-في products.json نستخدم:
-imageBase: "assets/images/products/gifts/gift-001"
-والكود يختار:
-- -1200.webp إذا موجود
-- وإلا -600.webp إذا موجود
-- وإلا Placeholder بدون كسر التصميم
+3) category.html (اختياري)
+- Grid لمنتجات قسم حسب ?cat=
+- كل بطاقة تفتح product.html?id=...
+- KONTAKT في الأسفل
+NOTE:
+- الصفحة الرئيسية لا تعتمد عليها للتنقل الرئيسي (الأزرار تذهب مباشرة للمنتج الأول)
 
-VISUAL DIFFERENTIATION:
-- Cards الأقسام الرئيسية: زجاج نظيف بدون “بخار أزرق”
-- Cards المنتجات المختارة: يوضع Overlay ديكور (Blue Fog / Glass Vapor) فوق الصورة فقط أو فوق الكارت
-  (بدون أن يبدو كصورة مكسورة، وبشكل واضح أنه ديكور)
+DATA (products.json)
+- قاعدة البيانات تشمل:
+  id, category, title_ar, title_de, desc_ar, desc_de, imageBase, galleryCount
+- CRITICAL IMAGE RULE:
+  الصور ليست باسم gift-001.webp
+  بل:
+    gift-001-1200.webp و/أو gift-001-600.webp
+  و للـ Gallery:
+    gift-001-1-1200.webp ... gift-001-6-1200.webp (إن وُجد)
+- imageBase مثال:
+  "assets/images/products/gifts/gift-001"
+- اختيار الصورة:
+  - يفضّل -1200.webp إن كان موجوداً
+  - وإلا -600.webp إن كان موجوداً
+  - وإلا fallback بدون كسر التصميم
 
-WORKFLOW:
-عند طلب تعديل ملف: اطبع الكود كامل لذلك الملف فقط.
-(الآن طباعة كاملة للمشروع مطلوبة.)
+WORKFLOW RULES (IMPORTANT)
+1) خطوة بخطوة
+2) عند أي تعديل في كود: اطبع الملف كاملاً (بدون قص ولصق أجزاء)
+3) ممنوع إضافة Facebook أو أي ملف غير موجود في الشجرة
+4) حافظ على استقرار التصميم: Responsive + No overflow + Menu يعمل على الهاتف
