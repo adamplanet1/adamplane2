@@ -1,6 +1,6 @@
 /* =========================
 File: assets/js/main.js
-Menu + AR/DE + JSON render + product slider + fullscreen
+Menu + AR/DE + JSON render + product gallery + fullscreen + swipe
 NO Facebook
 ========================= */
 
@@ -22,26 +22,28 @@ NO Facebook
     history.replaceState({}, "", url.toString());
   };
 
-  // Try to load -1200 first, then -600, then placeholder
-  const resolveImage = (imageBase) => {
-    const try1200 = `${imageBase}-1200.webp`;
-    const try600 = `${imageBase}-600.webp`;
-    const placeholder = `assets/images/products/${imageBase.includes("/products/") ? "" : ""}`; // not used
-    const fallback = "assets/images/qr/qr-site.webp"; // safe existing file if no placeholder exists
-    return { try1200, try600, fallback };
-  };
+  const pad2 = (n) => String(n).padStart(2, "0");
 
-  const loadImageWithFallback = (imgEl, imageBase, alt = "") => {
-    const { try1200, try600, fallback } = resolveImage(imageBase);
+  // Image resolver:
+  // - For "stem": we expect it already includes the angle number like "...-01"
+  // - Final files become: `${stem}-1200.webp` or `${stem}-600.webp`
+  const imageCandidates = (stem) => ({
+    w1200: `${stem}-1200.webp`,
+    w600: `${stem}-600.webp`,
+    fallback: "assets/images/logo/logo-dekokraft.png"
+  });
+
+  const loadImg = (imgEl, stem, alt = "") => {
+    const { w1200, w600, fallback } = imageCandidates(stem);
     imgEl.alt = alt;
 
-    imgEl.src = try1200;
+    imgEl.src = w1200;
     imgEl.onerror = () => {
       imgEl.onerror = () => {
         imgEl.onerror = null;
         imgEl.src = fallback;
       };
-      imgEl.src = try600;
+      imgEl.src = w600;
     };
   };
 
@@ -61,8 +63,8 @@ NO Facebook
     ar: {
       menu: "Menu",
       nav_home: "الرئيسية",
+      nav_candel: "الشموع",
       nav_gifts: "الهدايا",
-      nav_decor: "الديكور",
       nav_kids: "هدايا الأطفال",
       nav_services: "الخدمات",
 
@@ -74,7 +76,6 @@ NO Facebook
       featured_subtitle: "اختيارات عشوائية من مجموعات مختلفة",
 
       view_group: "عرض المجموعة",
-      view_product: "عرض المنتج →",
 
       kontakt_title: "KONTAKT",
       kontakt_whatsapp: "WhatsApp:",
@@ -83,19 +84,14 @@ NO Facebook
       gallery_title: "صور إضافية",
       similar_title: "منتجات من نفس المجموعة",
 
-      cat_gifts: "الهدايا",
-      cat_decor: "الديكور",
-      cat_kids: "هدايا الأطفال",
-      cat_services: "الخدمات",
-
       cat_subtitle: "تصفح منتجات هذا القسم"
     },
     de: {
       menu: "Menü",
       nav_home: "Startseite",
+      nav_candel: "Kerzen",
       nav_gifts: "Geschenke",
-      nav_decor: "Dekoration",
-      nav_kids: "Kinder-Geschenke",
+      nav_kids: "Kinder",
       nav_services: "Service",
 
       hero_title_1: "Willkommen bei",
@@ -106,7 +102,6 @@ NO Facebook
       featured_subtitle: "Zufällige Auswahl aus verschiedenen Gruppen",
 
       view_group: "Gruppe ansehen",
-      view_product: "Produkt ansehen →",
 
       kontakt_title: "KONTAKT",
       kontakt_whatsapp: "WhatsApp:",
@@ -114,11 +109,6 @@ NO Facebook
 
       gallery_title: "Weitere Fotos",
       similar_title: "Mehr aus derselben Gruppe",
-
-      cat_gifts: "Geschenke",
-      cat_decor: "Dekoration",
-      cat_kids: "Kinder-Geschenke",
-      cat_services: "Service",
 
       cat_subtitle: "Produkte dieser Kategorie ansehen"
     }
@@ -222,7 +212,6 @@ NO Facebook
   // Data load
   // =========================
   const DATA_URL = "assets/data/products.json";
-
   const loadData = async () => {
     const res = await fetch(DATA_URL, { cache: "no-store" });
     if (!res.ok) throw new Error("Failed to load products.json");
@@ -240,7 +229,6 @@ NO Facebook
     const lang = (htmlEl.lang === "de") ? "de" : "ar";
     const dict = I18N[lang];
 
-    // Build a map of first products per category
     const firstIds = new Set();
     const firstProductByCat = {};
     data.categories.forEach((cat) => {
@@ -249,7 +237,6 @@ NO Facebook
       if (p) firstProductByCat[cat.id] = p;
     });
 
-    // Sections: 4 cards 2x2 always
     sectionsGrid.innerHTML = "";
     data.categories.forEach((cat) => {
       const p = firstProductByCat[cat.id];
@@ -262,10 +249,13 @@ NO Facebook
 
       const media = document.createElement("div");
       media.className = "card-media";
+
       const img = document.createElement("img");
-      if (p) loadImageWithFallback(img, p.imageBase, title);
-      else {
-        img.src = "assets/images/qr/qr-site.webp";
+      if (p) {
+        // first image stem already includes "-01" (angle 01)
+        loadImg(img, p.imageStem, title);
+      } else {
+        img.src = "assets/images/logo/logo-dekokraft.png";
         img.alt = title;
       }
       media.appendChild(img);
@@ -299,7 +289,6 @@ NO Facebook
       sectionsGrid.appendChild(card);
     });
 
-    // Featured products: random excluding first products
     const rest = data.products.filter((p) => !firstIds.has(p.id));
     const featured = shuffle(rest).slice(0, 8);
 
@@ -315,8 +304,9 @@ NO Facebook
 
       const media = document.createElement("div");
       media.className = "card-media";
+
       const img = document.createElement("img");
-      loadImageWithFallback(img, p.imageBase, title);
+      loadImg(img, p.imageStem, title);
       media.appendChild(img);
 
       const body = document.createElement("div");
@@ -373,8 +363,9 @@ NO Facebook
 
       const media = document.createElement("div");
       media.className = "card-media";
+
       const img = document.createElement("img");
-      loadImageWithFallback(img, p.imageBase, t);
+      loadImg(img, p.imageStem, t);
       media.appendChild(img);
 
       const body = document.createElement("div");
@@ -407,10 +398,12 @@ NO Facebook
     const descEl = qs("#productDesc");
     const galleryTrack = qs("#galleryTrack");
     const similarList = qs("#similarList");
+
     const openFsBtn = qs("#openFullscreen");
     const fullscreen = qs("#fullscreen");
     const fullscreenImg = qs("#fullscreenImg");
     const closeFsBtn = qs("#closeFullscreen");
+
     const prevBtn = qs("#galleryPrev");
     const nextBtn = qs("#galleryNext");
 
@@ -420,44 +413,69 @@ NO Facebook
 
     const getProductById = (id) => data.products.find((p) => p.id === id);
 
-    const buildGallery = (p) => {
-      galleryTrack.innerHTML = "";
+    // For candel/gifts/kids we need to replace the last "-01" (angle) in imageStem
+    // imageStem example: ".../candel-001-03-01"
+    const stemToAngleStem = (baseStem, angle) => {
+      const a = pad2(angle);
+      return baseStem.replace(/-\d{2}$/, `-${a}`);
+    };
 
-      // main (hero) image thumb (always)
-      const thumbs = [];
-      thumbs.push({ srcBase: p.imageBase, label: "main" });
+    let currentAngle = 1;
+    let currentMax = 0;
 
-      const count = Number(p.galleryCount || 0);
-      for (let i = 1; i <= count; i++) {
-        thumbs.push({ srcBase: `${p.imageBase}-${i}`, label: `g${i}` });
+    const setMainByAngle = (p, angle) => {
+      currentAngle = angle;
+      const stem = (p.galleryCount && p.galleryCount > 0)
+        ? stemToAngleStem(p.imageStem, angle)
+        : p.imageStem;
+
+      loadImg(mainImg, stem, mainImg.alt || "");
+      if (fullscreenImg) {
+        fullscreenImg.src = mainImg.src;
+        fullscreenImg.alt = mainImg.alt || "";
       }
 
-      thumbs.forEach((it, idx) => {
+      qsa(".gallery-thumb", galleryTrack).forEach((x) => x.classList.remove("is-active"));
+      const activeBtn = qs(`.gallery-thumb[data-angle="${String(angle)}"]`, galleryTrack);
+      if (activeBtn) activeBtn.classList.add("is-active");
+    };
+
+    const buildGallery = (p) => {
+      galleryTrack.innerHTML = "";
+      const count = Number(p.galleryCount || 0);
+      currentMax = count;
+
+      if (!count) {
+        // services: show just one thumb (main)
         const btn = document.createElement("button");
-        btn.className = "gallery-thumb" + (idx === 0 ? " is-active" : "");
+        btn.className = "gallery-thumb is-active";
         btn.type = "button";
+        btn.setAttribute("data-angle", "1");
+
+        const img = document.createElement("img");
+        loadImg(img, p.imageStem, "thumb");
+        btn.appendChild(img);
+
+        btn.addEventListener("click", () => setMainByAngle(p, 1));
+        galleryTrack.appendChild(btn);
+        return;
+      }
+
+      for (let angle = 1; angle <= count; angle++) {
+        const btn = document.createElement("button");
+        btn.className = "gallery-thumb" + (angle === 1 ? " is-active" : "");
+        btn.type = "button";
+        btn.setAttribute("data-angle", String(angle));
         btn.setAttribute("aria-label", "thumb");
 
         const img = document.createElement("img");
-        // gallery images are "-1-1200.webp" style, so srcBase already includes "-1"
-        // We still resolve with -1200 / -600 by appending:
-        // if srcBase ends with "-1" => final becomes "-1-1200.webp"
-        loadImageWithFallback(img, it.srcBase, "thumb");
+        const angleStem = stemToAngleStem(p.imageStem, angle);
+        loadImg(img, angleStem, "thumb");
 
         btn.appendChild(img);
-
-        btn.addEventListener("click", () => {
-          qsa(".gallery-thumb", galleryTrack).forEach((x) => x.classList.remove("is-active"));
-          btn.classList.add("is-active");
-
-          // set main image to this thumb srcBase
-          loadImageWithFallback(mainImg, it.srcBase, mainImg.alt);
-          // update fullscreen image too
-          fullscreenImg.src = mainImg.src;
-        });
-
+        btn.addEventListener("click", () => setMainByAngle(p, angle));
         galleryTrack.appendChild(btn);
-      });
+      }
     };
 
     const buildSimilar = (p) => {
@@ -475,7 +493,7 @@ NO Facebook
         const thumb = document.createElement("div");
         thumb.className = "side-thumb";
         const img = document.createElement("img");
-        loadImageWithFallback(img, s.imageBase, title);
+        loadImg(img, s.imageStem, title);
         thumb.appendChild(img);
 
         const info = document.createElement("div");
@@ -496,18 +514,15 @@ NO Facebook
         btn.appendChild(info);
 
         btn.addEventListener("click", () => {
-          // Update content in-place and update URL
           setParamWithoutReload("id", s.id);
-          renderById(s.id);
-          // scroll to top of product
-          window.scrollTo({ top: 0, behavior: "smooth" });
+          renderById(s.id, true);
         });
 
         similarList.appendChild(btn);
       });
     };
 
-    const renderById = (id) => {
+    const renderById = (id, smoothTop) => {
       const p = getProductById(id) || data.products[0];
       if (!p) return;
 
@@ -516,17 +531,14 @@ NO Facebook
 
       titleEl.textContent = title;
       descEl.textContent = desc;
+      mainImg.alt = title;
 
-      // main image:
-      loadImageWithFallback(mainImg, p.imageBase, title);
-
-      // ensure fullscreen uses current image
-      fullscreenImg.src = mainImg.src;
-      fullscreenImg.alt = title;
-
-      // build gallery + similar
+      currentAngle = 1;
       buildGallery(p);
+      setMainByAngle(p, 1);
       buildSimilar(p);
+
+      if (smoothTop) window.scrollTo({ top: 0, behavior: "smooth" });
     };
 
     // Fullscreen
@@ -534,8 +546,10 @@ NO Facebook
       if (!fullscreen) return;
       fullscreen.classList.add("is-open");
       fullscreen.setAttribute("aria-hidden", "false");
-      fullscreenImg.src = mainImg.src;
-      fullscreenImg.alt = mainImg.alt || "";
+      if (fullscreenImg) {
+        fullscreenImg.src = mainImg.src;
+        fullscreenImg.alt = mainImg.alt || "";
+      }
     };
 
     const closeFullscreen = () => {
@@ -544,7 +558,7 @@ NO Facebook
       fullscreen.setAttribute("aria-hidden", "true");
     };
 
-    if (openFsBtn && fullscreen && closeFsBtn) {
+    if (openFsBtn && fullscreen && closeFsBtn && fullscreenImg) {
       openFsBtn.addEventListener("click", () => openFullscreen());
       closeFsBtn.addEventListener("click", () => closeFullscreen());
       fullscreen.addEventListener("click", () => closeFullscreen());
@@ -564,8 +578,54 @@ NO Facebook
       });
     }
 
-    const id = getParam("id") || data.products[0]?.id || "gift-001";
-    renderById(id);
+    // Swipe on main image (touch)
+    let touchStartX = 0;
+    let touchStartY = 0;
+    let touching = false;
+
+    const onTouchStart = (e) => {
+      if (!e.touches || e.touches.length !== 1) return;
+      touching = true;
+      touchStartX = e.touches[0].clientX;
+      touchStartY = e.touches[0].clientY;
+    };
+
+    const onTouchEnd = (e) => {
+      if (!touching) return;
+      touching = false;
+
+      const t = (e.changedTouches && e.changedTouches[0]) ? e.changedTouches[0] : null;
+      if (!t) return;
+
+      const dx = t.clientX - touchStartX;
+      const dy = t.clientY - touchStartY;
+
+      // ignore vertical scroll
+      if (Math.abs(dy) > Math.abs(dx)) return;
+
+      const activeId = getParam("id") || data.products[0]?.id;
+      const p = getProductById(activeId);
+      if (!p) return;
+
+      const max = Number(p.galleryCount || 0);
+      if (max <= 1) return;
+
+      if (dx <= -45) {
+        // next
+        const next = currentAngle >= max ? 1 : currentAngle + 1;
+        setMainByAngle(p, next);
+      } else if (dx >= 45) {
+        // prev
+        const prev = currentAngle <= 1 ? max : currentAngle - 1;
+        setMainByAngle(p, prev);
+      }
+    };
+
+    mainImg.addEventListener("touchstart", onTouchStart, { passive: true });
+    mainImg.addEventListener("touchend", onTouchEnd, { passive: true });
+
+    const id = getParam("id") || data.products[0]?.id || "";
+    renderById(id, false);
   };
 
   // =========================
@@ -574,25 +634,14 @@ NO Facebook
   const boot = async () => {
     try {
       const data = await loadData();
-
       const page = document.body.getAttribute("data-page");
 
-      // re-render on lang change by listening to click (simple)
+      // Re-render on language change
       langButtons.forEach((btn) => {
         btn.addEventListener("click", () => {
-          // reload current page content with new lang
-          const currentPage = document.body.getAttribute("data-page");
-          const langNow = (htmlEl.lang === "de") ? "de" : "ar";
-
-          // Just re-render page sections after language applies
-          if (currentPage === "index") renderIndex(data);
-          if (currentPage === "category") renderCategory(data);
-          if (currentPage === "product") renderProductPage(data);
-
-          // Ensure some texts are updated
-          const dict = I18N[langNow];
-          // Update dynamic button labels in index if needed (handled by render)
-          // Update titles in category/product (handled by render)
+          if (page === "index") renderIndex(data);
+          if (page === "category") renderCategory(data);
+          if (page === "product") renderProductPage(data);
         });
       });
 
@@ -600,7 +649,6 @@ NO Facebook
       if (page === "category") renderCategory(data);
       if (page === "product") renderProductPage(data);
     } catch (err) {
-      // Minimal fallback
       console.error(err);
     }
   };
