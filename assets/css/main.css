@@ -744,7 +744,45 @@ body.menu-open{
   align-items:center;
   justify-content:center;
 }
+/* =========================
+TIDIO FIX (prevent blocking clicks)
+========================= */
+
+/* always keep your header/menu above everything */
+.site-header { z-index: 200000 !important; }
+.menu-overlay { z-index: 200001 !important; }
+
+/* Tidio widget container names can vary */
+#tidio-chat,
 #tidio-chat-iframe,
-.tidio-chat-iframe {
+.tidio-chat-iframe,
+iframe[src*="tidio"],
+div[id^="tidio-"]{
+  z-index: 150000 !important;
+}
+
+/* IMPORTANT:
+Sometimes Tidio injects a full-page layer that blocks clicks.
+We disable pointer-events on the big container,
+but re-enable it on the actual button/iframe so chat still works. */
+#tidio-chat,
+div[id^="tidio-"]{
+  pointer-events: none !important;
+}
+
+/* re-enable pointer events on clickable parts */
+#tidio-chat iframe,
+#tidio-chat button,
+#tidio-chat a,
+#tidio-chat-iframe,
+.tidio-chat-iframe,
+iframe[src*="tidio"]{
+  pointer-events: auto !important;
+}
+
+/* lift the bubble a bit so it doesn't cover your UI */
+#tidio-chat-iframe,
+.tidio-chat-iframe,
+iframe[src*="tidio"]{
   bottom: 90px !important;
 }
