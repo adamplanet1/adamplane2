@@ -786,3 +786,22 @@ iframe[src*="tidio"]{
 iframe[src*="tidio"]{
   bottom: 90px !important;
 }
+/* =========================
+TIDIO (clean, no interference)
+========================= */
+
+/* خلي الهيدر والقائمة فوق أي شيء */
+.site-header { z-index: 10000 !important; }
+.menu-overlay { z-index: 10001 !important; }
+
+/* خلي Tidio فوق الصفحة لكن تحت القائمة */
+#tidio-chat,
+iframe[src*="tidio"],
+div[id^="tidio-"] {
+  z-index: 9999 !important;
+}
+
+/* ارفع زر الشات قليلاً حتى لا يغطي عناصر أسفل */
+@media (max-width: 600px) {
+  iframe[src*="tidio"] { bottom: 90px !important; }
+}
