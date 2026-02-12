@@ -146,6 +146,44 @@ NO Facebook
   let savedLang = "ar";
   try { savedLang = localStorage.getItem("dekokraft_lang") || "ar"; } catch (_) {}
   applyLang(savedLang);
+// =========================
+// Tidio language sync (AR/DE)
+// =========================
+const syncTidioLang = (lang) => {
+  try {
+    // Store language preference for Tidio (best-effort)
+    localStorage.setItem("tidio_lang", lang);
+
+    // Some Tidio setups read browser lang; we emulate it
+    document.documentElement.setAttribute("lang", lang === "de" ? "de" : "ar");
+
+    // If Tidio is already loaded, re-inject script to apply new lang
+    const existing = document.querySelector('script[src*="tidio.co"]');
+    const iframe = document.querySelector('iframe[src*="tidio"]');
+
+    // If widget exists, remove iframe so it reloads cleanly
+    if (iframe) iframe.remove();
+
+    // Re-add script (force reload)
+    if (existing) existing.remove();
+
+    const s = document.createElement("script");
+    s.src = "//code.tidio.co/ockwmcmhludlxq0hduty5zot7lq8hcm4.js";
+    s.async = true;
+    document.body.appendChild(s);
+  } catch (_) {}
+};
+
+// Call once on load
+syncTidioLang(savedLang);
+
+// When clicking language buttons
+langButtons.forEach((btn) => {
+  btn.addEventListener("click", () => {
+    const lang = btn.dataset.lang || "ar";
+    syncTidioLang(lang);
+  });
+});
 
   langButtons.forEach((btn) => {
     btn.addEventListener("click", () => applyLang(btn.dataset.lang || "ar"));
