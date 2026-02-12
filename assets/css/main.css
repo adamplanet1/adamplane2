@@ -805,3 +805,9 @@ div[id^="tidio-"] {
 @media (max-width: 600px) {
   iframe[src*="tidio"] { bottom: 90px !important; }
 }
+/* Emergency: hide big popup windows from Tidio (temporary) */
+.tidio-popup,
+#tidio-popup,
+div[class*="tidio"][class*="popup"] {
+  display: none !important;
+}
