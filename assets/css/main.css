@@ -744,3 +744,5 @@ body.menu-open{
   align-items:center;
   justify-content:center;
 }
+.site-header { z-index: 20000; }
+.menu-overlay { z-index: 20001; }
