@@ -177,6 +177,41 @@ const syncTidioLang = (lang) => {
 // Call once on load
 syncTidioLang(savedLang);
 
+// =========================
+// Tidio: AR/DE Sync (safe)
+// =========================
+const setTidioLangHint = (lang) => {
+  try {
+    // Hint for our site
+    localStorage.setItem("dekokraft_lang", lang);
+
+    // Hint for Tidio (best effort)
+    localStorage.setItem("tidio_lang", lang);
+
+    // Some widgets read navigator language only at first load;
+    // we expose a global hint that we can reuse.
+    window.__TIDIO_LANG__ = lang;
+  } catch (_) {}
+};
+
+// Try to refresh only the Tidio iframe (soft)
+const refreshTidioWidget = () => {
+  try {
+    // remove tidio iframe(s) so they reload without touching our DOM
+    document.querySelectorAll('iframe[src*="tidio"]').forEach((el) => el.remove());
+    // also remove injected tidio containers if any
+    document.querySelectorAll('div[id^="tidio-"]').forEach((el) => el.remove());
+  } catch (_) {}
+};
+
+const syncTidioLang = (lang) => {
+  setTidioLangHint(lang);
+
+  // If Tidio already loaded, refresh the widget once to apply language
+  // (safe, doesn't re-add script)
+  refreshTidioWidget();
+};
+
 // When clicking language buttons
 langButtons.forEach((btn) => {
   btn.addEventListener("click", () => {
